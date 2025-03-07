@@ -1,48 +1,62 @@
-"use client"
-
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "./AuthContext"
 import logo from "./logo.png"
-import { FaCheck, FaEdit } from "react-icons/fa" // Necesitarás instalar react-icons
+import { FaTimes, FaBars, FaSearch, FaPlus, FaPencilAlt, FaPrint, FaArrowLeft } from "react-icons/fa"
 
 function Registros() {
+
   const navigate = useNavigate()
   const { user, logout } = useAuth()
-
+  const [eventoSeleccionado, setEventoSeleccionado] = useState('Todos');
+  const [menuAbierto, setMenuAbierto] = useState(false) 
+  
   // Datos de ejemplo para la tabla
   const [registros] = useState([
     {
       id: 1,
       nombre: "Pedro Perez",
+      cedula: "1234567890",
+      libro: "1",
+      folio: "2",
+      acta: "3",
       evento: "Bautismo",
       fecha: "24/05/2004",
-      hora: "12:40",
-      pagado: true,
+      sacerdote: "Juan Rodriguez",
+
     },
     {
       id: 2,
       nombre: "Martin Sanchez",
-      evento: "Boda",
+      cedula: "0987654321",
+      libro: "2",
+      folio: "3",
+      acta: "3",
+      evento: "Matrimonio",
       fecha: "15/04/2015",
-      hora: "20:10",
-      pagado: true,
+      sacerdote: "David Martinez",
     },
     {
       id: 3,
       nombre: "José Contreras",
-      evento: "Boda",
+      cedula: "9876543210",
+      libro: "3",
+      folio: "4",
+      acta: "4",
+      evento: "Defunción",
       fecha: "7/11/2010",
-      hora: "15:00",
-      pagado: true,
+      sacerdote: "Pedro Hernandez",
     },
     {
       id: 4,
       nombre: "Carlos Martinez",
-      evento: "Bautismo",
+      cedula: "1234567890",
+      libro: "4",
+      folio: "5",
+      acta: "5",
+      evento: "Primera Comunión",
       fecha: "23/7/2007",
-      hora: "9:30",
-      pagado: true,
+      sacerdote: "Juan Perez",
     },
   ])
 
@@ -71,9 +85,13 @@ function Registros() {
     console.log("Imprimir partidas")
   }
 
-  const handleEdit = (id) => {
-    console.log("Editar registro:", id)
+  const toggleMenu = () => {
+    setMenuAbierto(!menuAbierto) // Alternar la visibilidad del menú
   }
+
+  const registrosFiltrados = eventoSeleccionado === 'Todos'
+  ? registros
+  : registros.filter(registro => registro.evento === eventoSeleccionado);
 
   return (
     <div style={styles.container}>
@@ -94,55 +112,84 @@ function Registros() {
       </header>
 
       <div style={styles.mainContent}>
+        {/* Botón para abrir/cerrar el menú */}
+        <button onClick={toggleMenu} style={styles.menuToggleButton}>
+          {menuAbierto ? <FaTimes /> : <FaBars />}
+        </button>
+       
         {/* Menú lateral */}
-        <nav style={styles.sidebar}>
-          <button style={styles.sidebarHeaderButton}>Vista de Registros</button>
-          <button onClick={handleSearch} style={styles.sidebarButton}>
-            Buscar partidas
+        <nav style={{ ...styles.sidebar, width: menuAbierto ? '250px' : '0', overflow: 'hidden', transition: 'width 0.3s' }}>
+  
+        <div style={styles.menuHeader}>
+            <button style={styles.sidebarHeaderButton}>
+              {menuAbierto ? "📋 Vista de Registros" : <FaBars />}
+            </button>
+          </div>
+          <button onClick={handleSearch} style={styles.dropdownButton}>
+            {menuAbierto ? "🔍 Buscar partidas" : <FaSearch />}
           </button>
           <button onClick={handleAdd} style={styles.sidebarButton}>
-            Añadir partidas
+            {menuAbierto ? "📄 Añadir partidas" : <FaPlus />}
           </button>
           <button onClick={handleCorrect} style={styles.sidebarButton}>
-            Corregir partidas
+            {menuAbierto ? "📝Corregir partidas" : <FaPencilAlt />}
           </button>
           <button onClick={handlePrint} style={styles.sidebarButton}>
-            Imprimir partidas
+            {menuAbierto ? "🖨️ Imprimir partidas" : <FaPrint />}
           </button>
           <button onClick={handleBack} style={styles.backButton}>
-            Atras
+            {menuAbierto ? "Atras" : <FaArrowLeft />}
           </button>
         </nav>
 
-        {/* Tabla de registros */}
+        {/* Contenido principal */}
         <main style={styles.content}>
+          {/* Selector de tipo de evento */}
+          <div style={styles.filtroContainer}>
+            <label htmlFor="evento" style={styles.label}>Seleccionar tipo de evento:</label>
+            <select
+              id="evento"
+              value={eventoSeleccionado}
+              onChange={(e) => setEventoSeleccionado(e.target.value)}
+              style={styles.select}
+            >
+              <option value="Todos">Todos</option>
+              <option value="Bautismo">Bautizos</option>
+              <option value="Confirmación">Confirmaciones</option>
+              <option value="Primera Comunión">Primeras Comuniones</option>
+              <option value="Matrimonio">Matrimonios</option>
+              <option value="Defunción">Defunciones</option>
+            </select>
+          </div>
+
+          {/* Tabla de registros */}
           <div style={styles.tableContainer}>
             <table style={styles.table}>
               <thead>
                 <tr>
-                  <th style={styles.th}>Nombre</th>
+                  <th style={styles.th}>Id</th>
+                  <th style={styles.th}>Apellidos y Nombres</th>
                   <th style={styles.th}>Cedula</th>
+                  <th style={styles.th}>Libro</th>
+                  <th style={styles.th}>Folio</th>
+                  <th style={styles.th}>Acta</th>
                   <th style={styles.th}>Evento</th>
                   <th style={styles.th}>Fecha</th>
-                  <th style={styles.th}>Hora</th>
-                  <th style={styles.th}>Pago</th>
-                  <th style={styles.th}>Editar</th>
+                  <th style={styles.th}>Sacerdote</th>
                 </tr>
               </thead>
               <tbody>
-                {registros.map((registro) => (
+                {registrosFiltrados.map((registro) => (
                   <tr key={registro.id} style={styles.tr}>
+                    <td style={styles.td}>{registro.id}</td>
                     <td style={styles.td}>{registro.nombre}</td>
                     <td style={styles.td}>{registro.cedula}</td>
+                    <td style={styles.td}>{registro.libro}</td>
+                    <td style={styles.td}>{registro.folio}</td>
+                    <td style={styles.td}>{registro.acta}</td>
                     <td style={styles.td}>{registro.evento}</td>
                     <td style={styles.td}>{registro.fecha}</td>
-                    <td style={styles.td}>{registro.hora}</td>
-                    <td style={styles.td}>{registro.pagado && <FaCheck style={{ color: "green" }} />}</td>
-                    <td style={styles.td}>
-                      <button onClick={() => handleEdit(registro.id)} style={styles.editButton}>
-                        <FaEdit />
-                      </button>
-                    </td>
+                    <td style={styles.td}>{registro.sacerdote}</td>
                   </tr>
                 ))}
               </tbody>
@@ -261,6 +308,22 @@ const styles = {
     flex: 1,
     padding: "2rem",
     overflow: "auto",
+  },
+  filtroContainer: {
+    marginBottom: "20px",	
+    marginLeft: '0.5rem',
+    fontSize: '1.2rem',
+    fontWeight: '600',
+    display: 'flex',
+  },
+  select: {
+    padding: '0.5rem',
+    fontSize: '1rem',
+    borderRadius: '0.5rem',
+    marginBottom: '0.5rem',
+    marginLeft: '1rem',
+    width: '220px',
+    fontWeight: '550',
   },
   tableContainer: {
     backgroundColor: "white",

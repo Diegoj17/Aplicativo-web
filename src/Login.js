@@ -40,6 +40,11 @@ function Login() {
     navigate("/recuperar-contraseña") // Redirige a la interfaz de recuperación de contraseña
   }
 
+  const handleCreateAccount = () => {
+    navigate('/crear-cuenta'); // Redirige a la interfaz de creación de cuenta
+  };
+
+
   return (
     <div style={styles.container}>
       {/* Logo en la parte izquierda */}
@@ -82,6 +87,9 @@ function Login() {
             Ingresar
           </button>
         </form>
+        <p style={styles.createAccountLink} onClick={handleCreateAccount}>
+          ¿Crear Cuenta? 
+        </p>
         <p style={styles.forgotPassword} onClick={handleForgotPassword}>
           ¿Olvidaste tu contraseña?
         </p>
@@ -189,6 +197,14 @@ const styles = {
     transform: "none !important", // Evita transformaciones
   },
   forgotPassword: {
+    marginTop: '1rem',
+    fontSize: '0.875rem',
+    textAlign: 'center',
+    color: '#007BFF',
+    cursor: 'pointer',
+    textDecoration: 'underline',
+  },
+  createAccountLink: {
     marginTop: '1rem',
     fontSize: '0.875rem',
     textAlign: 'center',
