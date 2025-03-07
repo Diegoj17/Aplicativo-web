@@ -51,11 +51,6 @@ function Registros() {
     navigate("/")
   }
 
-  // Función para navegar a la vista de registros
-  const handleViewRegistros = () => {
-    navigate("/registros")
-  }
-
   const handleBack = () => {
     navigate("/Principal")
   }
