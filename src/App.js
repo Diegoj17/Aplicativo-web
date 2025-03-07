@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Login from './Login';
 import Principal from './Principal';
+import Registros from "./Registros"
 import ScrollableContainer from "./ScrollableContainer" // Importar el nuevo componente
 import RecuperarContraseña from './RecuperarContraseña';
 import { AuthProvider } from "./AuthContext"
@@ -23,7 +24,17 @@ function App() {
                   <Principal />
                 </ProtectedRoute>
               }
-            />
+              />
+          <Route
+            path="/registros"
+            element={
+              <ProtectedRoute>
+                <Registros />
+              </ProtectedRoute>
+            }
+          />
+              
+            
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </ScrollableContainer>

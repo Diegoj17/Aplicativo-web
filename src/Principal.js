@@ -23,6 +23,11 @@ function Principal() {
     }
   }, [])
 
+  // Función para navegar a la vista de registros
+  const handleViewRegistros = () => {
+    navigate("/registros")
+  }
+
   // Funciones para los botones
   const handleSearch = () => {
     console.log("Función de búsqueda")
@@ -70,7 +75,9 @@ function Principal() {
       <div style={styles.mainContent}>
         {/* Menú lateral */}
         <nav style={styles.sidebar}>
-          <div style={styles.sidebarHeader}>Vista de Registros</div>
+          <div style={styles.sidebarHeader} onClick={handleViewRegistros} className="clickable-header">
+            Vista de Registros
+          </div>
           <button onClick={handleSearch} style={{ ...styles.sidebarButton, backgroundColor: "#FFE4B5" }}>
             Buscar partidas
           </button>
@@ -91,7 +98,7 @@ function Principal() {
         {/* Área de contenido */}
         <main style={styles.content}>
           <div style={styles.logoContainer}>
-            <img src={logocentral || "/placeholder.svg"} alt="Logo Basílica" style={styles.logocentral} />
+            <img src={logocentral || "/logocentral.png"} alt="Logo Basílica" style={styles.logocentral} />
           </div>
         </main>
       </div>
@@ -113,11 +120,11 @@ const styles = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    height: "60px",
+    height: "70px",
   },
   headerTitle: {
     margin: 0,
-    fontSize: "1.2rem",
+    fontSize: "1.5rem",
     fontWeight: "normal",
   },
   userInfo: {
@@ -150,7 +157,6 @@ const styles = {
     width: "270px",
     backgroundColor: "#f0f0f0",
     padding: "1rem",
-    
     display: "flex",
     flexDirection: "column",
     gap: "0.5rem",
@@ -160,7 +166,7 @@ const styles = {
     backgroundColor: "#808080",
     color: "white",
     borderRadius: "0.5rem",
-    fontSize: "0.9rem",
+    fontSize: "15px",
   },
   sidebarButton: {
     margin: '5px 0',
@@ -170,8 +176,8 @@ const styles = {
     cursor: "pointer",
     textAlign: "left",
     fontSize: "15px",
-    transition: "opacity 0.2s ease",
     color: "black",
+    backgroundColor: "#FF000F",
   },
   content: {
     flex: 1,
@@ -193,7 +199,6 @@ const styles = {
   },
   logocentral: {
     width: "800px",
-    marginLeft: '-200px', // Espacio entre el logo y el título
     height: "auto",
     objectFit: "contain",
     

@@ -51,3 +51,49 @@ a {
   transform: none !important;
   transition: background-color 0.2s ease, color 0.2s ease !important;
 }
+
+/* Estilos para el encabezado clickeable */
+.clickable-header {
+  cursor: pointer !important;
+}
+
+.clickable-header:hover {
+  background-color: #6c757d !important; /* Un tono más claro al pasar el mouse */
+}
+
+.clickable-header:active {
+  background-color: #5a6268 !important; /* Un tono más oscuro al hacer clic */
+}
+
+/* Estilos para mejorar la usabilidad de la tabla */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 0.75rem;
+  text-align: left;
+}
+
+tr:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Estilos para mejorar la apariencia de los botones */
+button:hover {
+  opacity: 0.9;
+}
+
+/* Prevenir selección de texto en botones */
+button {
+  user: none;
+}
+
+/* Asegurar que las imágenes no se deformen */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
