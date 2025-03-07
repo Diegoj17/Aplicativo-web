@@ -1,10 +1,27 @@
-"use client"
+import { useAuth } from "./AuthContext"
+import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import logo from "./logo.png" // Asegúrate de tener el logo en esta ubicación
 import logocentral from "./logocentral.png" // Asegúrate de tener el logo en esta ubicación
 
 function Principal() {
   const navigate = useNavigate()
+  const { user, logout } = useAuth()
+
+  // Prevenir navegación hacia atrás después de cerrar sesión
+  useEffect(() => {
+    window.history.pushState(null, document.title, window.location.href)
+
+    const handlePopState = () => {
+      window.history.pushState(null, document.title, window.location.href)
+    }
+
+    window.addEventListener("popstate", handlePopState)
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState)
+    }
+  }, [])
 
   // Funciones para los botones
   const handleSearch = () => {
@@ -28,20 +45,23 @@ function Principal() {
   }
 
   const handleLogout = () => {
-    navigate("/") // Redirige al login
+    // Llamar a la función logout del contexto de autenticación
+    logout()
+    // Redirigir al login
+    navigate("/")
   }
 
   return (
     <div style={styles.container}>
       {/* Barra superior */}
       <header style={styles.header}>
-      <img src={logo} alt="Logo" style={styles.logo} />
+        <img src={logo || "/placeholder.svg"} alt="Logo" style={styles.logo} />
         <h1 style={styles.headerTitle}>Basílica Menor de San Luis Gonzaga</h1>
         <div style={styles.userInfo}>
           <img src="/user-icon.png" alt="Usuario" style={styles.userIcon} />
           <div style={styles.userText}>
-            <span>Nombre Usuario</span>
-            <span style={styles.roleText}>Rol</span>
+            <span>{user?.name || "Nombre Usuario"}</span>
+            <span style={styles.roleText}>{user?.role || "Rol"} </span>
           </div>
         </div>
       </header>
@@ -71,14 +91,7 @@ function Principal() {
         {/* Área de contenido */}
         <main style={styles.content}>
           <div style={styles.logoContainer}>
-            <img
-              src={
-                logocentral ||
-                "logocentral.png"
-              }
-              alt="Logo Basílica"
-              style={styles.logocentral}
-            />
+            <img src={logocentral || "/placeholder.svg"} alt="Logo Basílica" style={styles.logocentral} />
           </div>
         </main>
       </div>
@@ -179,9 +192,11 @@ const styles = {
     marginRight: '100px', // Espacio entre el logo y el título
   },
   logocentral: {
-    width: "100%",
+    width: "800px",
+    marginLeft: '-200px', // Espacio entre el logo y el título
     height: "auto",
     objectFit: "contain",
+    
   },
 
 }

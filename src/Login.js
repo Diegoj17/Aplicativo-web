@@ -1,30 +1,50 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import logo from './logo.png'; // Asegúrate de que la ruta del logo sea correcta
+import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import logo from "./logo.png" // Asegúrate de que la ruta del logo sea correcta
+import { useAuth } from "./AuthContext"
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const navigate = useNavigate()
+  const { isAuthenticated, login } = useAuth()
+
+  // Redirigir si ya está autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/Principal")
+    }
+  }, [isAuthenticated, navigate])
 
   const handleSubmit = (event) => {
-    event.preventDefault();
+    event.preventDefault()
     // Aquí puedes manejar la lógica de inicio de sesión
-    console.log('Email:', email);
-    console.log('Password:', password);
-    navigate('/Principal'); // Redirige a la interfaz de la Basílica
-  };
+    console.log("Email:", email)
+    console.log("Password:", password)
+
+    // Crear datos del usuario para la autenticación
+    const userData = {
+      name: "Nombre Usuario",
+      role: "Rol",
+      email: email,
+    }
+
+    // Guardar la sesión en el contexto de autenticación
+    login(userData)
+
+    // Redirigir a la interfaz principal
+    navigate("/Principal")
+  }
 
   const handleForgotPassword = () => {
-    navigate('/recuperar-contraseña'); // Redirige a la interfaz de recuperación de contraseña
-  };
+    navigate("/recuperar-contraseña") // Redirige a la interfaz de recuperación de contraseña
+  }
 
   return (
     <div style={styles.container}>
-
       {/* Logo en la parte izquierda */}
       <div style={styles.logoContainer}>
-        <img src={logo} alt="Logo" style={styles.logo} />
+        <img src={logo || "/placeholder.svg"} alt="Logo" style={styles.logo} />
       </div>
 
       {/* Formulario de inicio de sesión (cuadro blanco) */}
@@ -32,7 +52,9 @@ function Login() {
         <h2 style={styles.title}>Inicio de sesión</h2>
         <form onSubmit={handleSubmit} style={styles.form}>
           <div style={styles.formGroup}>
-            <label htmlFor="email" style={styles.label}>Correo Electrónico</label>
+            <label htmlFor="email" style={styles.label}>
+              Correo Electrónico
+            </label>
             <input
               type="email"
               id="email"
@@ -43,7 +65,9 @@ function Login() {
             />
           </div>
           <div style={styles.formGroup}>
-            <label htmlFor="password"style={styles.label}>Contraseña</label>
+            <label htmlFor="password" style={styles.label}>
+              Contraseña
+            </label>
             <input
               type="password"
               id="password"
@@ -54,14 +78,16 @@ function Login() {
             />
           </div>
 
-          <button type="submit" style={styles.button}>Ingresar</button>
+          <button type="submit" style={styles.button}>
+            Ingresar
+          </button>
         </form>
         <p style={styles.forgotPassword} onClick={handleForgotPassword}>
-        ¿Olvidaste tu contraseña?
+          ¿Olvidaste tu contraseña?
         </p>
       </div>
     </div>
-  );
+  )
 }
 
 const styles = {
