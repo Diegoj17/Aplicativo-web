@@ -2,14 +2,23 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "./AuthContext"
 import logo from "./logo.png"
-import { FaTimes, FaBars, FaSearch, FaPlus, FaPencilAlt, FaPrint, FaArrowLeft } from "react-icons/fa"
+import { FaFileAlt,
+  FaSearch,
+  FaFileMedical,
+  FaEdit,
+  FaPrint,
+  FaChevronRight,
+  FaChevronDown,
+  FaArrowLeft,
+  FaBars, } from "react-icons/fa"
 
 function Registros() {
 
   const navigate = useNavigate()
   const { user, logout } = useAuth()
   const [eventoSeleccionado, setEventoSeleccionado] = useState('Todos');
-  const [menuAbierto, setMenuAbierto] = useState(false) 
+  const [menuAbierto, setMenuAbierto] = useState(false)
+  const [isSubmenuOpen, setIsSubmenuOpen] = useState(false)
   
   // Datos de ejemplo para la tabla
   const [registros] = useState([
@@ -60,6 +69,26 @@ function Registros() {
     },
   ])
 
+  const registrosFiltrados = eventoSeleccionado === 'Todos'
+  ? registros
+  : registros.filter(registro => registro.evento === eventoSeleccionado);
+
+  const toggleMenu = () => {
+    setMenuAbierto(!menuAbierto)
+    if (!menuAbierto) {
+      setIsSubmenuOpen(false)
+    }
+  }
+
+  const toggleSubmenu = () => {
+    setIsSubmenuOpen(!isSubmenuOpen);
+  };
+
+  const handleViewRegistros = () => {
+    navigate("/registros")
+  }
+
+
   const handleLogout = () => {
     logout()
     navigate("/")
@@ -85,20 +114,13 @@ function Registros() {
     console.log("Imprimir partidas")
   }
 
-  const toggleMenu = () => {
-    setMenuAbierto(!menuAbierto) // Alternar la visibilidad del menú
-  }
-
-  const registrosFiltrados = eventoSeleccionado === 'Todos'
-  ? registros
-  : registros.filter(registro => registro.evento === eventoSeleccionado);
 
   return (
     <div style={styles.container}>
       {/* Barra superior */}
       <header style={styles.header}>
         <img src={logo || "/logo.png"} alt="Logo" style={styles.headerLogo} />
-        <h1 style={styles.headerTitle}>Registros</h1>
+        <h1 style={styles.headerTitle}>Vista de Registros</h1>
         <button onClick={handleLogout} style={styles.logoutButton}>
           Salir
         </button>
@@ -112,41 +134,75 @@ function Registros() {
       </header>
 
       <div style={styles.mainContent}>
-        {/* Botón para abrir/cerrar el menú */}
-        <button onClick={toggleMenu} style={styles.menuToggleButton}>
-          {menuAbierto ? <FaTimes /> : <FaBars />}
-        </button>
-       
-        {/* Menú lateral */}
-        <nav style={{ ...styles.sidebar, width: menuAbierto ? '250px' : '0', overflow: 'hidden', transition: 'width 0.3s' }}>
-  
-        <div style={styles.menuHeader}>
-            <button style={styles.sidebarHeaderButton}>
-              {menuAbierto ? "📋 Vista de Registros" : <FaBars />}
+        {/* Menú lateral estilo Gmail */}
+        <nav
+          style={{
+            ...styles.sidebar,
+            padding: menuAbierto ? "1rem" : "1.5rem 0",
+            width: menuAbierto ? "250px" : "50px",
+            transition: "all 0.2s ease-in-out",
+            with: "100%", 
+          }}
+        >
+          {/* Botón para expandir/colapsar */}
+          <button onClick={toggleMenu} style={styles.menuToggleButton}>
+            {menuAbierto ? <FaChevronRight /> : <FaBars />}
+          </button>
+
+          {/* Contenedor principal de botones */}
+          <div style={styles.sidebarButtonsContainer}>
+          
+          {/* Botones de navegación */}
+          <div style={styles.sidebarButtons}>
+          <button onClick={handleViewRegistros} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Vista de Registros">
+              <FaFileAlt style={styles.icon} />
+              {menuAbierto && <span style={styles.buttonText}>Vista de Registros</span>}
             </button>
-          </div>
-          <button onClick={handleSearch} style={styles.dropdownButton}>
-            {menuAbierto ? "🔍 Buscar partidas" : <FaSearch />}
+
+            <button onClick={handleSearch} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Buscar partidas">
+              <FaSearch style={styles.icon} />
+              {menuAbierto && <span style={styles.buttonText}>Buscar partidas</span>}
+            </button>
+
+            <button onClick={handleAdd} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Añadir partidas">
+              <FaFileMedical style={styles.icon} />
+              {menuAbierto && <span style={styles.buttonText}>Añadir partidas</span>}
+            </button>
+
+            <button onClick={handleCorrect} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Corregir partidas">
+              <FaEdit style={styles.icon} />
+              {menuAbierto && <span style={styles.buttonText}>Corregir partidas</span>}
+            </button>
+
+            <button onClick={handlePrint} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Imprimir partidas">
+              <FaPrint style={styles.icon} />
+              {menuAbierto && <span style={styles.buttonText}>Imprimir partidas</span>}
+            </button>
+            </div>
+         
+
+          {/* Botón "Atrás" al final del menú */}
+          <button onClick={handleBack} style={styles.backButton} title="Atrás">
+            <FaArrowLeft style={styles.icon} />
+            {menuAbierto && <span style={styles.buttonText}>Atrás</span>}
           </button>
-          <button onClick={handleAdd} style={styles.sidebarButton}>
-            {menuAbierto ? "📄 Añadir partidas" : <FaPlus />}
-          </button>
-          <button onClick={handleCorrect} style={styles.sidebarButton}>
-            {menuAbierto ? "📝Corregir partidas" : <FaPencilAlt />}
-          </button>
-          <button onClick={handlePrint} style={styles.sidebarButton}>
-            {menuAbierto ? "🖨️ Imprimir partidas" : <FaPrint />}
-          </button>
-          <button onClick={handleBack} style={styles.backButton}>
-            {menuAbierto ? "Atras" : <FaArrowLeft />}
-          </button>
-        </nav>
+        </div>
+      </nav>
 
         {/* Contenido principal */}
-        <main style={styles.content}>
+        <main
+          style={{
+            ...styles.content,
+            marginLeft: menuAbierto ? "250px" : "50px",
+            padding: menuAbierto ? "1rem" : "1rem",   
+            transition: "margin-left 0.2s ease-in-out",
+          }}
+        >
           {/* Selector de tipo de evento */}
           <div style={styles.filtroContainer}>
-            <label htmlFor="evento" style={styles.label}>Seleccionar tipo de evento:</label>
+            <label htmlFor="evento" style={styles.label}>
+              Seleccionar tipo de evento:
+            </label>
             <select
               id="evento"
               value={eventoSeleccionado}
@@ -207,7 +263,6 @@ const styles = {
     flexDirection: "column",
     height: "100vh",
     overflow: "hidden",
-    
   },
   header: {
     backgroundColor: "#385792",
@@ -256,18 +311,29 @@ const styles = {
     opacity: 0.8,
     fontSize: "0.7rem",
   },
+  buttonText: {
+    fontSize: "15px",
+    flex: 1,
+  },
   mainContent: {
     display: "flex",
     flex: 1,
     overflow: "hidden",
+    
   },
   sidebar: {
-    width: "270px",
-    backgroundColor: "#f0f0f0",
-    padding: "1rem",
+    backgroundColor: "#f8f9fa",
     display: "flex",
     flexDirection: "column",
+    height: "calc(100vh - 60px)",
+    position: "fixed",
+    left: 0,
+    zIndex: 5,
+    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
     gap: "0.5rem",
+    with: "100%",
+    minWidth: "70px",
+   
   },
   sidebarHeaderButton: {
     backgroundColor: "#808080",
@@ -279,30 +345,79 @@ const styles = {
     textAlign: "left",
     fontSize: "15px",
   },
-  sidebarButton: {
-    margin: '5px 0',
-    padding: "0.75rem",
+  sidebarButtonsContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    height: "calc(100% - 50px)", // Restar la altura del botón de toggle
+    overflow: "hidden",
+    "& button:hover": {
+      backgroundColor: "#FFD79C",
+    },
+  },
+  sidebarButtons: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "0.5rem",
+    overflow: "auto",
+    "& button": {
+      backgroundColor: "#FCCE74",
+    },
+    "& button:hover": {
+      backgroundColor: "#FCCE74",
+    },
+  },
+  sidebarIconButton: {
+    display: "flex",
+    alignItems: "center",
+    gap: "0.5rem",
+    padding: "8px",
     border: "none",
-    borderRadius: "0.5rem",
+    borderRadius: "0 16px 16px 0",
+    backgroundColor: "#FFE4B5",
     cursor: "pointer",
     textAlign: "left",
-    fontSize: "15px",
-    transition: "opacity 0.2s ease",
-    color: "black",
-    backgroundColor: "#FFE4B5"
+    color: "#202124",
+    transition: "background-color 0.2s",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    position: "relative",
+    width: "100%", // Ensure consistent width
+    minHeight: "40px", // Consistent height for all buttons
+  
+  },
+  menuToggleButton: {
+    backgroundColor: "#FFE4B5",
+    color: "#6c757d",
+    border: "none",
+    borderRadius: "50%",
+    width: "36px",
+    height: "36px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    alignSelf: "center",
+    marginBottom: "1rem",
+    padding: 0,
   },
   backButton: {
-    backgroundColor: "#FF000F",
-    color: "black",
+    display: "flex",
+    alignItems: "center",
+    gap: "0.5rem",
+    padding: "8px",
     border: "none",
-    padding: "0.75rem",
-    borderRadius: "0.5rem",
+    borderRadius: "0 16px 16px 0",
+    backgroundColor: "#FF000F",
     cursor: "pointer",
     textAlign: "left",
-    marginTop: "auto",
-    fontSize: "15px",
-    fontWeight: "600",
-
+    color: "white",
+    transition: "background-color 0.2s",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    position: "relative",
+    width: "100%", // Ensure consistent width
+    minHeight: "40px", // Consistent height for all buttons
   },
   content: {
     flex: 1,
@@ -341,6 +456,7 @@ const styles = {
     textAlign: "left",
     borderBottom: "2px solid #dee2e6",
     fontWeight: "600",
+    fontSize: "0.875rem",
   },
   tr: {
     borderBottom: "1px solid #dee2e6",
@@ -348,15 +464,6 @@ const styles = {
   td: {
     padding: "1rem",
     verticalAlign: "middle",
-  },
-  editButton: {
-    backgroundColor: "transparent",
-    border: "none",
-    cursor: "pointer",
-    color: "#385792",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
   },
 }
 

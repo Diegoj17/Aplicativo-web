@@ -154,12 +154,15 @@ const styles = {
     
   },
   sidebar: {
-    width: "270px",
+    width: "250px",
     backgroundColor: "#f0f0f0",
     padding: "1rem",
     display: "flex",
     flexDirection: "column",
     gap: "0.5rem",
+    with: "100%",
+    minWidth: "250px",
+    maxWidth: "300px",
   },
   sidebarHeader: {
     padding: "0.75rem",
