@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import logo from "./logo.png";
 
 function RecuperarContraseña() {
   const [email, setEmail] = useState('');
@@ -19,6 +20,13 @@ function RecuperarContraseña() {
 
   return (
     <div style={styles.container}>
+       
+       <div style={styles.formContainer}>
+        {/* Logo positioned outside and above the white card */}
+        <div style={styles.logoContainer}>
+          <img src={logo || "/placeholder.svg"} alt="Logo" style={styles.logo} />
+        </div>
+
       <div style={styles.card}>
         <h2 style={styles.title}>Recuperar Contraseña</h2>
         <p style={styles.description}>
@@ -47,18 +55,38 @@ function RecuperarContraseña() {
         </form>
       </div>
     </div>
+   </div>
   );
 }
 
 const styles = {
   container: {
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'center',
     height: '100vh',
     backgroundColor: '#385792',
     padding: '20px',
     boxSizing: 'border-box',
+    paddingTop: '40px',
+  },
+  formContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    maxWidth: '400px',
+    width: '100%',
+    gap: '20px',
+  },
+  logoContainer: {
+    marginBottom: '10px',
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  logo: {
+    width: '250px',
+    height: 'auto',
+    objectFit: 'contain',
   },
   card: {
     backgroundColor: 'white',

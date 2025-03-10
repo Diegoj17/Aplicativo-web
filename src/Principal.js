@@ -276,7 +276,7 @@ const styles = {
     width: "60px",
     height: "auto",
     objectFit: "contain",
-    marginRight: '100px', // Espacio entre el logo y el título
+    marginRight: '100px',
   },
   logocentral: {
     width: "800px",
