@@ -3,6 +3,16 @@ import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import logo from "./logo.png" // Asegúrate de tener el logo en esta ubicación
 import logocentral from "./logocentral.png" // Asegúrate de tener el logo en esta ubicación
+import { FaFileAlt,
+  FaSearch,
+  FaFileMedical,
+  FaEdit,
+  FaPrint,
+  FaChevronRight,
+  FaChevronDown,
+  FaArrowLeft,
+  FaBars,
+  FaSignOutAlt, } from "react-icons/fa"
 
 function Principal() {
   const navigate = useNavigate()
@@ -56,6 +66,10 @@ function Principal() {
     navigate("/")
   }
 
+  const handleBack = () => {
+    navigate(-1)
+  }
+
   return (
     <div style={styles.container}>
       {/* Barra superior */}
@@ -75,24 +89,44 @@ function Principal() {
       <div style={styles.mainContent}>
         {/* Menú lateral */}
         <nav style={styles.sidebar}>
-          <div style={styles.sidebarHeader} onClick={handleViewRegistros} className="clickable-header">
-            Vista de Registros
+          {/* Botones principales */}
+          <div style={styles.sidebarButtons}>
+            <div style={styles.sidebarHeader} onClick={handleViewRegistros} className="clickable-header">
+              <FaFileAlt style={styles.headerIcon} />
+              <span>Vista de Registros</span>
+            </div>
+
+            <button onClick={handleSearch} style={{ ...styles.sidebarButton}} title="Buscar partidas">
+              <FaSearch style={styles.buttonIcon} />
+              <span>Buscar partidas</span>
+            </button>
+
+            <button onClick={handleAdd} style={{ ...styles.sidebarButton}} title="Añadir partidas">
+              <FaFileMedical style={styles.buttonIcon} />
+              <span>Añadir partidas</span>
+            </button>
+
+            <button onClick={handleCorrect} style={{ ...styles.sidebarButton}} title="Corregir partidas">
+              <FaEdit style={styles.buttonIcon} />
+              <span>Corregir partidas</span>
+            </button>
+
+            <button onClick={handlePrint} style={{ ...styles.sidebarButton, justifyItems: "center"}} title="Imprimir partidas">
+              <FaPrint style={styles.buttonIcon} />
+              {<span style={styles.buttonText}>Imprimir partidas</span>}
+            </button>
           </div>
-          <button onClick={handleSearch} style={{ ...styles.sidebarButton, backgroundColor: "#FFE4B5" }}>
-            Buscar partidas
-          </button>
-          <button onClick={handleAdd} style={{ ...styles.sidebarButton, backgroundColor: "#FFE4B5" }}>
-            Añadir partidas
-          </button>
-          <button onClick={handleCorrect} style={{ ...styles.sidebarButton, backgroundColor: "#FFE4B5" }}>
-            Corregir partidas
-          </button>
-          <button onClick={handlePrint} style={{ ...styles.sidebarButton, backgroundColor: "#FFE4B5" }}>
-            Imprimir partidas
-          </button>
-          <button onClick={handleLogout} style={{ ...styles.sidebarButton, backgroundColor: "#DC3545" }}>
-            Salir
-          </button>
+
+          {/* Espacio flexible para empujar los botones inferiores al fondo */}
+          <div style={{ flex: 1 }}></div>
+
+          {/* Botones inferiores */}
+          <div style={styles.bottomButtons}>
+            <button onClick={handleLogout} style={{ ...styles.logoutButton}}>
+              <FaSignOutAlt style={styles.buttonIcon} />
+              <span>Salir</span>
+            </button>
+          </div>
         </nav>
 
         {/* Área de contenido */}
@@ -163,16 +197,20 @@ const styles = {
     with: "100%",
     minWidth: "250px",
     maxWidth: "300px",
+    
   },
   sidebarHeader: {
     padding: "0.75rem",
-    backgroundColor: "#808080",
-    color: "white",
+    backgroundColor: "#FCCE74",
+    color: "black",
     borderRadius: "0.5rem",
     fontSize: "15px",
   },
   sidebarButton: {
-    margin: '5px 0',
+    margin: '8px 0',
+    alignItems: "center",
+    justifyContent: "flex-start",
+    flexDirection: "column",
     padding: "0.75rem",
     border: "none",
     borderRadius: "0.5rem",
@@ -180,7 +218,47 @@ const styles = {
     textAlign: "left",
     fontSize: "15px",
     color: "black",
+    backgroundColor: "#FCCE74",
+    overflow: "hidden",
+    position: "relative",
+    width: "100%", 
+    minHeight: "40px", 
+    gap: "0.75rem",
+  },
+  buttonIcon: {
+    width: "18px", 
+    height: "18px",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    flex: 1,
+    flexShrink: 0, 
+    flexGrow: 0,
+    marginBottom: "0rem",
+  },
+  buttonText: {
+    fontSize: "15px",
+    flex: 1,
+    marginBottom: "0rem",
+  },
+  logoutButton: {
+    verticalAlign: "middle",
+    margin: '8px 0',
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+    padding: "0.75rem",
+    border: "none",
+    borderRadius: "0.5rem",
+    cursor: "pointer",
+    textAlign: "left",
+    fontSize: "15px",
+    color: "white",
     backgroundColor: "#FF000F",
+    overflow: "hidden",
+    position: "relative",
+    width: "100%", 
+    minHeight: "40px", 
+    gap: "0.75rem",
   },
   content: {
     flex: 1,

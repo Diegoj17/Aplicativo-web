@@ -10,7 +10,8 @@ import { FaFileAlt,
   FaChevronRight,
   FaChevronDown,
   FaArrowLeft,
-  FaBars, } from "react-icons/fa"
+  FaBars,
+  FaSignOutAlt, } from "react-icons/fa"
 
 function Registros() {
 
@@ -122,6 +123,7 @@ function Registros() {
         <img src={logo || "/logo.png"} alt="Logo" style={styles.headerLogo} />
         <h1 style={styles.headerTitle}>Vista de Registros</h1>
         <button onClick={handleLogout} style={styles.logoutButton}>
+          <FaSignOutAlt style={styles.buttonIcon} />
           Salir
         </button>
         <div style={styles.userInfo}>
@@ -132,7 +134,7 @@ function Registros() {
           </div>
         </div>
       </header>
-
+  
       <div style={styles.mainContent}>
         {/* Menú lateral estilo Gmail */}
         <nav
@@ -141,61 +143,65 @@ function Registros() {
             padding: menuAbierto ? "1rem" : "1.5rem 0",
             width: menuAbierto ? "250px" : "50px",
             transition: "all 0.2s ease-in-out",
-            with: "100%", 
+            gap: menuAbierto ? "0.5rem" : "0",
+            overflow: menuAbierto ? "hidden" : "auto",
+            position: "fixed",
+            zIndex: 1000,
+            height: "calc(100vh - 70px)", // Ajusta la altura del menú
           }}
         >
           {/* Botón para expandir/colapsar */}
           <button onClick={toggleMenu} style={styles.menuToggleButton}>
             {menuAbierto ? <FaChevronRight /> : <FaBars />}
           </button>
-
+  
           {/* Contenedor principal de botones */}
           <div style={styles.sidebarButtonsContainer}>
-          
-          {/* Botones de navegación */}
-          <div style={styles.sidebarButtons}>
-          <button onClick={handleViewRegistros} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Vista de Registros">
-              <FaFileAlt style={styles.icon} />
-              {menuAbierto && <span style={styles.buttonText}>Vista de Registros</span>}
-            </button>
-
-            <button onClick={handleSearch} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Buscar partidas">
-              <FaSearch style={styles.icon} />
-              {menuAbierto && <span style={styles.buttonText}>Buscar partidas</span>}
-            </button>
-
-            <button onClick={handleAdd} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Añadir partidas">
-              <FaFileMedical style={styles.icon} />
-              {menuAbierto && <span style={styles.buttonText}>Añadir partidas</span>}
-            </button>
-
-            <button onClick={handleCorrect} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Corregir partidas">
-              <FaEdit style={styles.icon} />
-              {menuAbierto && <span style={styles.buttonText}>Corregir partidas</span>}
-            </button>
-
-            <button onClick={handlePrint} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Imprimir partidas">
-              <FaPrint style={styles.icon} />
-              {menuAbierto && <span style={styles.buttonText}>Imprimir partidas</span>}
-            </button>
+            {/* Botones de navegación */}
+            <div style={styles.sidebarButtons}>
+              <button onClick={handleViewRegistros} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Vista de Registros">
+                <FaFileAlt style={styles.icon} />
+                {menuAbierto && <span style={styles.buttonText}>Vista de Registros</span>}
+              </button>
+  
+              <button onClick={handleSearch} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Buscar partidas">
+                <FaSearch style={styles.icon} />
+                {menuAbierto && <span style={styles.buttonText}>Buscar partidas</span>}
+              </button>
+  
+              <button onClick={handleAdd} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Añadir partidas">
+                <FaFileMedical style={styles.icon} />
+                {menuAbierto && <span style={styles.buttonText}>Añadir partidas</span>}
+              </button>
+  
+              <button onClick={handleCorrect} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Corregir partidas">
+                <FaEdit style={styles.icon} />
+                {menuAbierto && <span style={styles.buttonText}>Corregir partidas</span>}
+              </button>
+  
+              <button onClick={handlePrint} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Imprimir partidas">
+                <FaPrint style={styles.icon} />
+                {menuAbierto && <span style={styles.buttonText}>Imprimir partidas</span>}
+              </button>
             </div>
-         
-
-          {/* Botón "Atrás" al final del menú */}
-          <button onClick={handleBack} style={styles.backButton} title="Atrás">
-            <FaArrowLeft style={styles.icon} />
-            {menuAbierto && <span style={styles.buttonText}>Atrás</span>}
-          </button>
-        </div>
-      </nav>
-
+  
+            {/* Botón "Atrás" al final del menú */}
+            <button onClick={handleBack} style={styles.backButton} title="Atrás">
+              <FaArrowLeft style={styles.icon} />
+              {menuAbierto && <span style={styles.buttonText}>Atrás</span>}
+            </button>
+          </div>
+        </nav>
+  
         {/* Contenido principal */}
         <main
           style={{
             ...styles.content,
             marginLeft: menuAbierto ? "250px" : "50px",
-            padding: menuAbierto ? "1rem" : "1rem",   
+            padding: menuAbierto ? "1.5rem" : "1.5rem",
             transition: "margin-left 0.2s ease-in-out",
+            overflow: "auto",
+            height: "calc(100vh - 70px)", // Ajusta la altura del contenido
           }}
         >
           {/* Selector de tipo de evento */}
@@ -217,7 +223,7 @@ function Registros() {
               <option value="Defunción">Defunciones</option>
             </select>
           </div>
-
+  
           {/* Tabla de registros */}
           <div style={styles.tableContainer}>
             <table style={styles.table}>
@@ -254,7 +260,7 @@ function Registros() {
         </main>
       </div>
     </div>
-  )
+  );
 }
 
 const styles = {
@@ -275,7 +281,7 @@ const styles = {
   },
   headerLogo: {
     height: "60px",
-    marginRight: '800px', // Espacio entre el logo y el título
+    marginRight: '800px',
   },
   headerTitle: {
     margin: 0,
@@ -284,12 +290,12 @@ const styles = {
   },
   logoutButton: {
     backgroundColor: "#FF000F",
-    color: "black",
+    color: "white",
     border: "none",
-    padding: "0.5rem 1rem",
+    padding: "0.5rem 1.5rem",
     borderRadius: "0.5rem",
     cursor: "pointer",
-    marginRight: "1rem",
+    marginRight: "1.5rem",
   },
   userInfo: {
     display: "flex",
@@ -318,32 +324,22 @@ const styles = {
   mainContent: {
     display: "flex",
     flex: 1,
-    overflow: "hidden",
-    
+    position: "relative",
+    overflow: "hidden",   
   },
   sidebar: {
     backgroundColor: "#f8f9fa",
     display: "flex",
     flexDirection: "column",
-    height: "calc(100vh - 60px)",
+    height: "calc(100vh - 70px)",
     position: "fixed",
     left: 0,
-    zIndex: 5,
-    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-    gap: "0.5rem",
+    zIndex: 1000,
+    boxShadow: "3px 0 8px rgba(0,0,0,0.15)",
+    gap: "0.8rem",
     with: "100%",
     minWidth: "70px",
-   
-  },
-  sidebarHeaderButton: {
-    backgroundColor: "#808080",
-    color: "white",
-    border: "none",
-    padding: "0.75rem",
-    borderRadius: "0.5rem",
-    cursor: "pointer",
-    textAlign: "left",
-    fontSize: "15px",
+    borderRight: "1px solid #e0e0e0",
   },
   sidebarButtonsContainer: {
     display: "flex",
@@ -351,14 +347,11 @@ const styles = {
     justifyContent: "space-between",
     height: "calc(100% - 50px)", // Restar la altura del botón de toggle
     overflow: "hidden",
-    "& button:hover": {
-      backgroundColor: "#FFD79C",
-    },
   },
   sidebarButtons: {
     display: "flex",
     flexDirection: "column",
-    gap: "0.5rem",
+    gap: "1.1rem",
     overflow: "auto",
     "& button": {
       backgroundColor: "#FCCE74",
@@ -374,7 +367,7 @@ const styles = {
     padding: "8px",
     border: "none",
     borderRadius: "0 16px 16px 0",
-    backgroundColor: "#FFE4B5",
+    backgroundColor: "#FCCE74",
     cursor: "pointer",
     textAlign: "left",
     color: "#202124",
@@ -382,28 +375,32 @@ const styles = {
     whiteSpace: "nowrap",
     overflow: "hidden",
     position: "relative",
-    width: "100%", // Ensure consistent width
-    minHeight: "40px", // Consistent height for all buttons
+    width: "100%", 
+    minHeight: "40px", 
   
   },
   menuToggleButton: {
-    backgroundColor: "#FFE4B5",
+    backgroundColor: "#FCCE74",
     color: "#6c757d",
     border: "none",
     borderRadius: "50%",
-    width: "36px",
-    height: "36px",
+    width: "45px",
+    height: "45px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     cursor: "pointer",
     alignSelf: "center",
     marginBottom: "1rem",
-    padding: 0,
+    top: "5rem",
+    left: "1rem",
+    zIndex: 100,
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
   },
   backButton: {
     display: "flex",
     alignItems: "center",
+    justifyContent: "center",
     gap: "0.5rem",
     padding: "8px",
     border: "none",
@@ -416,26 +413,35 @@ const styles = {
     whiteSpace: "nowrap",
     overflow: "hidden",
     position: "relative",
-    width: "100%", // Ensure consistent width
-    minHeight: "40px", // Consistent height for all buttons
+    width: "100%", 
+    minHeight: "40px", 
   },
   content: {
     flex: 1,
-    padding: "2rem",
+    padding: "1.5rem",
     overflow: "auto",
+    height: "calc(100vh - 70px)",
   },
   filtroContainer: {
+    alignItems: "center",
     marginBottom: "20px",	
     marginLeft: '0.5rem',
-    fontSize: '1.2rem',
+    fontSize: '1rem',
     fontWeight: '600',
     display: 'flex',
+    gap: '0rem',
+  },
+  label: {
+    fontSize: '1.2rem',
+    fontWeight: '600',
+    marginLeft: '0.5rem',
+    color: '#6c757d',
   },
   select: {
     padding: '0.5rem',
     fontSize: '1rem',
     borderRadius: '0.5rem',
-    marginBottom: '0.5rem',
+    border: '1px solid #ced4da',
     marginLeft: '1rem',
     width: '220px',
     fontWeight: '550',
@@ -445,10 +451,17 @@ const styles = {
     borderRadius: "8px",
     boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
     overflow: "hidden",
+    marginBottom: "20px",
+    marginLeft: '1rem',
+    fontSize: '1rem',
+    fontWeight: '600',
+   
   },
   table: {
     width: "100%",
     borderCollapse: "collapse",
+    fontSize: "1rem",
+    fontWeight: "500",
   },
   th: {
     backgroundColor: "#f8f9fa",
