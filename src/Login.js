@@ -119,9 +119,7 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     height: "100%",
-    width: "50%", // Asigna un ancho fijo
-
-    
+    width: "50%", // Asigna un ancho fijo 
   },
   logo: {
     width: "100%",
@@ -135,7 +133,7 @@ const styles = {
     backgroundColor: 'white',
     padding: '3rem', // Unidad relativa (rem)
     marginLeft: '-80px',
-    borderRadius: '8px',
+    borderRadius: '1.5rem',
     boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
     width: '50%',
     maxWidth: '400px', // Ancho máximo del formulario

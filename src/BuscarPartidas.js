@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "./AuthContext"
 import logo from "./logo.png"
@@ -13,13 +13,15 @@ import { FaFileAlt,
   FaBars,
   FaSignOutAlt, } from "react-icons/fa"
 
-function Registros() {
+function BuscarPartidas() {
 
   const navigate = useNavigate()
   const { user, logout } = useAuth()
-  const [eventoSeleccionado, setEventoSeleccionado] = useState('Todos');
+  const [registrosFiltrados, setRegistrosFiltrados] = useState([]);
   const [menuAbierto, setMenuAbierto] = useState(false)
   const [isSubmenuOpen, setIsSubmenuOpen] = useState(false)
+  const [showResults, setShowResults] = useState(false)
+  const [searchCedula, setSearchCedula] = useState("")
   
   // Datos de ejemplo para la tabla
   const [registros] = useState([
@@ -70,10 +72,6 @@ function Registros() {
     },
   ])
 
-  const registrosFiltrados = eventoSeleccionado === 'Todos'
-  ? registros
-  : registros.filter(registro => registro.evento === eventoSeleccionado);
-
   const toggleMenu = () => {
     setMenuAbierto(!menuAbierto)
     if (!menuAbierto) {
@@ -95,9 +93,23 @@ function Registros() {
     navigate("/Principal")
   }
 
-  const handleSearch = () => {
-    navigate("/buscarPartidas")
+  const handleSearch = (e) => {
+    e.preventDefault()
+    setShowResults(true) // Mostrar resultados solo después de buscar
+    console.log("Buscando cédula:", searchCedula)
   }
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    const resultados = registros.filter(registro => 
+      registro.cedula.includes(searchCedula.trim())
+    );
+    setRegistrosFiltrados(resultados);
+  };
+
+  useEffect(() => {
+    if (!searchCedula) setRegistrosFiltrados([]);
+  }, [searchCedula]);
 
   const handleAdd = () => {
     navigate("/añadirPartidas")
@@ -117,7 +129,7 @@ function Registros() {
       {/* Barra superior */}
       <header style={styles.header}>
         <img src={logo || "/logo.png"} alt="Logo" style={styles.headerLogo} />
-        <h1 style={styles.headerTitle}>Vista de Registros</h1>
+        <h1 style={styles.headerTitle}>Busqueda de Partidas</h1>
         <button onClick={handleLogout} style={styles.logoutButton}>
           <FaSignOutAlt style={styles.iconLogout} />
           Salir
@@ -201,64 +213,70 @@ function Registros() {
           }}
         >
           {/* Selector de tipo de evento */}
-          <div style={styles.filtroContainer}>
-            <label htmlFor="evento" style={styles.label}>
-              Seleccionar tipo de evento:
-            </label>
-            <select
-              id="evento"
-              value={eventoSeleccionado}
-              onChange={(e) => setEventoSeleccionado(e.target.value)}
-              style={styles.select}
-            >
-              <option value="Todos">Todos</option>
-              <option value="Bautismo">Bautizos</option>
-              <option value="Confirmación">Confirmaciones</option>
-              <option value="Primera Comunión">Primeras Comuniones</option>
-              <option value="Matrimonio">Matrimonios</option>
-              <option value="Defunción">Defunciones</option>
-            </select>
+          <form onSubmit={handleSearchSubmit} style={styles.searchForm}>
+          <div style={styles.searchSection}>
+              <label style={styles.searchLabel}>Digite el número de cédula:</label>
+              <div style={styles.searchInputContainer}>
+                <input
+                  type="text"
+                  value={searchCedula}
+                  onChange={(e) => setSearchCedula(e.target.value)}
+                  style={styles.searchInput}  
+                />
+                <button type="submit" style={styles.searchButton}title="Buscar">
+                  <FaSearch style={styles.searchIcon} />
+                </button>
+              </div>
           </div>
+            </form>
   
-          {/* Tabla de registros */}
-          <div style={styles.tableContainer}>
-            <table style={styles.table}>
-              <thead>
-                <tr>
-                  <th style={styles.th}>Id</th>
-                  <th style={styles.th}>Apellidos y Nombres</th>
-                  <th style={styles.th}>Cedula</th>
-                  <th style={styles.th}>Libro</th>
-                  <th style={styles.th}>Folio</th>
-                  <th style={styles.th}>Acta</th>
-                  <th style={styles.th}>Evento</th>
-                  <th style={styles.th}>Fecha</th>
-                  <th style={styles.th}>Sacerdote</th>
-                </tr>
-              </thead>
-              <tbody>
-                {registrosFiltrados.map((registro) => (
-                  <tr key={registro.id} style={styles.tr}>
-                    <td style={styles.td}>{registro.id}</td>
-                    <td style={styles.td}>{registro.nombre}</td>
-                    <td style={styles.td}>{registro.cedula}</td>
-                    <td style={styles.td}>{registro.libro}</td>
-                    <td style={styles.td}>{registro.folio}</td>
-                    <td style={styles.td}>{registro.acta}</td>
-                    <td style={styles.td}>{registro.evento}</td>
-                    <td style={styles.td}>{registro.fecha}</td>
-                    <td style={styles.td}>{registro.sacerdote}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </main>
+            {/* Tabla de registros */}
+            {searchCedula && (
+              <div style={styles.tableContainer}>
+                {registrosFiltrados.length > 0 ? (
+                <table style={styles.table}>
+                  <thead>
+                    <tr>
+                      <th style={styles.th}>Id</th>
+                      <th style={styles.th}>Apellidos y Nombres</th>
+                      <th style={styles.th}>Cedula</th>
+                      <th style={styles.th}>Libro</th>
+                      <th style={styles.th}>Folio</th>
+                      <th style={styles.th}>Acta</th>
+                      <th style={styles.th}>Evento</th>
+                      <th style={styles.th}>Fecha</th>
+                      <th style={styles.th}>Sacerdote</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {registrosFiltrados.map((registro, index) => (
+                        <tr key={registro.id} style={index % 2 === 0 ? styles.tr : styles.trAlternate}>
+                        <td style={styles.td}>{registro.id}</td>
+                        <td style={styles.td}>{registro.nombre}</td>
+                        <td style={styles.td}>{registro.cedula}</td>
+                        <td style={styles.td}>{registro.libro}</td>
+                        <td style={styles.td}>{registro.folio}</td>
+                        <td style={styles.td}>{registro.acta}</td>
+                        <td style={styles.td}>{registro.evento}</td>
+                        <td style={styles.td}>{registro.fecha}</td>
+                        <td style={styles.td}>{registro.sacerdote}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                ) : (
+                  <div style={styles.noResults}>
+                    No se encontraron resultados para la búsqueda.
+                  </div>
+                )}
+              </div>
+            )}
+          </main>
+        </div>
       </div>
-    </div>
+    
   );
 }
-
 const styles = {
   container: {
     display: "flex",
@@ -451,14 +469,64 @@ const styles = {
     marginLeft: '0.5rem',
     color: '#6c757d',
   },
-  select: {
-    padding: '0.5rem',
-    fontSize: '1rem',
-    borderRadius: '0.5rem',
-    border: '1px solid #ced4da',
-    marginLeft: '1rem',
-    width: '220px',
-    fontWeight: '550',
+  searchSection: {
+    padding: "0.5rem",
+    display: "flex",
+    alignItems: "center",
+    gap: "1rem",
+    marginBottom: "1rem",
+  },
+  searchLabel: {
+    fontSize: '1.2rem',
+    fontWeight: '600',
+    marginLeft: '0.5rem',
+    color: '#6c757d',
+    whiteSpace: "nowrap",
+    margin: 0,
+  },
+  searchForm: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "0.5rem",
+    width: "100%",
+    maxWidth: "500px",
+  },
+  searchInputContainer: {
+    display: "flex",
+    alignItems: "center",
+    position: "relative",
+    flex: 1,
+  },
+  searchInput: {
+    padding: "0.5rem 1rem",
+    borderRadius: "0.5rem",
+    border: "1px solid #ced4da",
+    fontSize: "1rem",
+    width: "100%",
+    paddingRight: "40px",
+  },
+  searchButton: {
+    position: "absolute",
+    right: "0",
+    top: "0",
+    transform: "translateY(-50%)",
+    background: "none",
+    border: "none",
+    padding: "0.5rem",
+    cursor: "pointer",
+  },
+  noResults: {
+    fontSize: "1.5rem",
+    fontWeight: "600",
+    color: "#000000",
+    textAlign: "center",  
+    width: "100%",
+    marginTop: "20px",
+  },
+  searchIcon: {
+    width: "18px",
+    height: "18px",
+    color: "#000000",
   },
   tableContainer: {
     backgroundColor: "white",
@@ -467,11 +535,11 @@ const styles = {
     overflow: "hidden",
     marginBottom: "20px",
     marginLeft: '1rem',
+    marginTop: '1.5rem',
     fontSize: '1rem',
     fontWeight: '600',
     overflowX: "auto",
   },
-
   table: {
     width: "100%",
     borderCollapse: "collapse",
@@ -495,5 +563,5 @@ const styles = {
   },
 }
 
-export default Registros
+export default BuscarPartidas
 

@@ -1,8 +1,9 @@
 import { useAuth } from "./AuthContext"
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import logo from "./logo.png" // Asegúrate de tener el logo en esta ubicación
-import logocentral from "./logocentral.png" // Asegúrate de tener el logo en esta ubicación
+import logo from "./logo.png" 
+import user from "./user.png"
+import logocentral from "./logocentral.png" 
 import { FaFileAlt,
   FaSearch,
   FaFileMedical,
@@ -40,13 +41,11 @@ function Principal() {
 
   // Funciones para los botones
   const handleSearch = () => {
-    console.log("Función de búsqueda")
-    // Implementa la lógica de búsqueda aquí
+    navigate("/buscarPartidas")
   }
 
   const handleAdd = () => {
-    console.log("Función para añadir")
-    // Implementa la lógica para añadir aquí
+    navigate("/añadirPartidas")
   }
 
   const handleCorrect = () => {
@@ -77,7 +76,7 @@ function Principal() {
         <img src={logo || "/placeholder.svg"} alt="Logo" style={styles.logo} />
         <h1 style={styles.headerTitle}>Basílica Menor de San Luis Gonzaga</h1>
         <div style={styles.userInfo}>
-          <img src="/user-icon.png" alt="Usuario" style={styles.userIcon} />
+          <img src="/user.png" alt="Usuario" style={styles.userIcon} />
           <div style={styles.userText}>
             <span>{user?.name || "Nombre Usuario"}</span>
             <span style={styles.roleText}>{user?.role || "Rol"} </span>
@@ -87,31 +86,34 @@ function Principal() {
 
       {/* Contenido principal */}
       <div style={styles.mainContent}>
+        
         {/* Menú lateral */}
-        <nav style={styles.sidebar}>
+        <nav style={styles.sidebar}> 
+          
           {/* Botones principales */}
           <div style={styles.sidebarButtons}>
-            <div style={styles.sidebarHeader} onClick={handleViewRegistros} className="clickable-header">
-              <FaFileAlt style={styles.headerIcon} />
-              <span>Vista de Registros</span>
-            </div>
+
+          <button onClick={handleViewRegistros} style={{ ...styles.sidebarButton}} title="Vista de Registros de Partidas">
+              <FaFileAlt style={styles.buttonIcon} />
+              {<span style={styles.buttonText}>Vista de Registros</span>}
+            </button>
 
             <button onClick={handleSearch} style={{ ...styles.sidebarButton}} title="Buscar partidas">
               <FaSearch style={styles.buttonIcon} />
-              <span>Buscar partidas</span>
+              {<span style={styles.buttonText}>Buscar partidas</span>}
             </button>
 
             <button onClick={handleAdd} style={{ ...styles.sidebarButton}} title="Añadir partidas">
               <FaFileMedical style={styles.buttonIcon} />
-              <span>Añadir partidas</span>
+              {<span style={styles.buttonText}>Añadir partidas</span>}
             </button>
 
             <button onClick={handleCorrect} style={{ ...styles.sidebarButton}} title="Corregir partidas">
               <FaEdit style={styles.buttonIcon} />
-              <span>Corregir partidas</span>
+              {<span style={styles.buttonText}>Corregir partidas</span>}
             </button>
 
-            <button onClick={handlePrint} style={{ ...styles.sidebarButton, justifyItems: "center"}} title="Imprimir partidas">
+            <button onClick={handlePrint} style={{ ...styles.sidebarButton}} title="Imprimir partidas">
               <FaPrint style={styles.buttonIcon} />
               {<span style={styles.buttonText}>Imprimir partidas</span>}
             </button>
@@ -121,12 +123,10 @@ function Principal() {
           <div style={{ flex: 1 }}></div>
 
           {/* Botones inferiores */}
-          <div style={styles.bottomButtons}>
             <button onClick={handleLogout} style={{ ...styles.logoutButton}}>
               <FaSignOutAlt style={styles.buttonIcon} />
-              <span>Salir</span>
+              {<span style={styles.buttonText}> Salir</span>}
             </button>
-          </div>
         </nav>
 
         {/* Área de contenido */}
@@ -195,70 +195,60 @@ const styles = {
     flexDirection: "column",
     gap: "0.5rem",
     with: "100%",
-    minWidth: "250px",
-    maxWidth: "300px",
-    
-  },
-  sidebarHeader: {
-    padding: "0.75rem",
-    backgroundColor: "#FCCE74",
-    color: "black",
-    borderRadius: "0.5rem",
-    fontSize: "15px",
+    height: "100%",
+    overflow: "auto",
+    boxShadow: "3px 0 8px rgba(0,0,0,0.15)",    
   },
   sidebarButton: {
-    margin: '8px 0',
+    display: "flex",
+    margin: '10px 0',
+    gap: "0rem",
     alignItems: "center",
-    justifyContent: "flex-start",
-    flexDirection: "column",
+    justifyContent: "center",
+    flexDirection: "row",
     padding: "0.75rem",
     border: "none",
-    borderRadius: "0.5rem",
+    borderRadius: "1rem",
     cursor: "pointer",
     textAlign: "left",
-    fontSize: "15px",
+    fontSize: "1rem",
     color: "black",
     backgroundColor: "#FCCE74",
     overflow: "hidden",
     position: "relative",
+    whiteSpace: "nowrap",
     width: "100%", 
-    minHeight: "40px", 
-    gap: "0.75rem",
-  },
-  buttonIcon: {
-    width: "18px", 
-    height: "18px",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    flex: 1,
-    flexShrink: 0, 
-    flexGrow: 0,
-    marginBottom: "0rem",
-  },
-  buttonText: {
-    fontSize: "15px",
-    flex: 1,
-    marginBottom: "0rem",
+    minHeight: "40px",
+    marginBottom: "1rem",
   },
   logoutButton: {
-    verticalAlign: "middle",
-    margin: '8px 0',
+    display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    flexDirection: "column",
+    flexDirection: "row",
+    gap: "0rem",
     padding: "0.75rem",
     border: "none",
-    borderRadius: "0.5rem",
+    borderRadius: "1rem",
     cursor: "pointer",
     textAlign: "left",
-    fontSize: "15px",
+    fontSize: "50px",
     color: "white",
     backgroundColor: "#FF000F",
+    whiteSpace: "nowrap",
     overflow: "hidden",
     position: "relative",
     width: "100%", 
     minHeight: "40px", 
-    gap: "0.75rem",
+  },
+  buttonIcon: {
+    width: "20px", 
+    height: "20px",
+    marginRight: "0.5rem",
+  },
+  buttonText: {
+    fontSize: "1rem",
+    flex: 1,
   },
   content: {
     flex: 1,

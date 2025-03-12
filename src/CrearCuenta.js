@@ -102,7 +102,7 @@ const styles = {
   card: {
     backgroundColor: 'white',
     padding: '2rem',
-    borderRadius: '8px',
+    borderRadius: '1.5rem',
     boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
     width: '100%',
     maxWidth: '400px',
