@@ -12,6 +12,7 @@ import { FaFileAlt,
   FaArrowLeft,
   FaBars,
   FaSignOutAlt, } from "react-icons/fa"
+import { TbMapX } from "react-icons/tb"
 
 function Registros() {
 
@@ -31,9 +32,19 @@ function Registros() {
       folio: "2",
       acta: "3",
       evento: "Bautismo",
-      fecha: "24/05/2004",
+      fechaEvento: "24/05/2024",
       sacerdote: "Juan Rodriguez",
-
+      fechaNacimiento: "24/05/2004",
+      lugarNacimiento: "Cucuta",
+      padre: "Angel Perez",
+      madre: "Maria Lopez",
+      abueloPaterno: "Pedro Gomez",
+      abueloMaterno: "Alfredo Ramirez",
+      abuelaPaterna: "Ana Gomez", 
+      abuelaMaterna: "Ana Ramirez",
+      padrino: "Pedro Gomez",
+      madrina: "Ana Ramirez",
+      estadoCivil: "Soltero",
     },
     {
       id: 2,
@@ -68,6 +79,226 @@ function Registros() {
       fecha: "23/7/2007",
       sacerdote: "Juan Perez",
     },
+    {
+      id: 5,
+      nombre: "Pedro Perez",
+      cedula: "1234567890",
+      libro: "1",
+      folio: "2",
+      acta: "3",
+      evento: "Bautismo",
+      fechaEvento: "24/05/2024",
+      sacerdote: "Juan Rodriguez",
+      fechaNacimiento: "24/05/2004",
+      lugarNacimiento: "Cucuta",
+      padre: "Angel Perez",
+      madre: "Maria Lopez",
+      abueloPaterno: "Pedro Gomez",
+      abueloMaterno: "Alfredo Ramirez",
+      abuelaPaterna: "Ana Gomez", 
+      abuelaMaterna: "Ana Ramirez",
+      padrino: "Pedro Gomez",
+      madrina: "Ana Ramirez",
+      estadoCivil: "Soltero",
+    },
+    {
+      id: 6,
+      nombre: "Martin Sanchez",
+      cedula: "0987654321",
+      libro: "2",
+      folio: "3",
+      acta: "3",
+      evento: "Matrimonio",
+      fecha: "15/04/2015",
+      sacerdote: "David Martinez",
+    },
+    {
+      id: 7,
+      nombre: "José Contreras",
+      cedula: "9876543210",
+      libro: "3",
+      folio: "4",
+      acta: "4",
+      evento: "Defunción",
+      fecha: "7/11/2010",
+      sacerdote: "Pedro Hernandez",
+    },
+    {
+      id: 8,
+      nombre: "Carlos Martinez",
+      cedula: "1234567890",
+      libro: "4",
+      folio: "5",
+      acta: "5",
+      evento: "Primera Comunión",
+      fecha: "23/7/2007",
+      sacerdote: "Juan Perez",
+    },
+    {
+      id: 9,
+      nombre: "Pedro Perez",
+      cedula: "1234567890",
+      libro: "1",
+      folio: "2",
+      acta: "3",
+      evento: "Bautismo",
+      fechaEvento: "24/05/2024",
+      sacerdote: "Juan Rodriguez",
+      fechaNacimiento: "24/05/2004",
+      lugarNacimiento: "Cucuta",
+      padre: "Angel Perez",
+      madre: "Maria Lopez",
+      abueloPaterno: "Pedro Gomez",
+      abueloMaterno: "Alfredo Ramirez",
+      abuelaPaterna: "Ana Gomez", 
+      abuelaMaterna: "Ana Ramirez",
+      padrino: "Pedro Gomez",
+      madrina: "Ana Ramirez",
+      estadoCivil: "Soltero",    
+    },
+    {
+      id: 10,
+      nombre: "Martin Sanchez",
+      cedula: "0987654321",
+      libro: "2",
+      folio: "3",
+      acta: "3",
+      evento: "Matrimonio",
+      fecha: "15/04/2015",
+      sacerdote: "David Martinez",    
+    },
+    {
+      id: 11,
+      nombre: "José Contreras",
+      cedula: "9876543210",
+      libro: "3",
+      folio: "4",
+      acta: "4",
+      evento: "Defunción",
+      fecha: "7/11/2010",
+      sacerdote: "Pedro Hernandez",    
+    },
+    {
+      id: 12,
+      nombre: "Carlos Martinez",
+      cedula: "1234567890",
+      libro: "4",
+      folio: "5",
+      acta: "5",
+      evento: "Primera Comunión",
+      fecha: "23/7/2007",
+      sacerdote: "Juan Perez",    
+    },
+    {
+      id: 13,
+      nombre: "Pedro Perez",
+      cedula: "1234567890",
+      libro: "1",
+      folio: "2",
+      acta: "3",
+      evento: "Bautismo",
+      fechaEvento: "24/05/2024",
+      sacerdote: "Juan Rodriguez",
+      fechaNacimiento: "24/05/2004",
+      lugarNacimiento: "Cucuta",
+      padre: "Angel Perez",
+      madre: "Maria Lopez",
+      abueloPaterno: "Pedro Gomez",
+      abueloMaterno: "Alfredo Ramirez",
+      abuelaPaterna: "Ana Gomez", 
+      abuelaMaterna: "Ana Ramirez",
+      padrino: "Pedro Gomez",
+      madrina: "Ana Ramirez",
+      estadoCivil: "Soltero",    
+    },
+    {
+      id: 14,
+      nombre: "Martin Sanchez",
+      cedula: "0987654321",
+      libro: "2",
+      folio: "3",
+      acta: "3",
+      evento: "Matrimonio",
+      fecha: "15/04/2015",
+      sacerdote: "David Martinez",    
+    },
+    {
+      id: 15,
+      nombre: "José Contreras",
+      cedula: "9876543210",
+      libro: "3",
+      folio: "4",
+      acta: "4",
+      evento: "Defunción",
+      fecha: "7/11/2010",
+      sacerdote: "Pedro Hernandez",    
+    },
+    {
+      id: 16,
+      nombre: "Carlos Martinez",
+      cedula: "1234567890",
+      libro: "4",
+      folio: "5",
+      acta: "5",
+      evento: "Primera Comunión",
+      fecha: "23/7/2007",
+      sacerdote: "Juan Perez",    
+    },
+    {
+      id: 17,
+      nombre: "Pedro Perez",
+      cedula: "1234567890",
+      libro: "1",
+      folio: "2",
+      acta: "3",
+      evento: "Bautismo",
+      fechaEvento: "24/05/2024",
+      sacerdote: "Juan Rodriguez",
+      fechaNacimiento: "24/05/2004",
+      lugarNacimiento: "Cucuta",
+      padre: "Angel Perez",
+      madre: "Maria Lopez",
+      abueloPaterno: "Pedro Gomez",
+      abueloMaterno: "Alfredo Ramirez",
+      abuelaPaterna: "Ana Gomez", 
+      abuelaMaterna: "Ana Ramirez",
+      padrino: "Pedro Gomez",
+      madrina: "Ana Ramirez",
+      estadoCivil: "Soltero",    
+    },    
+    {
+      id: 18,
+      nombre: "Martin Sanchez",
+      cedula: "0987654321",    
+      libro: "2",
+      folio: "3",
+      acta: "3",
+      evento: "Matrimonio",
+      fecha: "15/04/2015",
+      sacerdote: "David Martinez",    
+    },
+    {
+      id: 19,
+      nombre: "José Contreras",
+      cedula: "9876543210",
+      libro: "3",
+      folio: "4",
+      acta: "4",
+      evento: "Defunción",
+      fecha: "7/11/2010",
+      sacerdote: "Pedro Hernandez",    
+    },
+    {
+      id: 20,
+      nombre: "Carlos Martinez",
+      cedula: "1234567890",
+      libro: "4",
+      folio: "5",
+      acta: "5",
+      evento: "Primera Comunión",
+      fecha: "23/7/2007",
+      sacerdote: "Juan Perez",    
+    }, 
   ])
 
   const registrosFiltrados = eventoSeleccionado === 'Todos'
@@ -223,7 +454,7 @@ function Registros() {
           {/* Tabla de registros */}
           <div style={styles.tableContainer}>
             <table style={styles.table}>
-              <thead>
+              <thead style={styles.tableHeader}>
                 <tr>
                   <th style={styles.th}>Id</th>
                   <th style={styles.th}>Apellidos y Nombres</th>
@@ -232,11 +463,22 @@ function Registros() {
                   <th style={styles.th}>Folio</th>
                   <th style={styles.th}>Acta</th>
                   <th style={styles.th}>Evento</th>
-                  <th style={styles.th}>Fecha</th>
+                  <th style={styles.th}>Fecha Evento</th>
                   <th style={styles.th}>Sacerdote</th>
+                  <th style={styles.th}>Fecha Nacimiento</th>
+                  <th style={styles.th}>Lugar Nacimiento</th>
+                  <th style={styles.th}>Padre</th>
+                  <th style={styles.th}>Madre</th>
+                  <th style={styles.th}>Abuelo Paterno</th>
+                  <th style={styles.th}>Abuelo Materno</th>
+                  <th style={styles.th}>Abuela Paterna</th>
+                  <th style={styles.th}>Abuela Materna</th>
+                  <th style={styles.th}>Padrino</th>
+                  <th style={styles.th}>Madrina</th>
+                  <th style={styles.th}>Estado Civil</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody style={styles.tableBody}>
                 {registrosFiltrados.map((registro) => (
                   <tr key={registro.id} style={styles.tr}>
                     <td style={styles.td}>{registro.id}</td>
@@ -246,8 +488,19 @@ function Registros() {
                     <td style={styles.td}>{registro.folio}</td>
                     <td style={styles.td}>{registro.acta}</td>
                     <td style={styles.td}>{registro.evento}</td>
-                    <td style={styles.td}>{registro.fecha}</td>
+                    <td style={styles.td}>{registro.fechaEvento}</td>
                     <td style={styles.td}>{registro.sacerdote}</td>
+                    <td style={styles.td}>{registro.fechaNacimiento}</td>
+                    <td style={styles.td}>{registro.lugarNacimiento}</td>
+                    <td style={styles.td}>{registro.padre}</td>
+                    <td style={styles.td}>{registro.madre}</td>
+                    <td style={styles.td}>{registro.abueloPaterno}</td>
+                    <td style={styles.td}>{registro.abueloMaterno}</td>
+                    <td style={styles.td}>{registro.abuelaPaterna}</td>
+                    <td style={styles.td}>{registro.abuelaMaterna}</td>
+                    <td style={styles.td}>{registro.padrino}</td>
+                    <td style={styles.td}>{registro.madrina}</td>
+                    <td style={styles.td}>{registro.estadoCivil}</td>
                   </tr>
                 ))}
               </tbody>
@@ -327,7 +580,7 @@ const styles = {
     display: "flex",
     flex: 1,
     position: "relative",
-    overflow: "hidden",   
+    overflow: "hidden",
   },
   sidebar: {
     backgroundColor: "#f0f0f0",
@@ -372,12 +625,12 @@ const styles = {
     whiteSpace: "nowrap",
     overflow: "hidden",
     position: "relative",
-    width: "100%", 
-    minHeight: "40px", 
+    width: "100%",
+    minHeight: "40px",
   },
   menuToggleButton: {
     backgroundColor: "#FCCE74",
-    color: "#6c757d",
+    color: "black",
     border: "none",
     borderRadius: "50%",
     width: "45px",
@@ -433,12 +686,15 @@ const styles = {
   content: {
     flex: 1,
     padding: "1.5rem",
+    position: "relative",
     overflow: "auto",
+    marginLeft: "200px",
+    backgroundColor: "#FFFFFF",
     height: "calc(100vh - 70px)",
   },
   filtroContainer: {
     alignItems: "center",
-    marginBottom: "20px",	
+    marginBottom: "15px",	
     marginLeft: '0.5rem',
     fontSize: '1rem',
     fontWeight: '600',
@@ -449,7 +705,7 @@ const styles = {
     fontSize: '1.2rem',
     fontWeight: '600',
     marginLeft: '0.5rem',
-    color: '#6c757d',
+    color: '#000000',
   },
   select: {
     padding: '0.5rem',
@@ -461,37 +717,71 @@ const styles = {
     fontWeight: '550',
   },
   tableContainer: {
-    backgroundColor: "white",
-    borderRadius: "8px",
-    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-    overflow: "hidden",
+    backgroundColor: "black",
+    borderRadius: "0.5rem",
+    border: "1px solid #000000",
+    boxShadow: "none",
+    overflow: "auto",
     marginBottom: "20px",
     marginLeft: '1rem',
     fontSize: '1rem',
     fontWeight: '600',
     overflowX: "auto",
+    maxHeight: "calc(100vh - 200px)",
   },
 
   table: {
     width: "100%",
     borderCollapse: "collapse",
+    border: "1px solid #000000",
+    borderBottom: "1px solid #000000",
     fontSize: "1rem",
-    fontWeight: "500",
+    fontWeight: "600",
+    overflowX: "auto",
+  },
+  tableHeader: {
+    position: "sticky",
+    top: 0,
+    backgroundColor: "#FCCE74",
+    zIndex: 1,
+  },
+  tableBody: {
+    overflowY: "auto",
   },
   th: {
-    backgroundColor: "#f8f9fa",
+    backgroundColor: "#FCCE74",
     padding: "1rem",
-    textAlign: "left",
-    borderBottom: "2px solid #dee2e6",
+    textAlign: "center",
+    border: "1px solid #000000",
+    borderBottom: "1px solid #000000",
     fontWeight: "600",
-    fontSize: "0.875rem",
+    fontSize: "1rem",
+    minWidth: "100px",
+    overflow: "auto",
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
   },
-  tr: {
-    borderBottom: "1px solid #dee2e6",
+  tr:{
+    backgroundColor: "#FFFFFF",
+    borderBottom: "1px solid #000000",
+    border: "1px solid #000000",
+    textAlign: "center",
+    overflow: "auto",
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
   },
   td: {
-    padding: "1rem",
+    backgroundColor: "white",
+    padding: "12px",
     verticalAlign: "middle",
+    border: "1px solid #000000",
+    borderBottom: "1px solid #000000",
+    textAlign: "center",
+    fontSize: "1rem",
+    fontWeight: "600",
+    overflow: "auto",
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
   },
 }
 

@@ -209,7 +209,8 @@ function BuscarPartidas() {
             padding: menuAbierto ? "1.5rem" : "1.5rem",
             transition: "margin-left 0.2s ease-in-out",
             overflow: "auto",
-            height: "calc(100vh - 70px)", // Ajusta la altura del contenido
+            height: "calc(100vh - 70px)",
+            position: "relative",
           }}
         >
           {/* Selector de tipo de evento */}
@@ -233,7 +234,11 @@ function BuscarPartidas() {
             {/* Tabla de registros */}
             {searchCedula && (
               <div style={styles.tableContainer}>
-                {registrosFiltrados.length > 0 ? (
+                {registrosFiltrados.length === 0 ? (
+                <div style={styles.noResultsContainer}>
+                  <span style={styles.noResultsText}>No se encontraron registros..</span>
+                </div>
+              ) : (
                 <table style={styles.table}>
                   <thead>
                     <tr>
@@ -264,11 +269,7 @@ function BuscarPartidas() {
                     ))}
                   </tbody>
                 </table>
-                ) : (
-                  <div style={styles.noResults}>
-                    No se encontraron resultados para la búsqueda.
-                  </div>
-                )}
+              )}
               </div>
             )}
           </main>
@@ -345,7 +346,7 @@ const styles = {
     display: "flex",
     flex: 1,
     position: "relative",
-    overflow: "hidden",   
+    overflow: "hidden",
   },
   sidebar: {
     backgroundColor: "#f0f0f0",
@@ -395,7 +396,7 @@ const styles = {
   },
   menuToggleButton: {
     backgroundColor: "#FCCE74",
-    color: "#6c757d",
+    color: "#000000",
     border: "none",
     borderRadius: "50%",
     width: "45px",
@@ -480,7 +481,7 @@ const styles = {
     fontSize: '1.2rem',
     fontWeight: '600',
     marginLeft: '0.5rem',
-    color: '#6c757d',
+    color: '#000000',
     whiteSpace: "nowrap",
     margin: 0,
   },
@@ -515,13 +516,19 @@ const styles = {
     padding: "0.5rem",
     cursor: "pointer",
   },
-  noResults: {
-    fontSize: "1.5rem",
-    fontWeight: "600",
-    color: "#000000",
-    textAlign: "center",  
+  noResultsContainer: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    textAlign: "center",
     width: "100%",
-    marginTop: "20px",
+  },
+  noResultsText: {
+    fontSize: "1.2rem",
+    color: "#000000",
+    fontStyle: "italic",
+    whiteSpace: "nowrap",
   },
   searchIcon: {
     width: "18px",
@@ -529,37 +536,70 @@ const styles = {
     color: "#000000",
   },
   tableContainer: {
-    backgroundColor: "white",
-    borderRadius: "8px",
-    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-    overflow: "hidden",
+    backgroundColor: "whitesmoke",
+    borderRadius: "0.5rem",
+    boxShadow: "none",
+    overflow: "auto",
     marginBottom: "20px",
     marginLeft: '1rem',
-    marginTop: '1.5rem',
     fontSize: '1rem',
     fontWeight: '600',
     overflowX: "auto",
+    maxHeight: "calc(100vh - 200px)",
   },
+
   table: {
     width: "100%",
     borderCollapse: "collapse",
+    border: "1px solid #000000",
+    borderBottom: "1px solid #000000",
     fontSize: "1rem",
-    fontWeight: "500",
+    fontWeight: "600",
+    overflowX: "auto",
+  },
+  tableHeader: {
+    position: "sticky",
+    top: 0,
+    backgroundColor: "#FCCE74",
+    zIndex: 1,
+  },
+  tableBody: {
+    overflowY: "auto",
   },
   th: {
-    backgroundColor: "#f8f9fa",
+    backgroundColor: "#FCCE74",
     padding: "1rem",
-    textAlign: "left",
-    borderBottom: "2px solid #dee2e6",
+    textAlign: "center",
+    border: "1px solid #000000",
+    borderBottom: "1px solid #000000",
     fontWeight: "600",
-    fontSize: "0.875rem",
+    fontSize: "1rem",
+    minWidth: "100px",
+    overflow: "auto",
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
   },
-  tr: {
-    borderBottom: "1px solid #dee2e6",
+  tr:{
+    backgroundColor: "#FFFFFF",
+    borderBottom: "1px solid #000000",
+    border: "1px solid #000000",
+    textAlign: "center",
+    overflow: "auto",
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
   },
   td: {
+    backgroundColor: "#FFFFFF",
     padding: "1rem",
     verticalAlign: "middle",
+    border: "1px solid #000000",
+    borderBottom: "1px solid #000000",
+    textAlign: "center",
+    fontSize: "1rem",
+    fontWeight: "600",
+    overflow: "auto",
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
   },
 }
 

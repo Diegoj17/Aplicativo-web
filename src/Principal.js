@@ -159,7 +159,8 @@ const styles = {
   headerTitle: {
     margin: 0,
     fontSize: "1.5rem",
-    fontWeight: "normal",
+    fontWeight: "600",
+    
   },
   userInfo: {
     display: "flex",
