@@ -174,22 +174,22 @@ function BuscarPartidas() {
   
               <button onClick={handleSearch} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Buscar partidas">
                 <FaSearch style={styles.icon} />
-                {menuAbierto && <span style={styles.buttonText}>Buscar partidas</span>}
+                {menuAbierto && <span style={styles.buttonText}>Buscar Partidas</span>}
               </button>
   
               <button onClick={handleAdd} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Añadir partidas">
                 <FaFileMedical style={styles.icon} />
-                {menuAbierto && <span style={styles.buttonText}>Añadir partidas</span>}
+                {menuAbierto && <span style={styles.buttonText}>Añadir Partidas</span>}
               </button>
   
               <button onClick={handleCorrect} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Corregir partidas">
                 <FaEdit style={styles.icon} />
-                {menuAbierto && <span style={styles.buttonText}>Corregir partidas</span>}
+                {menuAbierto && <span style={styles.buttonText}>Corregir Partidas</span>}
               </button>
   
               <button onClick={handlePrint} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Imprimir partidas">
                 <FaPrint style={styles.icon} />
-                {menuAbierto && <span style={styles.buttonText}>Imprimir partidas</span>}
+                {menuAbierto && <span style={styles.buttonText}>Imprimir Partidas</span>}
               </button>
             </div>
   
@@ -243,28 +243,39 @@ function BuscarPartidas() {
                   <thead>
                     <tr>
                       <th style={styles.th}>Id</th>
-                      <th style={styles.th}>Apellidos y Nombres</th>
-                      <th style={styles.th}>Cedula</th>
+                      <th style={styles.th}>Primer Nombre</th>
+                      <th style={styles.th}>Segundo Nombre</th>
+                      <th style={styles.th}>Primer Apellido</th>
+                      <th style={styles.th}>Segundo Apellido</th>
                       <th style={styles.th}>Libro</th>
                       <th style={styles.th}>Folio</th>
                       <th style={styles.th}>Acta</th>
-                      <th style={styles.th}>Evento</th>
-                      <th style={styles.th}>Fecha</th>
-                      <th style={styles.th}>Sacerdote</th>
+                      <th style={styles.th}>Padre</th>
+                      <th style={styles.th}>Madre</th>
+                      <th style={styles.th}>Abuelo Paterno</th>
+                      <th style={styles.th}>Abuelo Materno</th>
+                      <th style={styles.th}>Abuela Paterna</th>
+                      <th style={styles.th}>Abuela Materna</th>
                     </tr>
                   </thead>
                   <tbody>
                     {registrosFiltrados.map((registro, index) => (
                         <tr key={registro.id} style={index % 2 === 0 ? styles.tr : styles.trAlternate}>
                         <td style={styles.td}>{registro.id}</td>
-                        <td style={styles.td}>{registro.nombre}</td>
-                        <td style={styles.td}>{registro.cedula}</td>
+                        <td style={styles.td}>{registro.primerNombre}</td>
+                        <td style={styles.td}>{registro.segundoNombre}</td>
+                        <td style={styles.td}>{registro.primerApellido}</td>
+                        <td style={styles.td}>{registro.segundoApellido}</td>
                         <td style={styles.td}>{registro.libro}</td>
                         <td style={styles.td}>{registro.folio}</td>
                         <td style={styles.td}>{registro.acta}</td>
-                        <td style={styles.td}>{registro.evento}</td>
-                        <td style={styles.td}>{registro.fecha}</td>
-                        <td style={styles.td}>{registro.sacerdote}</td>
+                        <td style={styles.td}>{registro.padre}</td>
+                        <td style={styles.td}>{registro.madre}</td>
+                        <td style={styles.td}>{registro.abueloPaterno}</td>
+                        <td style={styles.td}>{registro.abueloMaterno}</td>
+                        <td style={styles.td}>{registro.abuelaPaterna}</td>
+                        <td style={styles.td}>{registro.abuelaMaterna}</td>
+                        
                       </tr>
                     ))}
                   </tbody>

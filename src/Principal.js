@@ -100,22 +100,17 @@ function Principal() {
 
             <button onClick={handleSearch} style={{ ...styles.sidebarButton}} title="Buscar partidas">
               <FaSearch style={styles.buttonIcon} />
-              {<span style={styles.buttonText}>Buscar partidas</span>}
+              {<span style={styles.buttonText}>Buscar Partidas</span>}
             </button>
 
             <button onClick={handleAdd} style={{ ...styles.sidebarButton}} title="Añadir partidas">
               <FaFileMedical style={styles.buttonIcon} />
-              {<span style={styles.buttonText}>Añadir partidas</span>}
+              {<span style={styles.buttonText}>Añadir Partidas</span>}
             </button>
 
             <button onClick={handleCorrect} style={{ ...styles.sidebarButton}} title="Corregir partidas">
               <FaEdit style={styles.buttonIcon} />
-              {<span style={styles.buttonText}>Corregir partidas</span>}
-            </button>
-
-            <button onClick={handlePrint} style={{ ...styles.sidebarButton}} title="Imprimir partidas">
-              <FaPrint style={styles.buttonIcon} />
-              {<span style={styles.buttonText}>Imprimir partidas</span>}
+              {<span style={styles.buttonText}>Corregir Partidas</span>}
             </button>
           </div>
 

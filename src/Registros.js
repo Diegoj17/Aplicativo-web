@@ -393,22 +393,22 @@ function Registros() {
   
               <button onClick={handleSearch} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Buscar partidas">
                 <FaSearch style={styles.icon} />
-                {menuAbierto && <span style={styles.buttonText}>Buscar partidas</span>}
+                {menuAbierto && <span style={styles.buttonText}>Buscar Partidas</span>}
               </button>
   
               <button onClick={handleAdd} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Añadir partidas">
                 <FaFileMedical style={styles.icon} />
-                {menuAbierto && <span style={styles.buttonText}>Añadir partidas</span>}
+                {menuAbierto && <span style={styles.buttonText}>Añadir Partidas</span>}
               </button>
   
               <button onClick={handleCorrect} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Corregir partidas">
                 <FaEdit style={styles.icon} />
-                {menuAbierto && <span style={styles.buttonText}>Corregir partidas</span>}
+                {menuAbierto && <span style={styles.buttonText}>Corregir Partidas</span>}
               </button>
   
               <button onClick={handlePrint} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Imprimir partidas">
                 <FaPrint style={styles.icon} />
-                {menuAbierto && <span style={styles.buttonText}>Imprimir partidas</span>}
+                {menuAbierto && <span style={styles.buttonText}>Imprimir Partidas</span>}
               </button>
             </div>
   
@@ -434,7 +434,7 @@ function Registros() {
           {/* Selector de tipo de evento */}
           <div style={styles.filtroContainer}>
             <label htmlFor="evento" style={styles.label}>
-              Seleccionar tipo de evento:
+              Seleccionar Tipo de Ceremonia:
             </label>
             <select
               id="evento"
@@ -445,9 +445,7 @@ function Registros() {
               <option value="Todos">Todos</option>
               <option value="Bautismo">Bautizos</option>
               <option value="Confirmación">Confirmaciones</option>
-              <option value="Primera Comunión">Primeras Comuniones</option>
               <option value="Matrimonio">Matrimonios</option>
-              <option value="Defunción">Defunciones</option>
             </select>
           </div>
   
@@ -457,13 +455,15 @@ function Registros() {
               <thead style={styles.tableHeader}>
                 <tr>
                   <th style={styles.th}>Id</th>
-                  <th style={styles.th}>Apellidos y Nombres</th>
-                  <th style={styles.th}>Cedula</th>
+                  <th style={styles.th}>Primer Nombre</th>
+                  <th style={styles.th}>Segundo Nombre</th>
+                  <th style={styles.th}>Primer Apellido</th>
+                  <th style={styles.th}>Segundo Apellido</th>
                   <th style={styles.th}>Libro</th>
                   <th style={styles.th}>Folio</th>
                   <th style={styles.th}>Acta</th>
                   <th style={styles.th}>Evento</th>
-                  <th style={styles.th}>Fecha Evento</th>
+                  <th style={styles.th}>Fecha Ceremonia</th>
                   <th style={styles.th}>Sacerdote</th>
                   <th style={styles.th}>Fecha Nacimiento</th>
                   <th style={styles.th}>Lugar Nacimiento</th>
@@ -475,20 +475,21 @@ function Registros() {
                   <th style={styles.th}>Abuela Materna</th>
                   <th style={styles.th}>Padrino</th>
                   <th style={styles.th}>Madrina</th>
-                  <th style={styles.th}>Estado Civil</th>
                 </tr>
               </thead>
               <tbody style={styles.tableBody}>
                 {registrosFiltrados.map((registro) => (
                   <tr key={registro.id} style={styles.tr}>
                     <td style={styles.td}>{registro.id}</td>
-                    <td style={styles.td}>{registro.nombre}</td>
-                    <td style={styles.td}>{registro.cedula}</td>
+                    <td style={styles.td}>{registro.primerNombre}</td>
+                    <td style={styles.td}>{registro.segundoNombre}</td>
+                    <td style={styles.td}>{registro.primerApellido}</td>
+                    <td style={styles.td}>{registro.segundoApellido}</td>
                     <td style={styles.td}>{registro.libro}</td>
                     <td style={styles.td}>{registro.folio}</td>
                     <td style={styles.td}>{registro.acta}</td>
                     <td style={styles.td}>{registro.evento}</td>
-                    <td style={styles.td}>{registro.fechaEvento}</td>
+                    <td style={styles.td}>{registro.fechaCeremonia}</td>
                     <td style={styles.td}>{registro.sacerdote}</td>
                     <td style={styles.td}>{registro.fechaNacimiento}</td>
                     <td style={styles.td}>{registro.lugarNacimiento}</td>
@@ -500,7 +501,6 @@ function Registros() {
                     <td style={styles.td}>{registro.abuelaMaterna}</td>
                     <td style={styles.td}>{registro.padrino}</td>
                     <td style={styles.td}>{registro.madrina}</td>
-                    <td style={styles.td}>{registro.estadoCivil}</td>
                   </tr>
                 ))}
               </tbody>
