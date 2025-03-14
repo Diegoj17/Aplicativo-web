@@ -12,7 +12,10 @@ import { FaFileAlt,
   FaChevronDown,
   FaArrowLeft,
   FaBars,
-  FaSignOutAlt, } from "react-icons/fa"
+  FaSignOutAlt,
+  FaListAlt,
+  FaAddressBook,
+  FaAddressCard, } from "react-icons/fa"
 
 function AñadirPartidas() {
 
@@ -219,15 +222,6 @@ function AñadirPartidas() {
                 <FaEdit style={styles.icon} />
                 {menuAbierto && <span style={styles.buttonText}>Corregir partidas</span>}
               </button>
-
-              <button
-                onClick={handlePrint}
-                style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }}
-                title="Imprimir partidas"
-              >
-                <FaPrint style={styles.icon} />
-                {menuAbierto && <span style={styles.buttonText}>Imprimir partidas</span>}
-              </button>
             </div>
 
             {/* Botón "Atrás" al final del menú */}
@@ -267,16 +261,16 @@ function AñadirPartidas() {
           <form onSubmit={handleSubmit} style={styles.form}>
             {/* Datos de registro */}
             <div style={styles.formSection}>
-              <h2 style={styles.sectionTitle}>Datos de registro</h2>
+              <h2 style={styles.sectionTitle}>Datos de Registro</h2>
               <div style={styles.formRow}>
-                <div style={styles.formGroup}>
+                <div style={styles.formGroupReg}>
                   <label style={styles.formLabel}>Libro</label>
                   <input
                     type="text"
                     name="libro"
                     value={formData.libro}
                     onChange={handleChange}
-                    style={styles.formInput}
+                    style={styles.formRegistro}
                   />
                 </div>
                 <div style={styles.formGroup}>
@@ -286,7 +280,7 @@ function AñadirPartidas() {
                     name="folio"
                     value={formData.folio}
                     onChange={handleChange}
-                    style={styles.formInput}
+                    style={styles.formRegistro}
                   />
                 </div>
                 <div style={styles.formGroup}>
@@ -296,13 +290,13 @@ function AñadirPartidas() {
                     name="acta"
                     value={formData.acta}
                     onChange={handleChange}
-                    style={styles.formInput}
+                    style={styles.formRegistro}
                   />
                 </div>
                 <div style={styles.formRow}>
                 <div style={styles.formGroup}>
                   <label style={styles.formLabel}>Fecha de la Ceremonia de Bautizo</label>
-                  <div style={styles.dateInputs}>
+                  <div style={styles.dateCeremonia}>
                     <input
                       type="text"
                       name="fechaCeremonia.dia"
@@ -335,7 +329,7 @@ function AñadirPartidas() {
 
             {/* Datos del oficiante */}
             <div style={styles.formSection}>
-              <h2 style={styles.sectionTitle}>Datos del oficiante</h2>
+              <h2 style={styles.sectionTitle}>Datos del Oficiante</h2>
               <div style={styles.formRow}>
                 <div style={styles.formGroup}>
                   <label style={styles.formLabel}>Sacramento Oficiado Por</label>
@@ -362,7 +356,7 @@ function AñadirPartidas() {
 
             {/* Datos del bautizado */}
             <div style={styles.formSection}>
-              <h2 style={styles.sectionTitle}>Datos del bautizado</h2>
+              <h2 style={styles.sectionTitle}>Datos del Bautizado</h2>
               <div style={styles.formRow}>
                 <div style={styles.formGroup}>
                   <label style={styles.formLabel}>Primer Nombre</label>
@@ -452,10 +446,10 @@ function AñadirPartidas() {
 
             {/* Datos anexos */}
             <div style={styles.formSection}>
-              <h2 style={styles.sectionTitle}>Datos anexos</h2>
+              <h2 style={styles.sectionTitle}>Datos Anexos</h2>
               <div style={styles.formRow}>
                 <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Nombre del padre</label>
+                  <label style={styles.formLabel}>Nombres del Padre</label>
                   <input
                     type="text"
                     name="nombrePadre"
@@ -465,7 +459,7 @@ function AñadirPartidas() {
                   />
                 </div>
                 <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Nombre de la madre</label>
+                  <label style={styles.formLabel}>Nombres de la Madre</label>
                   <input
                     type="text"
                     name="nombreMadre"
@@ -477,7 +471,7 @@ function AñadirPartidas() {
               </div>
               <div style={styles.formRow}>
                 <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Nombre de abuelo paterno</label>
+                  <label style={styles.formLabel}>Nombres de Abuelo Paterno</label>
                   <input
                     type="text"
                     name="abueloPaterno"
@@ -487,7 +481,7 @@ function AñadirPartidas() {
                   />
                 </div>
                 <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Nombre de abuela paterna</label>
+                  <label style={styles.formLabel}>Nombres de Abuela Paterna</label>
                   <input
                     type="text"
                     name="abuelaPaterna"
@@ -499,7 +493,7 @@ function AñadirPartidas() {
               </div>
               <div style={styles.formRow}>
                 <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Nombre de abuelo materno</label>
+                  <label style={styles.formLabel}>Nombres de Abuelo Materno</label>
                   <input
                     type="text"
                     name="abueloMaterno"
@@ -509,7 +503,7 @@ function AñadirPartidas() {
                   />
                 </div>
                 <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Nombre de abuela materna</label>
+                  <label style={styles.formLabel}>Nombres de Abuela Materna</label>
                   <input
                     type="text"
                     name="abuelaMaterna"
@@ -521,7 +515,7 @@ function AñadirPartidas() {
               </div>
               <div style={styles.formRow}>
                 <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Nombre del padrino (ó padrinos)</label>
+                  <label style={styles.formLabel}>Nombres del padrino (ó padrinos)</label>
                   <input
                     type="text"
                     name="padrino"
@@ -531,7 +525,7 @@ function AñadirPartidas() {
                   />
                 </div>
                 <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Nombre de la madrina (ó madrinas)</label>
+                  <label style={styles.formLabel}>Nombres de la madrina (ó madrinas)</label>
                   <input
                     type="text"
                     name="madrina"
@@ -543,67 +537,13 @@ function AñadirPartidas() {
               </div>
               <div style={styles.formRow}>
                 <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Estado Civil</label>
-                  <div style={styles.checkboxContainer}>
-                    <select
-                      name="estadoCivilPadre"
-                      value={formData.estadoCivilPadre}
-                      onChange={handleChange}
-                      style={styles.formSelect}
-                    >
-                      <option value="Ninguno">Ninguno</option>
-                      <option value="Soltero">Soltero</option>
-                      <option value="Casado">Casado</option>
-                      <option value="Viudo">Viudo</option>
-                    </select>
-                    <div style={styles.checkboxGroup}>
-                      <input
-                        type="checkbox"
-                        name="confirmadoPadre"
-                        checked={formData.confirmadoPadre}
-                        onChange={handleChange}
-                        style={styles.checkbox}
-                      />
-                      <label style={styles.checkboxLabel}>Confirmado</label>
-                    </div>
-                  </div>
-                </div>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Estado Civil</label>
-                  <div style={styles.checkboxContainer}>
-                    <select
-                      name="estadoCivilMadre"
-                      value={formData.estadoCivilMadre}
-                      onChange={handleChange}
-                      style={styles.formSelect}
-                    >
-                      <option value="Ninguno">Ninguno</option>
-                      <option value="Soltero">Soltero</option>
-                      <option value="Casado">Casado</option>
-                      <option value="Viudo">Viudo</option>
-                    </select>
-                    <div style={styles.checkboxGroup}>
-                      <input
-                        type="checkbox"
-                        name="confirmadoMadre"
-                        checked={formData.confirmadoMadre}
-                        onChange={handleChange}
-                        style={styles.checkbox}
-                      />
-                      <label style={styles.checkboxLabel}>Confirmado</label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div style={styles.formRow}>
-                <div style={styles.formGroup}>
                   <label style={styles.formLabel}>Nota Marginal</label>
                   <input
                     type="text"
                     name="notaMarginal"
                     value={formData.notaMarginal}
                     onChange={handleChange}
-                    style={styles.formInput}
+                    style={styles.formNota}
                   />
                 </div>
               </div>
@@ -611,11 +551,13 @@ function AñadirPartidas() {
 
             {/* Botones */}
             <div style={styles.buttonContainer}>
-              <button type="button" onClick={handleBack} style={styles.cancelButton}>
-                Salir
+              <button onClick={handleCorrect} style={{ ...styles.sidebarButton}} title="Revisar Lista">
+                <FaListAlt style={styles.buttonIcon} />
+                {<span style={styles.buttonText}>Revisar Lista</span>}
               </button>
-              <button type="submit" style={styles.submitButton}>
-                Aceptar
+              <button onClick={handleCorrect} style={{ ...styles.sidebarButton}} title="Agregar Lista">
+                <FaFileMedical style={styles.buttonIcon} />
+                {<span style={styles.buttonText}>Agregar Lista</span>}
               </button>
             </div>
           </form>
@@ -645,7 +587,7 @@ const styles = {
       marginRight: '800px',
     },
     headerTitle: {
-      margin: 0,
+      margin: -90,
       flex: 1,
       fontSize: "1.5rem",
     },
@@ -722,6 +664,24 @@ const styles = {
       overflow: "auto",
       height: "100%",
     },
+    sidebarButton: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: "0.5rem",
+      padding: "0.75rem",
+      border: "none",
+      borderRadius: "0.5rem",
+      backgroundColor: "#FCCE74",
+      cursor: "pointer",
+      textAlign: "left",
+      color: "#202124",
+      transition: "background-color 0.2s",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      position: "relative",
+      minHeight: "40px",
+    },
     sidebarIconButton: {
       display: "flex",
       alignItems: "center",
@@ -737,8 +697,8 @@ const styles = {
       whiteSpace: "nowrap",
       overflow: "hidden",
       position: "relative",
-      width: "100%", 
-      minHeight: "40px", 
+      width: "100%",
+      minHeight: "40px",
     },
     menuToggleButton: {
       backgroundColor: "#FCCE74",
@@ -828,15 +788,15 @@ const styles = {
 
     form: {
       backgroundColor: "#fff",
-      borderRadius: "8px",
-      padding: "20px",
+      borderRadius: "0.5rem",
+      padding: "1rem",
       boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
     },
     formSection: {
-      marginBottom: "20px",
-      padding: "15px",
-      border: "1px solid #e0e0e0",
-      borderRadius: "8px",
+      marginBottom: "10px",
+      padding: "1rem",
+      border: "1px solid #000000",
+      borderRadius: "0.5rem",
       backgroundColor: "#f9f9f9",
     },
     sectionTitle: {
@@ -852,33 +812,87 @@ const styles = {
       marginBottom: "15px",
     },
     formGroup: {
-      flex: "1 1 300px",
+      flex: "1 0 100px",
+    },
+    formGroupReg: {
+      flex: "1 1 70px",
+      marginLeft: "0",
     },
     formLabel: {
       display: "block",
       marginBottom: "5px",
-      fontSize: "0.9rem",
+      fontSize: "1rem",
       fontWeight: "500",
-      color: "#333",
+      color: "#000000",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      textTransform: "capitalize",
     },
     formInput: {
       width: "100%",
-      padding: "8px 12px",
+      padding: "0.5rem",
       border: "1px solid #ced4da",
-      borderRadius: "4px",
-      fontSize: "0.9rem",
+      borderRadius: "0.5rem",
+      fontSize: "1rem",
+    },
+    formNota: {
+      display: "block",
+      width: "100%",
+      padding: "0.5rem",
+      border: "1px solid #ced4da",
+      borderRadius: "0.5rem",
+      fontSize: "1rem",
+      marginBottom: "10px",
+      color: "#000000",
+      fontWeight: "500",
+      minHeight: "100px",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      resize: "vertical",
+      verticalAlign: "top",
+      alignItems: "flex-start",
+    },
+    formRegistro: {
+      display: "block",
+      width: "50%",
+      padding: "0.5rem",
+      border: "1px solid #ced4da",
+      borderRadius: "0.5rem",
+      fontSize: "1rem",
+      textAlign: "center",
+      color: "#000000",
+      fontWeight: "500",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      textTransform: "capitalize",
     },
     dateInputs: {
       display: "flex",
-      gap: "10px",
+      width: "30%",
+      gap: "0.5rem",
+    },
+    dateCeremonia: {
+      display: "flex",
+      width: "50%",
+      gap: "0.5rem",
     },
     dateInput: {
       flex: "1",
-      padding: "8px 12px",
+      width: "20%",
+      padding: "0.5rem",
       border: "1px solid #ced4da",
-      borderRadius: "4px",
-      fontSize: "0.9rem",
+      borderRadius: "0.5rem",
+      fontSize: "1rem",
       textAlign: "center",
+      color: "#000000",
+      fontWeight: "500",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      textTransform: "capitalize",
     },
     checkboxContainer: {
       display: "flex",
@@ -908,14 +922,10 @@ const styles = {
       gap: "15px",
       marginTop: "20px",
     },
-    cancelButton: {
-      padding: "10px 20px",
-      backgroundColor: "#dc3545",
-      color: "white",
-      border: "none",
-      borderRadius: "4px",
-      cursor: "pointer",
-      fontSize: "1rem",
+    buttonIcon: {
+      width: "18px",
+      height: "18px",
+      fill: "black",
     },
     submitButton: {
       padding: "10px 20px",
