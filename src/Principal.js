@@ -74,7 +74,7 @@ function Principal() {
       {/* Barra superior */}
       <header style={styles.header}>
         <img src={logo || "/placeholder.svg"} alt="Logo" style={styles.logo} />
-        <h1 style={styles.headerTitle}>Basílica Menor de San Luis Gonzaga</h1>
+        <h1 style={styles.headerTitle}>Parroquia San Luis Gonzaga</h1>
         <div style={styles.userInfo}>
           <img src="/user.png" alt="Usuario" style={styles.userIcon} />
           <div style={styles.userText}>
