@@ -12,6 +12,7 @@ import { FaFileAlt,
   FaArrowLeft,
   FaBars,
   FaSignOutAlt, } from "react-icons/fa"
+  import Layout from './Layout';
 
 function BuscarPartidas() {
 
@@ -22,6 +23,8 @@ function BuscarPartidas() {
   const [isSubmenuOpen, setIsSubmenuOpen] = useState(false)
   const [showResults, setShowResults] = useState(false)
   const [searchCedula, setSearchCedula] = useState("")
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [printFormat, setPrintFormat] = useState("corto");
   
   // Datos de ejemplo para la tabla
   const [registros] = useState([
@@ -120,11 +123,134 @@ function BuscarPartidas() {
   }
 
   const handlePrint = () => {
-    console.log("Imprimir partidas")
-  }
+    const selectedRecord = registrosFiltrados.find(r => r.id === selectedRow);
+    
+    const formatos = {
+      corto: [
+        'primerNombre', 'segundoNombre', 
+        'primerApellido', 'segundoApellido',
+        'libro', 'folio', 'acta'
+      ],
+      largo: Object.keys(selectedRecord)
+    };
+  
+    const camposImpresion = formatos[printFormat];
+    
+    const printWindow = window.open("", "_blank");
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Partida de ${selectedRecord.primerNombre}</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            .header { 
+              border-bottom: 2px solid #000; 
+              margin-bottom: 20px;
+              padding-bottom: 10px;
+            }
+            table { border-collapse: collapse; width: 100%; }
+            td, th { border: 1px solid #ddd; padding: 8px; }
+            th { background-color: #f2f2f2; }
+            .formato-corto td { padding: 12px; font-size: 14px; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h2>${printFormat === 'corto' ? 'Certificado Resumido' : 'Certificado Completo'}</h2>
+            <p>Emitido: ${new Date().toLocaleDateString()}</p>
+          </div>
+  
+          <table class="${printFormat}">
+            <tbody>
+              ${camposImpresion.map(key => `
+                <tr>
+                  <th>${key.replace(/([A-Z])/g, ' $1').toUpperCase()}</th>
+                  <td>${selectedRecord[key] || 'N/A'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          
+          ${printFormat === 'corto' ? `
+            <div style="margin-top: 30px; text-align: right;">
+              <p>_________________________</p>
+              <p>Firma autorizada</p>
+            </div>
+          ` : ''}
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  };
 
+  const handlePrint2 = () => {
+    const selectedRecord = registrosFiltrados.find(r => r.id === selectedRow);
+    
+    const formatos = {
+      corto: [
+        'primerNombre', 'segundoNombre', 
+        'primerApellido', 'segundoApellido',
+        'libro', 'folio', 'acta'
+      ],
+      largo: Object.keys(selectedRecord)
+    };
+  
+    const camposImpresion = formatos[printFormat];
+    
+    const printWindow = window.open("", "_blank");
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Partida de ${selectedRecord.primerNombre}</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            .header { 
+              border-bottom: 2px solid #000; 
+              margin-bottom: 20px;
+              padding-bottom: 10px;
+            }
+            table { border-collapse: collapse; width: 100%; }
+            td, th { border: 1px solid #ddd; padding: 8px; }
+            th { background-color: #f2f2f2; }
+            .formato-corto td { padding: 12px; font-size: 14px; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h2>${printFormat === 'corto' ? 'Certificado Resumido' : 'Certificado Completo'}</h2>
+            <p>Emitido: ${new Date().toLocaleDateString()}</p>
+          </div>
+  
+          <table class="${printFormat}">
+            <tbody>
+              ${camposImpresion.map(key => `
+                <tr>
+                  <th>${key.replace(/([A-Z])/g, ' $1').toUpperCase()}</th>
+                  <td>${selectedRecord[key] || 'N/A'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          
+          ${printFormat === 'corto' ? `
+            <div style="margin-top: 30px; text-align: right;">
+              <p>_________________________</p>
+              <p>Firma autorizada</p>
+            </div>
+          ` : ''}
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  };
+  
 
   return (
+
+    <Layout pageTitle="Buscar Partidas">
+      {/* Contenido de la vista */}
     <div style={styles.container}>
       {/* Barra superior */}
       <header style={styles.header}>
@@ -186,11 +312,6 @@ function BuscarPartidas() {
                 <FaEdit style={styles.icon} />
                 {menuAbierto && <span style={styles.buttonText}>Corregir Partidas</span>}
               </button>
-  
-              <button onClick={handlePrint} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Imprimir partidas">
-                <FaPrint style={styles.icon} />
-                {menuAbierto && <span style={styles.buttonText}>Imprimir Partidas</span>}
-              </button>
             </div>
   
             {/* Botón "Atrás" al final del menú */}
@@ -215,21 +336,33 @@ function BuscarPartidas() {
         >
           {/* Selector de tipo de evento */}
           <form onSubmit={handleSearchSubmit} style={styles.searchForm}>
-          <div style={styles.searchSection}>
-              <label style={styles.searchLabel}>Digite el número de cédula:</label>
-              <div style={styles.searchInputContainer}>
-                <input
+            <div style={styles.searchSection}>
+              <div style={styles.searchLeft}>
+                <label style={styles.searchLabel}>Digite los Nombres o Apellidos:</label>
+                <div style={styles.searchInputContainer}>
+                  <input
                   type="text"
                   value={searchCedula}
                   onChange={(e) => setSearchCedula(e.target.value)}
-                  style={styles.searchInput}  
-                />
-                <button type="submit" style={styles.searchButton}title="Buscar">
-                  <FaSearch style={styles.searchIcon} />
+                  style={styles.searchInput}
+                  />
+                  <button type="submit" style={styles.searchButton} title="Buscar">
+                    <FaSearch style={styles.searchIcon} />
+                  </button>
+                </div>
+              </div>
+              <div style={styles.printControls}>
+                <button onClick={() => handlePrint('corto')} style={styles.printButton} disabled={!selectedRow} title="Imprimir Formato Corto">
+                <FaPrint style={styles.iconPrint} />
+                {<span style={styles.buttonText}>Imprimir Formato Corto</span>}
+                </button>
+                <button onClick={() => handlePrint2('largo')} style={styles.printButton} disabled={!selectedRow} title="Imprimir Formato Largo">
+                <FaPrint style={styles.iconPrint} />
+                {<span style={styles.buttonText}>Imprimir Formato Largo</span>}
                 </button>
               </div>
-          </div>
-            </form>
+            </div>
+          </form>
   
             {/* Tabla de registros */}
             {searchCedula && (
@@ -242,6 +375,7 @@ function BuscarPartidas() {
                 <table style={styles.table}>
                   <thead>
                     <tr>
+                      
                       <th style={styles.th}>Id</th>
                       <th style={styles.th}>Primer Nombre</th>
                       <th style={styles.th}>Segundo Nombre</th>
@@ -260,7 +394,10 @@ function BuscarPartidas() {
                   </thead>
                   <tbody>
                     {registrosFiltrados.map((registro, index) => (
-                        <tr key={registro.id} style={index % 2 === 0 ? styles.tr : styles.trAlternate}>
+                        <tr key={registro.id} style={{...(index % 2 === 0 ? styles.tr : styles.trAlternate),
+                          backgroundColor: selectedRow === registro.id ? "#e3f2fd" : "inherit",
+                          cursor: "pointer"}} onClick={() => setSelectedRow(registro.id)}>
+                        
                         <td style={styles.td}>{registro.id}</td>
                         <td style={styles.td}>{registro.primerNombre}</td>
                         <td style={styles.td}>{registro.segundoNombre}</td>
@@ -286,7 +423,7 @@ function BuscarPartidas() {
           </main>
         </div>
       </div>
-    
+      </Layout>
   );
 }
 const styles = {
@@ -310,9 +447,10 @@ const styles = {
     marginRight: '800px',
   },
   headerTitle: {
-    margin: 0,
+    margin: -90,
     flex: 1,
     fontSize: "1.5rem",
+    fontWeight: "600",
   },
   icon: {
     width: "18px",
@@ -328,6 +466,12 @@ const styles = {
     width: "20px",
     height: "20px",
     fill: "white",
+  },
+  iconPrint: {
+    width: "18px",
+    height: "18px",
+    fill: "black",
+    marginRight: "0.5rem"
   },
   userInfo: {
     display: "flex",
@@ -402,8 +546,8 @@ const styles = {
     whiteSpace: "nowrap",
     overflow: "hidden",
     position: "relative",
-    width: "100%", 
-    minHeight: "40px", 
+    width: "100%",
+    minHeight: "40px",
   },
   menuToggleButton: {
     backgroundColor: "#FCCE74",
@@ -457,8 +601,39 @@ const styles = {
     whiteSpace: "nowrap",
     overflow: "hidden",
     position: "relative",
-    width: "100%", 
-    minHeight: "40px", 
+    width: "100%",
+    minHeight: "40px",
+  },
+  printControls: {
+    display: "flex",
+    gap: "1rem",
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: "auto",
+  },
+  printButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FCCE74",
+    color: "black",
+    border: "none",
+    borderRadius: "0.5rem",
+    padding: "0.5rem 1rem",
+    fontSize: "1rem",
+    height: "40px",
+    whiteSpace: "nowrap",
+    marginLeft: "auto",
+    marginBottom: "0.5rem",
+    transition: "all 0.3s",
+    opacity: props => props.disabled ? 0.5 : 1,
+    cursor: props => props.disabled ? "not-allowed" : "pointer",
+    '&:hover': {
+      backgroundColor: "#2a4274"
+    },
+    '&:disabled': {
+      opacity: 0.5,
+      cursor: "not-allowed"
+    }
   },
   content: {
     flex: 1,
@@ -468,7 +643,7 @@ const styles = {
   },
   filtroContainer: {
     alignItems: "center",
-    marginBottom: "20px",	
+    marginBottom: "20px",
     marginLeft: '0.5rem',
     fontSize: '1rem',
     fontWeight: '600',
@@ -482,11 +657,15 @@ const styles = {
     color: '#6c757d',
   },
   searchSection: {
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: "0.5rem",
     display: "flex",
-    alignItems: "center",
-    gap: "1rem",
-    marginBottom: "1rem",
+    gap: "38rem",
+    marginBottom: "0.5rem",
+    whiteSpace: "nowrap",
+    margin: 0,
+    width: "100%",
   },
   searchLabel: {
     fontSize: '1.2rem',
@@ -499,15 +678,17 @@ const styles = {
   searchForm: {
     display: "flex",
     flexDirection: "column",
-    gap: "0.5rem",
+    gap: "1rem",
     width: "100%",
-    maxWidth: "500px",
+    maxWidth: "700px",
   },
   searchInputContainer: {
     display: "flex",
     alignItems: "center",
     position: "relative",
     flex: 1,
+    minWidth: "400px",
+    maxWidth: "800px",
   },
   searchInput: {
     padding: "0.5rem 1rem",
@@ -526,7 +707,19 @@ const styles = {
     border: "none",
     padding: "0.5rem",
     cursor: "pointer",
+    color: "#000000",
+    fontSize: "1rem",
+    fontWeight: "600",
+    borderRadius: "0.5rem",
   },
+  searchLeft: {
+    display: "flex",
+    alignItems: "center",
+    gap: "1rem",
+    flex: 1,
+    maxWidth: "70%",
+  },
+
   noResultsContainer: {
     position: "absolute",
     top: "50%",
@@ -598,6 +791,10 @@ const styles = {
     overflow: "auto",
     whiteSpace: "nowrap",
     textOverflow: "ellipsis",
+    transition: "background-color 0.2s",
+    '&:hover': {
+      backgroundColor: "#f5f5f5",
+    },
   },
   td: {
     backgroundColor: "#FFFFFF",

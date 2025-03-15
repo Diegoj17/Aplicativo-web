@@ -10,7 +10,7 @@ import { AuthProvider } from "./AuthContext"
 import ProtectedRoute from "./ProtectedRoute"
 import AñadirPartidas from './AñadirPartidas';
 import BuscarPartidas from './BuscarPartidas';
-
+import Layout from './Layout';
 
 function App() {
   return (
@@ -19,13 +19,15 @@ function App() {
         <ScrollableContainer>
           <Routes>
             <Route path="/" element={<Login />} />
-            <Route path="/recuperar-contraseña" element={<RecuperarContraseña />} />
-            <Route path="/crear-cuenta" element={<CrearCuenta />} />
+            <Route path="/recuperar-contraseña" element={<Layout pageTitle="Recuperar Contraseña"><RecuperarContraseña /></Layout>} />
+            <Route path="/crear-cuenta" element={<Layout pageTitle="Crear Cuenta"><CrearCuenta /></Layout>} />
             <Route
               path="/Principal"
               element={
                 <ProtectedRoute>
-                  <Principal />
+                  <Layout pageTitle="Panel Principal">
+                    <Principal />
+                  </Layout>
                 </ProtectedRoute>
               }
               />
@@ -33,7 +35,9 @@ function App() {
             path="/registros"
             element={
               <ProtectedRoute>
-                <Registros />
+                <Layout pageTitle="Registros">
+                    <Registros />
+                  </Layout>
               </ProtectedRoute>
             } 
           />
@@ -41,7 +45,10 @@ function App() {
             path="/buscarPartidas"
             element={
               <ProtectedRoute>
-                <BuscarPartidas />
+                <Layout pageTitle="Buscar Partidas">
+                    <BuscarPartidas />
+                  </Layout>
+
               </ProtectedRoute>
             }
           /> 
@@ -49,10 +56,12 @@ function App() {
             path="/añadirPartidas"
             element={
               <ProtectedRoute>
-                <AñadirPartidas />
+                <Layout pageTitle="Añadir Partidas">
+                    <AñadirPartidas />
+                  </Layout>
               </ProtectedRoute>
             }
-          /> 
+          />
             
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

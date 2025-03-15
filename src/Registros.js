@@ -6,13 +6,11 @@ import { FaFileAlt,
   FaSearch,
   FaFileMedical,
   FaEdit,
-  FaPrint,
   FaChevronRight,
-  FaChevronDown,
   FaArrowLeft,
   FaBars,
   FaSignOutAlt, } from "react-icons/fa"
-import { TbMapX } from "react-icons/tb"
+import Layout from './Layout';
 
 function Registros() {
 
@@ -95,7 +93,7 @@ function Registros() {
       madre: "Maria Lopez",
       abueloPaterno: "Pedro Gomez",
       abueloMaterno: "Alfredo Ramirez",
-      abuelaPaterna: "Ana Gomez", 
+      abuelaPaterna: "Ana Gomez",
       abuelaMaterna: "Ana Ramirez",
       padrino: "Pedro Gomez",
       madrina: "Ana Ramirez",
@@ -316,7 +314,6 @@ function Registros() {
     navigate("/registros")
   }
 
-
   const handleLogout = () => {
     logout()
     navigate("/")
@@ -338,12 +335,12 @@ function Registros() {
     console.log("Corregir partida")
   }
 
-  const handlePrint = () => {
-    console.log("Imprimir partidas")
-  }
-
-
+  
   return (
+
+    <Layout pageTitle="Registros">
+      {/* Contenido de la vista */}
+
     <div style={styles.container}>
       {/* Barra superior */}
       <header style={styles.header}>
@@ -405,11 +402,6 @@ function Registros() {
                 <FaEdit style={styles.icon} />
                 {menuAbierto && <span style={styles.buttonText}>Corregir Partidas</span>}
               </button>
-  
-              <button onClick={handlePrint} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Imprimir partidas">
-                <FaPrint style={styles.icon} />
-                {menuAbierto && <span style={styles.buttonText}>Imprimir Partidas</span>}
-              </button>
             </div>
   
             {/* Botón "Atrás" al final del menú */}
@@ -462,7 +454,7 @@ function Registros() {
                   <th style={styles.th}>Libro</th>
                   <th style={styles.th}>Folio</th>
                   <th style={styles.th}>Acta</th>
-                  <th style={styles.th}>Evento</th>
+                  <th style={styles.th}>Ceremonia</th>
                   <th style={styles.th}>Fecha Ceremonia</th>
                   <th style={styles.th}>Sacerdote</th>
                   <th style={styles.th}>Fecha Nacimiento</th>
@@ -488,7 +480,7 @@ function Registros() {
                     <td style={styles.td}>{registro.libro}</td>
                     <td style={styles.td}>{registro.folio}</td>
                     <td style={styles.td}>{registro.acta}</td>
-                    <td style={styles.td}>{registro.evento}</td>
+                    <td style={styles.td}>{registro.ceremonia}</td>
                     <td style={styles.td}>{registro.fechaCeremonia}</td>
                     <td style={styles.td}>{registro.sacerdote}</td>
                     <td style={styles.td}>{registro.fechaNacimiento}</td>
@@ -509,6 +501,7 @@ function Registros() {
         </main>
       </div>
     </div>
+    </Layout>
   );
 }
 
@@ -533,9 +526,10 @@ const styles = {
     marginRight: '800px',
   },
   headerTitle: {
-    margin: 0,
+    margin: -90,
     flex: 1,
     fontSize: "1.5rem",
+    fontWeight: "600",
   },
   icon: {
     width: "18px",

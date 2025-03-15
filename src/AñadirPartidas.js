@@ -1,115 +1,228 @@
+"use client"
+
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "./AuthContext"
 import logo from "./logo.png"
+import ComboBox from "./ComboBox"
 
-import { FaFileAlt,
+import {
+  FaFileAlt,
   FaSearch,
   FaFileMedical,
   FaEdit,
-  FaPrint,
   FaChevronRight,
-  FaChevronDown,
   FaArrowLeft,
   FaBars,
   FaSignOutAlt,
   FaListAlt,
-  FaAddressBook,
-  FaAddressCard, } from "react-icons/fa"
+} from "react-icons/fa"
 
 function AñadirPartidas() {
+  const navigate = useNavigate()
+  const { user, logout } = useAuth()
+  const [eventoSeleccionado, setEventoSeleccionado] = useState("")
+  const [menuAbierto, setMenuAbierto] = useState(false)
+  const [isSubmenuOpen, setIsSubmenuOpen] = useState(false)
 
-    const navigate = useNavigate()
-    const { user, logout } = useAuth()
-    const [eventoSeleccionado, setEventoSeleccionado] = useState('Todos');
-    const [menuAbierto, setMenuAbierto] = useState(false)
-    const [isSubmenuOpen, setIsSubmenuOpen] = useState(false)
-    
-    const registros = []; // Define the registros array
-    const registrosFiltrados = eventoSeleccionado === 'Todos'
-    ? registros
-    : registros.filter(registro => registro.evento === eventoSeleccionado);
+  // Lista de sacerdotes/oficiantes para el ComboBox
+  const sacerdotes = [
+    "Padre José Martínez",
+    "Padre Antonio López",
+    "Padre Miguel Ángel Pérez",
+    "Padre Francisco Rodríguez",
+    "Padre Juan Carlos Gómez",
+  ]
 
-  const toggleMenu = () => {
-    setMenuAbierto(!menuAbierto)
-    if (!menuAbierto) {
-      setIsSubmenuOpen(false)
-    }
-  }
+  // Lista de testigos para el ComboBox
+  const testigos = ["María González", "Juan Pérez", "Ana Rodríguez", "Carlos Sánchez", "Laura Martínez"]
 
-  const [formData, setFormData] = useState({
-    // Registry data
+  // Lista de monseñores para el ComboBox
+  const monseñores = ["Monseñor Pedro Gómez", "Monseñor Luis Fernández", "Monseñor Carlos Herrera"]
+
+  const ciudadesColombia = [
+    "Bogotá",
+    "Medellín",
+    "Cali",
+    "Barranquilla",
+    "Cartagena",
+    "Cúcuta",
+    "Bucaramanga",
+    "Pereira",
+    "Santa Marta",
+    "Ibagué",
+    "Pasto",
+    "Manizales",
+    "Neiva",
+    "Villavicencio",
+    "Armenia",
+    "Valledupar",
+    "Montería",
+    "Popayán",
+    "Sincelejo",
+    "Tunja",
+    "Riohacha",
+    "Quibdó",
+    "Florencia",
+    "Mocoa",
+    "Yopal",
+    "Arauca",
+    "San José del Guaviare",
+    "Mitú",
+    "Puerto Carreño",
+    "Inírida",
+    "Leticia",
+    "San Andrés",
+  ]
+
+  // Estado inicial para todos los tipos de formularios
+  const initialFormData = {
+    // Datos comunes para todos los formularios
     libro: "",
     folio: "",
     acta: "",
-
-    // Archive data
-    notaria: "",
-    serial: "",
-    nuip: "",
+    oficiante: "",
+    doyFe: "",
+    notaMarginal: "",
     fechaCeremonia: {
       dia: "",
       mes: "",
       año: "",
     },
 
-    // Officiant data
-    oficiante: "",
-    doyFe: "",
-
-    // Baptized person data
-    nombres: "",
-    apellidos: "",
-    fechaNacimiento: {
-      dia: "",
-      mes: "",
-      año: "",
+    // Datos específicos para Bautismo
+    bautismo: {
+      primerNombre: "",
+      segundoNombre: "",
+      primerApellido: "",
+      segundoApellido: "",
+      fechaNacimiento: {
+        dia: "",
+        mes: "",
+        año: "",
+      },
+      lugarNacimiento: "",
+      nombrePadre: "",
+      nombreMadre: "",
+      abueloPaterno: "",
+      abuelaPaterna: "",
+      abueloMaterno: "",
+      abuelaMaterna: "",
+      padrino: "",
+      madrina: "",
     },
-    lugarNacimiento: "",
-    direccionTel: "",
 
-    // Additional data
-    nombrePadre: "",
-    nombreMadre: "",
-    abueloPaterno: "",
-    abuelaPaterna: "",
-    abueloMaterno: "",
-    abuelaMaterna: "",
-    padrino: "",
-    madrina: "",
-    estadoCivilPadre: "Ninguno",
-    estadoCivilMadre: "Ninguno",
-    confirmadoPadre: false,
-    confirmadoMadre: false,
-    notaMarginal: "",
-    valorInscripcion: "",
-  })
+    // Datos específicos para Confirmación
+    confirmacion: {
+      primerNombre: "",
+      segundoNombre: "",
+      primerApellido: "",
+      segundoApellido: "",
+      fechaNacimiento: {
+        dia: "",
+        mes: "",
+        año: "",
+      },
+      lugarNacimiento: "",
+      fechaBautismo: {
+        dia: "",
+        mes: "",
+        año: "",
+      },
+      lugarBautismo: "",
+      nombrePadre: "",
+      nombreMadre: "",
+      padrino: "",
+      madrina: "",
+    },
 
+    // Datos específicos para Matrimonio
+    matrimonio: {
+      // Datos del novio
+      novio: {
+        primerNombre: "",
+        segundoNombre: "",
+        primerApellido: "",
+        segundoApellido: "",
+        fechaNacimiento: {
+          dia: "",
+          mes: "",
+          año: "",
+        },
+        lugarNacimiento: "",
+        nombrePadre: "",
+        nombreMadre: "",
+      },
+      // Datos de la novia
+      novia: {
+        primerNombre: "",
+        segundoNombre: "",
+        primerApellido: "",
+        segundoApellido: "",
+        fechaNacimiento: {
+          dia: "",
+          mes: "",
+          año: "",
+        },
+        lugarNacimiento: "",
+        nombrePadre: "",
+        nombreMadre: "",
+      },
+      testigo1: "",
+      testigo2: "",
+    },
+  }
+
+  const [formData, setFormData] = useState(initialFormData)
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
 
     if (name.includes(".")) {
-      const [parent, child] = name.split(".")
-      setFormData((prev) => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent],
-          [child]: value,
-        },
-      }))
+      const parts = name.split(".")
+
+      if (parts.length === 2) {
+        // Manejo para campos simples con un nivel de anidación
+        const [parent, child] = parts
+        setFormData((prev) => ({
+          ...prev,
+          [parent]: {
+            ...prev[parent],
+            [child]: value,
+          },
+        }))
+      } else if (parts.length === 3) {
+        // Manejo para campos con dos niveles de anidación
+        const [parent, child, grandchild] = parts
+        setFormData((prev) => ({
+          ...prev,
+          [parent]: {
+            ...prev[parent],
+            [child]: {
+              ...prev[parent]?.[child],
+              [grandchild]: value,
+            },
+          },
+        }))
+      }
     } else {
+      // Manejo para campos simples sin anidación
       setFormData((prev) => ({
         ...prev,
         [name]: type === "checkbox" ? checked : value,
       }))
     }
   }
+
   const handleSubmit = (e) => {
     e.preventDefault()
     console.log(formData)
     // Handle form submission
-    alert("Partida guardada exitosamente")
+    alert(`Partida de ${eventoSeleccionado} guardada exitosamente`)
+  }
+
+  const handleEventoChange = (e) => {
+    setEventoSeleccionado(e.target.value)
   }
 
   const handleViewRegistros = () => {
@@ -140,6 +253,770 @@ function AñadirPartidas() {
   const handlePrint = () => {
     console.log("Imprimir partidas")
   }
+
+  const toggleMenu = () => {
+    setMenuAbierto(!menuAbierto)
+    if (!menuAbierto) {
+      setIsSubmenuOpen(false)
+    }
+  }
+
+  // Renderizar el formulario específico según el tipo de ceremonia seleccionado
+  const renderFormularioEspecifico = () => {
+    switch (eventoSeleccionado) {
+      case "Bautismo":
+        return (
+          <>
+            {/* Datos del bautizado */}
+            <div style={styles.formSection}>
+              <h2 style={styles.sectionTitle}>Datos del Bautizado</h2>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Primer Nombre</label>
+                  <input
+                    type="text"
+                    name="bautismo.primerNombre"
+                    value={formData.bautismo.primerNombre}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Segundo Nombre</label>
+                  <input
+                    type="text"
+                    name="bautismo.segundoNombre"
+                    value={formData.bautismo.segundoNombre}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Primer Apellido</label>
+                  <input
+                    type="text"
+                    name="bautismo.primerApellido"
+                    value={formData.bautismo.primerApellido}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Segundo Apellido</label>
+                  <input
+                    type="text"
+                    name="bautismo.segundoApellido"
+                    value={formData.bautismo.segundoApellido}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+              </div>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Fecha de Nacimiento</label>
+                  <div style={styles.dateInputs}>
+                    <input
+                      type="text"
+                      name="bautismo.fechaNacimiento.dia"
+                      placeholder="Día"
+                      value={formData.bautismo.fechaNacimiento.dia}
+                      onChange={handleChange}
+                      style={styles.dateInput}
+                    />
+                    <input
+                      type="text"
+                      name="bautismo.fechaNacimiento.mes"
+                      placeholder="Mes"
+                      value={formData.bautismo.fechaNacimiento.mes}
+                      onChange={handleChange}
+                      style={styles.dateInput}
+                    />
+                    <input
+                      type="text"
+                      name="bautismo.fechaNacimiento.año"
+                      placeholder="Año"
+                      value={formData.bautismo.fechaNacimiento.año}
+                      onChange={handleChange}
+                      style={styles.dateInput}
+                    />
+                  </div>
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Lugar de Nacimiento</label>
+                  <ComboBox
+                    options={ciudadesColombia}
+                    value={formData.bautismo.lugarNacimiento}
+                    onChange={handleChange}
+                    placeholder="Seleccione o escriba la ciudad"
+                    name="bautismo.lugarNacimiento"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Datos anexos */}
+            <div style={styles.formSection}>
+              <h2 style={styles.sectionTitle}>Datos Anexos</h2>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Nombres del Padre</label>
+                  <input
+                    type="text"
+                    name="bautismo.nombrePadre"
+                    value={formData.bautismo.nombrePadre}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Nombres de la Madre</label>
+                  <input
+                    type="text"
+                    name="bautismo.nombreMadre"
+                    value={formData.bautismo.nombreMadre}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+              </div>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Nombres de Abuelo Paterno</label>
+                  <input
+                    type="text"
+                    name="bautismo.abueloPaterno"
+                    value={formData.bautismo.abueloPaterno}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Nombres de Abuela Paterna</label>
+                  <input
+                    type="text"
+                    name="bautismo.abuelaPaterna"
+                    value={formData.bautismo.abuelaPaterna}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+              </div>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Nombres de Abuelo Materno</label>
+                  <input
+                    type="text"
+                    name="bautismo.abueloMaterno"
+                    value={formData.bautismo.abueloMaterno}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Nombres de Abuela Materna</label>
+                  <input
+                    type="text"
+                    name="bautismo.abuelaMaterna"
+                    value={formData.bautismo.abuelaMaterna}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+              </div>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Nombres del padrino (ó padrinos)</label>
+                  <input
+                    type="text"
+                    name="bautismo.padrino"
+                    value={formData.bautismo.padrino}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Nombres de la madrina (ó madrinas)</label>
+                  <input
+                    type="text"
+                    name="bautismo.madrina"
+                    value={formData.bautismo.madrina}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+              </div>
+            </div>
+          </>
+        )
+
+      case "Confirmación":
+        return (
+          <>
+          {/* Datos del oficiante */}
+          <div style={{ ...styles.formSection, flex: "1" }}>
+                  <h2 style={styles.sectionTitle}>Datos del Encargado de Celebrar la Ceremonia</h2>
+                  <div style={styles.formRow}>
+                    <div style={styles.formGroup}>
+                      <ComboBox
+                        label="Monseñor que Oficia la Ceremonia"
+                        options={monseñores}
+                        value={formData.confirmacion.oficiante}
+                        onChange={handleChange}
+                        placeholder="Seleccione o escriba el nombre"
+                        name="confirmacion.monseñor"
+                      />
+                    </div>
+                  </div>
+                  <div style={styles.formRow}>
+                    <div style={styles.formGroup}>
+                      <ComboBox
+                        label="Párroco o Vicario"
+                        options={sacerdotes}
+                        value={formData.confirmacion.oficiante}
+                        onChange={handleChange}
+                        placeholder="Seleccione o escriba el nombre"
+                        name="confirmacion.sacerdote"
+                      />
+                    </div>
+                  </div>
+                  <div style={styles.formRow}>
+                    <div style={styles.formGroup}>
+                      <ComboBox
+                        label="Doy Fe"
+                        options={testigos}
+                        value={formData.confirmacion.doyFe}
+                        onChange={handleChange}
+                        placeholder="Seleccione o escriba el nombre"
+                        name="confirmacion.doyFe"
+                      />
+                    </div>
+                  </div>
+                </div>
+          
+            {/* Datos del confirmado */}
+            <div style={styles.formSection}>
+              <h2 style={styles.sectionTitle}>Datos del Confirmado</h2>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Primer Nombre</label>
+                  <input
+                    type="text"
+                    name="confirmacion.primerNombre"
+                    value={formData.confirmacion.primerNombre}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Segundo Nombre</label>
+                  <input
+                    type="text"
+                    name="confirmacion.segundoNombre"
+                    value={formData.confirmacion.segundoNombre}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Primer Apellido</label>
+                  <input
+                    type="text"
+                    name="confirmacion.primerApellido"
+                    value={formData.confirmacion.primerApellido}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Segundo Apellido</label>
+                  <input
+                    type="text"
+                    name="confirmacion.segundoApellido"
+                    value={formData.confirmacion.segundoApellido}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+              </div>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Fecha de Bautizo</label>
+                  <div style={styles.dateInputs}>
+                    <input
+                      type="text"
+                      name="confirmacion.fechaNacimiento.dia"
+                      placeholder="Día"
+                      value={formData.confirmacion.fechaNacimiento.dia}
+                      onChange={handleChange}
+                      style={styles.dateInput}
+                    />
+                    <input
+                      type="text"
+                      name="confirmacion.fechaNacimiento.mes"
+                      placeholder="Mes"
+                      value={formData.confirmacion.fechaNacimiento.mes}
+                      onChange={handleChange}
+                      style={styles.dateInput}
+                    />
+                    <input
+                      type="text"
+                      name="confirmacion.fechaNacimiento.año"
+                      placeholder="Año"
+                      value={formData.confirmacion.fechaNacimiento.año}
+                      onChange={handleChange}
+                      style={styles.dateInput}
+                    />
+                  </div>
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Lugar de Bautizo</label>
+                  <ComboBox
+                    options={ciudadesColombia}
+                    value={formData.confirmacion.lugarNacimiento}
+                    onChange={handleChange}
+                    placeholder="Seleccione o escriba la ciudad"
+                    name="confirmacion.lugarNacimiento"
+                  />
+                  <label style={styles.formLabel}>Diocesis donde fue Bautizado</label>
+                  <ComboBox
+                    options={ciudadesColombia}
+                    value={formData.confirmacion.lugarNacimiento}
+                    onChange={handleChange}
+                    placeholder="Seleccione o escriba la diocesis donde fue bautizado"
+                    name="confirmacion.lugarNacimiento"
+                  />
+                </div>
+                <div style={styles.registroRow}>
+                  <label style={styles.formLabel}>Datos de Acta de Bautizo</label>
+                    <div style={styles.registroField}>
+                      <label style={styles.formLabel}>Libro</label>
+                      <input
+                        type="text"
+                        name="libro"
+                        value={formData.libro}
+                        onChange={handleChange}
+                        style={styles.formRegistro}
+                      />
+                    </div>
+                    <div style={styles.registroField}>
+                      <label style={styles.formLabel}>Folio</label>
+                      <input
+                        type="text"
+                        name="folio"
+                        value={formData.folio}
+                        onChange={handleChange}
+                        style={styles.formRegistro}
+                      />
+                    </div>
+                    <div style={styles.registroField}>
+                      <label style={styles.formLabel}>Acta</label>
+                      <input
+                        type="text"
+                        name="acta"
+                        value={formData.acta}
+                        onChange={handleChange}
+                        style={styles.formRegistro}
+                      />
+                    </div>
+                  </div>
+              </div>
+            </div>
+
+            {/* Datos del bautismo previo */}
+            <div style={styles.formSection}>
+              <h2 style={styles.sectionTitle}>Datos de la Familia</h2>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Nombres del Padre</label>
+                  <input
+                    type="text"
+                    name="confirmacion.nombrePadre"
+                    value={formData.confirmacion.nombrePadre}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Nombres de la Madre</label>
+                  <input
+                    type="text"
+                    name="confirmacion.nombreMadre"
+                    value={formData.confirmacion.nombreMadre}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+              </div>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Nombre del Padrino</label>
+                  <input
+                    type="text"
+                    name="confirmacion.padrino"
+                    value={formData.confirmacion.padrino}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Nombre de la Madrina</label>
+                  <input
+                    type="text"
+                    name="confirmacion.madrina"
+                    value={formData.confirmacion.madrina}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+              </div>
+            </div>
+          </>
+        )
+
+      case "Matrimonio":
+        return (
+          <>
+            {/* Datos del novio */}
+            <div style={styles.formSection}>
+              <h2 style={styles.sectionTitle}>Datos del Esposo</h2>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Primer Nombre</label>
+                  <input
+                    type="text"
+                    name="matrimonio.novio.primerNombre"
+                    value={formData.matrimonio.novio.primerNombre}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Segundo Nombre</label>
+                  <input
+                    type="text"
+                    name="matrimonio.novio.segundoNombre"
+                    value={formData.matrimonio.novio.segundoNombre}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Primer Apellido</label>
+                  <input
+                    type="text"
+                    name="matrimonio.novio.primerApellido"
+                    value={formData.matrimonio.novio.primerApellido}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Segundo Apellido</label>
+                  <input
+                    type="text"
+                    name="matrimonio.novio.segundoApellido"
+                    value={formData.matrimonio.novio.segundoApellido}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+              </div>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Fecha de Nacimiento</label>
+                  <div style={styles.dateInputs}>
+                    <input
+                      type="text"
+                      name="matrimonio.novio.fechaNacimiento.dia"
+                      placeholder="Día"
+                      value={formData.matrimonio.novio.fechaNacimiento.dia}
+                      onChange={handleChange}
+                      style={styles.dateInput}
+                    />
+                    <input
+                      type="text"
+                      name="matrimonio.novio.fechaNacimiento.mes"
+                      placeholder="Mes"
+                      value={formData.matrimonio.novio.fechaNacimiento.mes}
+                      onChange={handleChange}
+                      style={styles.dateInput}
+                    />
+                    <input
+                      type="text"
+                      name="matrimonio.novio.fechaNacimiento.año"
+                      placeholder="Año"
+                      value={formData.matrimonio.novio.fechaNacimiento.año}
+                      onChange={handleChange}
+                      style={styles.dateInput}
+                    />
+                  </div>
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Lugar de Nacimiento</label>
+                  <ComboBox
+                    options={ciudadesColombia}
+                    value={formData.matrimonio.novio.lugarNacimiento}
+                    onChange={handleChange}
+                    placeholder="Seleccione o escriba la ciudad"
+                    name="matrimonio.novio.lugarNacimiento"
+                  />
+                </div>
+              </div>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Nombres del Padre</label>
+                  <input
+                    type="text"
+                    name="matrimonio.novio.nombrePadre"
+                    value={formData.matrimonio.novio.nombrePadre}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Nombres de la Madre</label>
+                  <input
+                    type="text"
+                    name="matrimonio.novio.nombreMadre"
+                    value={formData.matrimonio.novio.nombreMadre}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+              </div>
+              <div style={styles.registroRow}>
+                  <label style={styles.formLabel}>Datos de Acta de Bautizo</label>
+                    <div style={styles.registroField}>
+                      <label style={styles.formLabel}>Libro</label>
+                      <input
+                        type="text"
+                        name="libro"
+                        value={formData.libro}
+                        onChange={handleChange}
+                        style={styles.formRegistro}
+                      />
+                    </div>
+                    <div style={styles.registroField}>
+                      <label style={styles.formLabel}>Folio</label>
+                      <input
+                        type="text"
+                        name="folio"
+                        value={formData.folio}
+                        onChange={handleChange}
+                        style={styles.formRegistro}
+                      />
+                    </div>
+                    <div style={styles.registroField}>
+                      <label style={styles.formLabel}>Acta</label>
+                      <input
+                        type="text"
+                        name="acta"
+                        value={formData.acta}
+                        onChange={handleChange}
+                        style={styles.formRegistro}
+                      />
+                    </div>
+                  </div>
+            </div>
+
+            {/* Datos de la novia */}
+            <div style={styles.formSection}>
+              <h2 style={styles.sectionTitle}>Datos de la Esposa</h2>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Primer Nombre</label>
+                  <input
+                    type="text"
+                    name="matrimonio.novia.primerNombre"
+                    value={formData.matrimonio.novia.primerNombre}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Segundo Nombre</label>
+                  <input
+                    type="text"
+                    name="matrimonio.novia.segundoNombre"
+                    value={formData.matrimonio.novia.segundoNombre}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Primer Apellido</label>
+                  <input
+                    type="text"
+                    name="matrimonio.novia.primerApellido"
+                    value={formData.matrimonio.novia.primerApellido}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Segundo Apellido</label>
+                  <input
+                    type="text"
+                    name="matrimonio.novia.segundoApellido"
+                    value={formData.matrimonio.novia.segundoApellido}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+              </div>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Fecha de Nacimiento</label>
+                  <div style={styles.dateInputs}>
+                    <input
+                      type="text"
+                      name="matrimonio.novia.fechaNacimiento.dia"
+                      placeholder="Día"
+                      value={formData.matrimonio.novia.fechaNacimiento.dia}
+                      onChange={handleChange}
+                      style={styles.dateInput}
+                    />
+                    <input
+                      type="text"
+                      name="matrimonio.novia.fechaNacimiento.mes"
+                      placeholder="Mes"
+                      value={formData.matrimonio.novia.fechaNacimiento.mes}
+                      onChange={handleChange}
+                      style={styles.dateInput}
+                    />
+                    <input
+                      type="text"
+                      name="matrimonio.novia.fechaNacimiento.año"
+                      placeholder="Año"
+                      value={formData.matrimonio.novia.fechaNacimiento.año}
+                      onChange={handleChange}
+                      style={styles.dateInput}
+                    />
+                  </div>
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Lugar de Nacimiento</label>
+                  <ComboBox
+                    options={ciudadesColombia}
+                    value={formData.matrimonio.novia.lugarNacimiento}
+                    onChange={handleChange}
+                    placeholder="Seleccione o escriba la ciudad"
+                    name="matrimonio.novia.lugarNacimiento"
+                  />
+                </div>
+              </div>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Nombres del Padre</label>
+                  <input
+                    type="text"
+                    name="matrimonio.novia.nombrePadre"
+                    value={formData.matrimonio.novia.nombrePadre}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Nombres de la Madre</label>
+                  <input
+                    type="text"
+                    name="matrimonio.novia.nombreMadre"
+                    value={formData.matrimonio.novia.nombreMadre}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+              </div>
+              <div style={styles.registroRow}>
+                  <label style={styles.formLabel}>Datos de Acta de Bautizo</label>
+                    <div style={styles.registroField}>
+                      <label style={styles.formLabel}>Libro</label>
+                      <input
+                        type="text"
+                        name="libro"
+                        value={formData.libro}
+                        onChange={handleChange}
+                        style={styles.formRegistro}
+                      />
+                    </div>
+                    <div style={styles.registroField}>
+                      <label style={styles.formLabel}>Folio</label>
+                      <input
+                        type="text"
+                        name="folio"
+                        value={formData.folio}
+                        onChange={handleChange}
+                        style={styles.formRegistro}
+                      />
+                    </div>
+                    <div style={styles.registroField}>
+                      <label style={styles.formLabel}>Acta</label>
+                      <input
+                        type="text"
+                        name="acta"
+                        value={formData.acta}
+                        onChange={handleChange}
+                        style={styles.formRegistro}
+                      />
+                    </div>
+                  </div>
+              
+            </div>
+
+            {/* Datos de los testigos */}
+            <div style={styles.formSection}>
+              <h2 style={styles.sectionTitle}>Testigos</h2>
+              <div style={styles.formRow}>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Primer Testigo</label>
+                  <input
+                    type="text"
+                    name="matrimonio.testigo1"
+                    value={formData.matrimonio.testigo1}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Segundo Testigo</label>
+                  <input
+                    type="text"
+                    name="matrimonio.testigo2"
+                    value={formData.matrimonio.testigo2}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Tercer Testigo</label>
+                  <input
+                    type="text"
+                    name="matrimonio.testigo1"
+                    value={formData.matrimonio.testigo1}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.formLabel}>Cuarto Testigo</label>
+                  <input
+                    type="text"
+                    name="matrimonio.testigo1"
+                    value={formData.matrimonio.testigo1}
+                    onChange={handleChange}
+                    style={styles.formInput}
+                  />
+                </div>
+              </div>
+            </div>
+          </>
+        )
+      default:
+        return null
+    }
+  }
+
   return (
     <div style={styles.container}>
       {/* Barra superior */}
@@ -206,7 +1083,6 @@ function AñadirPartidas() {
                 style={{
                   ...styles.sidebarIconButton,
                   justifyContent: menuAbierto ? "flex-start" : "center",
-                  backgroundColor: "#FFB74D",
                 }}
                 title="Añadir partidas"
               >
@@ -245,697 +1121,563 @@ function AñadirPartidas() {
             <label htmlFor="evento" style={styles.label}>
               Seleccionar Tipo de Ceremonia:
             </label>
-            <select
-              id="evento"
-              value={eventoSeleccionado}
-              onChange={(e) => setEventoSeleccionado(e.target.value)}
-              style={styles.select}
-            >
+            <select id="evento" value={eventoSeleccionado} onChange={handleEventoChange} style={styles.select}>
+              <option value="">Seleccione tipo de ceremonia</option>
               <option value="Bautismo">Bautizos</option>
               <option value="Confirmación">Confirmaciones</option>
               <option value="Matrimonio">Matrimonios</option>
             </select>
           </div>
 
-          {/* Formulario de bautismo */}
-          <form onSubmit={handleSubmit} style={styles.form}>
-            {/* Datos de registro */}
-            <div style={styles.formSection}>
-              <h2 style={styles.sectionTitle}>Datos de Registro</h2>
-              <div style={styles.formRow}>
-                <div style={styles.formGroupReg}>
-                  <label style={styles.formLabel}>Libro</label>
-                  <input
-                    type="text"
-                    name="libro"
-                    value={formData.libro}
-                    onChange={handleChange}
-                    style={styles.formRegistro}
-                  />
+          {eventoSeleccionado ? (
+            <form onSubmit={handleSubmit} style={styles.form}>
+              {/* Contenedor para las dos secciones superiores */}
+              <div style={styles.topSectionsContainer}>
+                {/* Datos de registro */}
+                <div style={{ ...styles.formSection, flex: "1" }}>
+                  <h2 style={styles.sectionTitle}>Datos de Registro</h2>
+                  <div style={styles.registroRow}>
+                    <div style={styles.registroField}>
+                      <label style={styles.formLabel}>Libro</label>
+                      <input
+                        type="text"
+                        name="libro"
+                        value={formData.libro}
+                        onChange={handleChange}
+                        style={styles.formRegistro}
+                      />
+                    </div>
+                    <div style={styles.registroField}>
+                      <label style={styles.formLabel}>Folio</label>
+                      <input
+                        type="text"
+                        name="folio"
+                        value={formData.folio}
+                        onChange={handleChange}
+                        style={styles.formRegistro}
+                      />
+                    </div>
+                    <div style={styles.registroField}>
+                      <label style={styles.formLabel}>Acta</label>
+                      <input
+                        type="text"
+                        name="acta"
+                        value={formData.acta}
+                        onChange={handleChange}
+                        style={styles.formRegistro}
+                      />
+                    </div>
+                  </div>
+                  <div style={{ ...styles.formRow, marginTop: "8px" }}>
+                    <div style={styles.formGroup}>
+                      <label style={styles.formLabel}>Fecha De La Ceremonia</label>
+                      <div style={styles.dateCeremonia}>
+                        <input
+                          type="text"
+                          name="fechaCeremonia.dia"
+                          placeholder="Día"
+                          value={formData.fechaCeremonia.dia}
+                          onChange={handleChange}
+                          style={styles.dateInput}
+                        />
+                        <input
+                          type="text"
+                          name="fechaCeremonia.mes"
+                          placeholder="Mes"
+                          value={formData.fechaCeremonia.mes}
+                          onChange={handleChange}
+                          style={styles.dateInput}
+                        />
+                        <input
+                          type="text"
+                          name="fechaCeremonia.año"
+                          placeholder="Año"
+                          value={formData.fechaCeremonia.año}
+                          onChange={handleChange}
+                          style={styles.dateInput}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Folio</label>
-                  <input
-                    type="text"
-                    name="folio"
-                    value={formData.folio}
-                    onChange={handleChange}
-                    style={styles.formRegistro}
-                  />
+
+                {/* Datos del Sacerdote */}
+                <div style={{ ...styles.formSection, flex: "1" }}>
+                  <h2 style={styles.sectionTitle}>Datos del Encargado de Celebrar la Ceremonia</h2>
+                  <div style={styles.formRow}>
+                    <div style={styles.formGroup}>
+                      <ComboBox
+                        label="Nombres del Sacerdote"
+                        options={sacerdotes}
+                        value={formData.oficiante}
+                        onChange={handleChange}
+                        placeholder="Seleccione o escriba el nombre"
+                        name="oficiante"
+                      />
+                    </div>
+                  </div>
+                  <div style={styles.formRow}>
+                    <div style={styles.formGroup}>
+                      <ComboBox
+                        label="Doy Fe"
+                        options={testigos}
+                        value={formData.doyFe}
+                        onChange={handleChange}
+                        placeholder="Seleccione o escriba el nombre"
+                        name="doyFe"
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Acta</label>
-                  <input
-                    type="text"
-                    name="acta"
-                    value={formData.acta}
-                    onChange={handleChange}
-                    style={styles.formRegistro}
-                  />
-                </div>
+              </div>
+
+              {/* Renderizar el formulario específico según el tipo de ceremonia */}
+              {renderFormularioEspecifico()}
+
+              {/* Nota Marginal (común para todos los formularios) */}
+              <div style={styles.formSection}>
+              <h2 style={styles.sectionTitle}>Nota Marginal</h2>
                 <div style={styles.formRow}>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Fecha de la Ceremonia de Bautizo</label>
-                  <div style={styles.dateCeremonia}>
-                    <input
-                      type="text"
-                      name="fechaCeremonia.dia"
-                      placeholder="Día"
-                      value={formData.fechaCeremonia.dia}
+                  <div style={styles.formGroup}>
+                    <textarea
+                      name="notaMarginal"
+                      value={formData.notaMarginal}
                       onChange={handleChange}
-                      style={styles.dateInput}
-                    />
-                    <input
-                      type="text"
-                      name="fechaCeremonia.mes"
-                      placeholder="Mes"
-                      value={formData.fechaCeremonia.mes}
-                      onChange={handleChange}
-                      style={styles.dateInput}
-                    />
-                    <input
-                      type="text"
-                      name="fechaCeremonia.año"
-                      placeholder="Año"
-                      value={formData.fechaCeremonia.año}
-                      onChange={handleChange}
-                      style={styles.dateInput}
+                      style={styles.formNota}
+                      placeholder="Escriba la nota marginal aquí..."
                     />
                   </div>
                 </div>
               </div>
-            </div>
-            </div>
 
-            {/* Datos del oficiante */}
-            <div style={styles.formSection}>
-              <h2 style={styles.sectionTitle}>Datos del Oficiante</h2>
-              <div style={styles.formRow}>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Sacramento Oficiado Por</label>
-                  <input
-                    type="text"
-                    name="oficiante"
-                    value={formData.oficiante}
-                    onChange={handleChange}
-                    style={styles.formInput}
-                  />
-                </div>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Doy Fe</label>
-                  <input
-                    type="text"
-                    name="doyFe"
-                    value={formData.doyFe}
-                    onChange={handleChange}
-                    style={styles.formInput}
-                  />
-                </div>
+              {/* Botones */}
+              <div style={styles.buttonContainer}>
+                <button type="button" onClick={handleCorrect} style={{ ...styles.sidebarButton }} title="Revisar Lista">
+                  <FaListAlt style={styles.buttonIcon} />
+                  {<span style={styles.buttonText}>Revisar Lista</span>}
+                </button>
+                <button type="submit" style={{ ...styles.sidebarButton }} title="Guardar">
+                  <FaFileMedical style={styles.buttonIcon} />
+                  {<span style={styles.buttonText}>Guardar</span>}
+                </button>
               </div>
+            </form>
+          ) : (
+            <div style={styles.noSelectionMessage}>
+              <h2>Seleccione un tipo de ceremonia para comenzar</h2>
+              <p>
+                Por favor, elija el tipo de ceremonia en el menú desplegable superior para mostrar el formulario
+                correspondiente.
+              </p>
             </div>
-
-            {/* Datos del bautizado */}
-            <div style={styles.formSection}>
-              <h2 style={styles.sectionTitle}>Datos del Bautizado</h2>
-              <div style={styles.formRow}>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Primer Nombre</label>
-                  <input
-                    type="text"
-                    name="primerNombre"
-                    value={formData.primerNombre}
-                    onChange={handleChange}
-                    style={styles.formInput}
-                  />
-                </div>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Segundo Nombre</label>
-                  <input
-                    type="text"
-                    name="primerNombre"
-                    value={formData.primerNombre}
-                    onChange={handleChange}
-                    style={styles.formInput}
-                  />
-                </div>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Primer Apellido</label>
-                  <input
-                    type="text"
-                    name="primerApellido"
-                    value={formData.primerApellido}
-                    onChange={handleChange}
-                    style={styles.formInput}
-                  />
-                </div>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Segundo Apellido</label>
-                  <input
-                    type="text"
-                    name="primerApellido"
-                    value={formData.primerApellido}
-                    onChange={handleChange}
-                    style={styles.formInput}
-                  />
-                </div>
-              </div>
-              <div style={styles.formRow}>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Fecha de Nacimiento</label>
-                  <div style={styles.dateInputs}>
-                    <input
-                      type="text"
-                      name="fechaNacimiento.dia"
-                      placeholder="Día"
-                      value={formData.fechaNacimiento.dia}
-                      onChange={handleChange}
-                      style={styles.dateInput}
-                    />
-                    <input
-                      type="text"
-                      name="fechaNacimiento.mes"
-                      placeholder="Mes"
-                      value={formData.fechaNacimiento.mes}
-                      onChange={handleChange}
-                      style={styles.dateInput}
-                    />
-                    <input
-                      type="text"
-                      name="fechaNacimiento.año"
-                      placeholder="Año"
-                      value={formData.fechaNacimiento.año}
-                      onChange={handleChange}
-                      style={styles.dateInput}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div style={styles.formRow}>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Lugar de Nacimiento</label>
-                  <input
-                    type="text"
-                    name="lugarNacimiento"
-                    value={formData.lugarNacimiento}
-                    onChange={handleChange}
-                    style={styles.formInput}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Datos anexos */}
-            <div style={styles.formSection}>
-              <h2 style={styles.sectionTitle}>Datos Anexos</h2>
-              <div style={styles.formRow}>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Nombres del Padre</label>
-                  <input
-                    type="text"
-                    name="nombrePadre"
-                    value={formData.nombrePadre}
-                    onChange={handleChange}
-                    style={styles.formInput}
-                  />
-                </div>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Nombres de la Madre</label>
-                  <input
-                    type="text"
-                    name="nombreMadre"
-                    value={formData.nombreMadre}
-                    onChange={handleChange}
-                    style={styles.formInput}
-                  />
-                </div>
-              </div>
-              <div style={styles.formRow}>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Nombres de Abuelo Paterno</label>
-                  <input
-                    type="text"
-                    name="abueloPaterno"
-                    value={formData.abueloPaterno}
-                    onChange={handleChange}
-                    style={styles.formInput}
-                  />
-                </div>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Nombres de Abuela Paterna</label>
-                  <input
-                    type="text"
-                    name="abuelaPaterna"
-                    value={formData.abuelaPaterna}
-                    onChange={handleChange}
-                    style={styles.formInput}
-                  />
-                </div>
-              </div>
-              <div style={styles.formRow}>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Nombres de Abuelo Materno</label>
-                  <input
-                    type="text"
-                    name="abueloMaterno"
-                    value={formData.abueloMaterno}
-                    onChange={handleChange}
-                    style={styles.formInput}
-                  />
-                </div>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Nombres de Abuela Materna</label>
-                  <input
-                    type="text"
-                    name="abuelaMaterna"
-                    value={formData.abuelaMaterna}
-                    onChange={handleChange}
-                    style={styles.formInput}
-                  />
-                </div>
-              </div>
-              <div style={styles.formRow}>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Nombres del padrino (ó padrinos)</label>
-                  <input
-                    type="text"
-                    name="padrino"
-                    value={formData.padrino}
-                    onChange={handleChange}
-                    style={styles.formInput}
-                  />
-                </div>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Nombres de la madrina (ó madrinas)</label>
-                  <input
-                    type="text"
-                    name="madrina"
-                    value={formData.madrina}
-                    onChange={handleChange}
-                    style={styles.formInput}
-                  />
-                </div>
-              </div>
-              <div style={styles.formRow}>
-                <div style={styles.formGroup}>
-                  <label style={styles.formLabel}>Nota Marginal</label>
-                  <input
-                    type="text"
-                    name="notaMarginal"
-                    value={formData.notaMarginal}
-                    onChange={handleChange}
-                    style={styles.formNota}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Botones */}
-            <div style={styles.buttonContainer}>
-              <button onClick={handleCorrect} style={{ ...styles.sidebarButton}} title="Revisar Lista">
-                <FaListAlt style={styles.buttonIcon} />
-                {<span style={styles.buttonText}>Revisar Lista</span>}
-              </button>
-              <button onClick={handleCorrect} style={{ ...styles.sidebarButton}} title="Agregar Lista">
-                <FaFileMedical style={styles.buttonIcon} />
-                {<span style={styles.buttonText}>Agregar Lista</span>}
-              </button>
-            </div>
-          </form>
+          )}
         </main>
       </div>
     </div>
   )
 }
 const styles = {
-    container: {
-      display: "flex",
-      flexDirection: "column",
-      height: "100vh",
-      overflow: "hidden",
-    },
-    header: {
-      backgroundColor: "#385792",
-      color: "white",
-      padding: "1rem",
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      height: "70px",
-    },
-    headerLogo: {
-      height: "60px",
-      marginRight: '800px',
-    },
-    headerTitle: {
-      margin: -90,
-      flex: 1,
-      fontSize: "1.5rem",
-    },
-    icon: {
-      width: "18px",
-      height: "18px",
-      fill: "black",
-    },
-    iconBack: {
-      width: "18px",
-      height: "18px",
-      fill: "white",
-    },
-    iconLogout: {
-      width: "20px",
-      height: "20px",
-      fill: "white",
-    },
-    userInfo: {
-      display: "flex",
-      alignItems: "center",
-      gap: "0.5rem",
-    },
-    userIcon: {
-      width: "30px",
-      height: "30px",
-      borderRadius: "50%",
-      backgroundColor: "white",
-    },
-    userText: {
-      display: "flex",
-      flexDirection: "column",
-      fontSize: "0.8rem",
-    },
-    roleText: {
-      opacity: 0.8,
-      fontSize: "0.7rem",
-    },
-    buttonText: {
-      fontSize: "1rem",
-      flex: 1,
-    },
-    mainContent: {
-      display: "flex",
-      flex: 1,
-      position: "relative",
-      overflow: "hidden",   
-    },
-    sidebar: {
-      backgroundColor: "#f0f0f0",
-      display: "flex",
-      flexDirection: "column",
-      height: "calc(100vh - 70px)",
-      position: "fixed",
-      left: 0,
-      zIndex: 1000,
-      boxShadow: "3px 0 8px rgba(0,0,0,0.15)",
-      gap: "0.8rem",
-      with: "100%",
-      minWidth: "70px",
-      borderRight: "1px solid #e0e0e0",
-    },
-    sidebarButtonsContainer: {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "space-between",
-      height: "calc(100% - 50px)", // Restar la altura del botón de toggle
-      overflow: "hidden",
-    },
-    sidebarButtons: {
-      display: "flex",
-      flexDirection: "column",
-      gap: "1.1rem",
-      overflow: "auto",
-      height: "100%",
-    },
-    sidebarButton: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: "0.5rem",
-      padding: "0.75rem",
-      border: "none",
-      borderRadius: "0.5rem",
-      backgroundColor: "#FCCE74",
-      cursor: "pointer",
-      textAlign: "left",
-      color: "#202124",
-      transition: "background-color 0.2s",
-      whiteSpace: "nowrap",
-      overflow: "hidden",
-      position: "relative",
-      minHeight: "40px",
-    },
-    sidebarIconButton: {
-      display: "flex",
-      alignItems: "center",
-      gap: "0.5rem",
-      padding: "0.75rem",
-      border: "none",
-      borderRadius: "0 16px 16px 0",
-      backgroundColor: "#FCCE74",
-      cursor: "pointer",
-      textAlign: "left",
-      color: "#202124",
-      transition: "background-color 0.2s",
-      whiteSpace: "nowrap",
-      overflow: "hidden",
-      position: "relative",
-      width: "100%",
-      minHeight: "40px",
-    },
-    menuToggleButton: {
-      backgroundColor: "#FCCE74",
-      color: "#6c757d",
-      border: "none",
-      borderRadius: "50%",
-      width: "45px",
-      height: "45px",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      cursor: "pointer",
-      alignSelf: "center",
-      marginBottom: "1rem",
-      top: "5rem",
-      left: "1rem",
-      zIndex: 100,
-      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-    },
-    logoutButton: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      backgroundColor: "#FF000F",
-      gap: "0.5rem",
-      color: "white",
-      border: "none",
-      fontSize: "1rem",
-      padding: "0.5rem 1.5rem",
-      borderRadius: "0.5rem",
-      cursor: "pointer",
-      marginRight: "1.5rem",
-      transition: "background-color 0.2s",
-      whiteSpace: "nowrap",
-      overflow: "hidden",
-      position: "relative",
-    },
-    backButton: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: "0.5rem",
-      padding: "0.75rem",
-      border: "none",
-      borderRadius: "0 16px 16px 0",
-      backgroundColor: "#FF000F",
-      cursor: "pointer",
-      textAlign: "left",
-      color: "white",
-      transition: "background-color 0.2s",
-      whiteSpace: "nowrap",
-      overflow: "hidden",
-      position: "relative",
-      width: "100%", 
-      minHeight: "40px", 
-    },
-    content: {
-      flex: 1,
-      padding: "1.5rem",
-      overflow: "auto",
-      height: "calc(100vh - 70px)",
-    },
-    filtroContainer: {
-      alignItems: "center",
-      marginBottom: "20px",	
-      marginLeft: '0.5rem',
-      fontSize: '1rem',
-      fontWeight: '600',
-      display: 'flex',
-      gap: '0rem',
-    },
-    label: {
-      fontSize: '1.2rem',
-      fontWeight: '600',
-      marginLeft: '0.5rem',
-      color: '#6c757d',
-    },
-    select: {
-      padding: '0.5rem',
-      fontSize: '1rem',
-      borderRadius: '0.5rem',
-      border: '1px solid #ced4da',
-      marginLeft: '1rem',
-      width: '220px',
-      fontWeight: '550',
-    },
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100vh",
+    overflow: "hidden",
+  },
+  header: {
+    backgroundColor: "#385792",
+    color: "white",
+    padding: "1rem",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    height: "70px",
+  },
+  headerLogo: {
+    height: "60px",
+    marginRight: "800px",
+  },
+  headerTitle: {
+    margin: -90,
+    flex: 1,
+    fontSize: "1.5rem",
+    fontWeight: "600",
+  },
+  icon: {
+    width: "18px",
+    height: "18px",
+    fill: "black",
+  },
+  iconBack: {
+    width: "18px",
+    height: "18px",
+    fill: "white",
+  },
+  iconLogout: {
+    width: "20px",
+    height: "20px",
+    fill: "white",
+  },
+  userInfo: {
+    display: "flex",
+    alignItems: "center",
+    gap: "0.5rem",
+  },
+  userIcon: {
+    width: "30px",
+    height: "30px",
+    borderRadius: "50%",
+    backgroundColor: "white",
+  },
+  userText: {
+    display: "flex",
+    flexDirection: "column",
+    fontSize: "0.8rem",
+  },
+  roleText: {
+    opacity: 0.8,
+    fontSize: "0.7rem",
+  },
+  buttonText: {
+    fontSize: "1rem",
+    flex: 1,
+  },
+  mainContent: {
+    display: "flex",
+    flex: 1,
+    position: "relative",
+    overflow: "hidden",
+  },
+  sidebar: {
+    backgroundColor: "#f0f0f0",
+    display: "flex",
+    flexDirection: "column",
+    height: "calc(100vh - 70px)",
+    position: "fixed",
+    left: 0,
+    zIndex: 1000,
+    boxShadow: "3px 0 8px rgba(0,0,0,0.15)",
+    gap: "0.8rem",
+    with: "100%",
+    minWidth: "70px",
+    borderRight: "1px solid #e0e0e0",
+  },
+  sidebarButtonsContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    height: "calc(100% - 50px)", // Restar la altura del botón de toggle
+    overflow: "hidden",
+  },
+  sidebarButtons: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "1.1rem",
+    overflow: "auto",
+    height: "100%",
+  },
+  sidebarButton: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "0.5rem",
+    padding: "0.75rem",
+    border: "none",
+    borderRadius: "0.5rem",
+    backgroundColor: "#FCCE74",
+    cursor: "pointer",
+    textAlign: "left",
+    color: "#202124",
+    transition: "background-color 0.2s",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    position: "relative",
+    minHeight: "40px",
+  },
+  sidebarIconButton: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "0.5rem",
+    padding: "0.75rem",
+    border: "none",
+    borderRadius: "0 16px 16px 0",
+    backgroundColor: "#FCCE74",
+    cursor: "pointer",
+    textAlign: "left",
+    color: "#202124",
+    transition: "background-color 0.2s",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    position: "relative",
+    width: "100%",
+    minHeight: "40px",
+  },
+  menuToggleButton: {
+    backgroundColor: "#FCCE74",
+    color: "#6c757d",
+    border: "none",
+    borderRadius: "50%",
+    width: "45px",
+    height: "45px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    alignSelf: "center",
+    marginBottom: "1rem",
+    top: "5rem",
+    left: "1rem",
+    zIndex: 100,
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+  },
+  logoutButton: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FF000F",
+    gap: "0.5rem",
+    color: "white",
+    border: "none",
+    fontSize: "1rem",
+    padding: "0.5rem 1.5rem",
+    borderRadius: "0.5rem",
+    cursor: "pointer",
+    marginRight: "1.5rem",
+    transition: "background-color 0.2s",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    position: "relative",
+  },
+  backButton: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "0.5rem",
+    padding: "0.75rem",
+    border: "none",
+    borderRadius: "0 16px 16px 0",
+    backgroundColor: "#FF000F",
+    cursor: "pointer",
+    textAlign: "left",
+    color: "white",
+    transition: "background-color 0.2s",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    position: "relative",
+    width: "100%",
+    minHeight: "40px",
+  },
+  content: {
+    flex: 1,
+    padding: "1.5rem",
+    overflow: "auto",
+    height: "calc(100vh - 70px)",
+  },
+  filtroContainer: {
+    alignItems: "center",
+    marginBottom: "20px",
+    marginLeft: "0.5rem",
+    fontSize: "1rem",
+    fontWeight: "600",
+    display: "flex",
+    gap: "0rem",
+  },
+  label: {
+    fontSize: "1.2rem",
+    fontWeight: "600",
+    marginLeft: "0.5rem",
+    color: "#6c757d",
+  },
+  select: {
+    padding: "0.5rem",
+    fontSize: "1rem",
+    borderRadius: "0.5rem",
+    border: "1px solid #ced4da",
+    marginLeft: "1rem",
+    width: "220px",
+    fontWeight: "550",
+  },
 
-    form: {
-      backgroundColor: "#fff",
-      borderRadius: "0.5rem",
-      padding: "1rem",
-      boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-    },
-    formSection: {
-      marginBottom: "10px",
-      padding: "1rem",
-      border: "1px solid #000000",
-      borderRadius: "0.5rem",
-      backgroundColor: "#f9f9f9",
-    },
-    sectionTitle: {
-      fontSize: "1.1rem",
-      fontWeight: "600",
-      marginBottom: "15px",
-      color: "#385792",
-    },
-    formRow: {
-      display: "flex",
-      flexWrap: "wrap",
-      gap: "15px",
-      marginBottom: "15px",
-    },
-    formGroup: {
-      flex: "1 0 100px",
-    },
-    formGroupReg: {
-      flex: "1 1 70px",
-      marginLeft: "0",
-    },
-    formLabel: {
-      display: "block",
-      marginBottom: "5px",
-      fontSize: "1rem",
-      fontWeight: "500",
-      color: "#000000",
-      whiteSpace: "nowrap",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      textTransform: "capitalize",
-    },
-    formInput: {
-      width: "100%",
-      padding: "0.5rem",
-      border: "1px solid #ced4da",
-      borderRadius: "0.5rem",
-      fontSize: "1rem",
-    },
-    formNota: {
-      display: "block",
-      width: "100%",
-      padding: "0.5rem",
-      border: "1px solid #ced4da",
-      borderRadius: "0.5rem",
-      fontSize: "1rem",
-      marginBottom: "10px",
-      color: "#000000",
-      fontWeight: "500",
-      minHeight: "100px",
-      whiteSpace: "nowrap",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      resize: "vertical",
-      verticalAlign: "top",
-      alignItems: "flex-start",
-    },
-    formRegistro: {
-      display: "block",
-      width: "50%",
-      padding: "0.5rem",
-      border: "1px solid #ced4da",
-      borderRadius: "0.5rem",
-      fontSize: "1rem",
-      textAlign: "center",
-      color: "#000000",
-      fontWeight: "500",
-      whiteSpace: "nowrap",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      textTransform: "capitalize",
-    },
-    dateInputs: {
-      display: "flex",
-      width: "30%",
-      gap: "0.5rem",
-    },
-    dateCeremonia: {
-      display: "flex",
-      width: "50%",
-      gap: "0.5rem",
-    },
-    dateInput: {
-      flex: "1",
-      width: "20%",
-      padding: "0.5rem",
-      border: "1px solid #ced4da",
-      borderRadius: "0.5rem",
-      fontSize: "1rem",
-      textAlign: "center",
-      color: "#000000",
-      fontWeight: "500",
-      whiteSpace: "nowrap",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      textTransform: "capitalize",
-    },
-    checkboxContainer: {
-      display: "flex",
-      alignItems: "center",
-      gap: "15px",
-    },
-    formSelect: {
-      padding: "8px 12px",
-      border: "1px solid #ced4da",
-      borderRadius: "4px",
-      fontSize: "0.9rem",
-      minWidth: "150px",
-    },
-    checkboxGroup: {
-      display: "flex",
-      alignItems: "center",
-    },
-    checkbox: {
-      marginRight: "5px",
-    },
-    checkboxLabel: {
-      fontSize: "0.9rem",
-    },
-    buttonContainer: {
-      display: "flex",
-      justifyContent: "flex-end",
-      gap: "15px",
-      marginTop: "20px",
-    },
-    buttonIcon: {
-      width: "18px",
-      height: "18px",
-      fill: "black",
-    },
-    submitButton: {
-      padding: "10px 20px",
-      backgroundColor: "#4CAF50",
-      color: "white",
-      border: "none",
-      borderRadius: "4px",
-      cursor: "pointer",
-      fontSize: "1rem",
-    },
+  form: {
+    backgroundColor: "#fff",
+    borderRadius: "0.5rem",
+    padding: "1rem",
+    boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+  },
+  formSection: {
+    marginBottom: "10px",
+    padding: "0.75rem",
+    border: "1px solid #000000",
+    borderRadius: "0.5rem",
+    backgroundColor: "#f9f9f9",
+    height: "fit-content",
+  },
+  sectionTitle: {
+    fontSize: "1.1rem",
+    fontWeight: "600",
+    marginBottom: "8px",
+    color: "#385792",
+  },
+  formRow: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "8px",
+    marginBottom: "8px",
+  },
+  formGroup: {
+    flex: "1 1 auto",
+    minWidth: "200px", // Increased minimum width for better layout
+  },
+  formGroupReg: {
+    flex: "1 1 auto",
+    minWidth: "70px",
+    marginLeft: "0",
+  },
+  formLabel: {
+    display: "block",
+    marginBottom: "3px",
+    fontSize: "1rem",
+    fontWeight: "500",
+    color: "#000000",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    textTransform: "capitalize",
+    textAlign: "center",
+  },
+  formInput: {
+    width: "100%",
+    padding: "0.5rem",
+    border: "1px solid #ced4da",
+    borderRadius: "0.5rem",
+    fontSize: "1rem",
+  },
+  formNota: {
+    display: "block",
+    width: "100%",
+    padding: "0.5rem",
+    border: "1px solid #ced4da",
+    borderRadius: "0.5rem",
+    fontSize: "1rem",
+    marginBottom: "10px",
+    color: "#000000",
+    fontWeight: "500",
+    minHeight: "100px",
+    maxHeight: "200px",
+    overflowY: "auto",
+    resize: "vertical",
+    whiteSpace: "pre-wrap",
+    verticalAlign: "top",
+  },
+  formRegistro: {
+    display: "block",
+    width: "100%",
+    padding: "0.5rem",
+    border: "1px solid #ced4da",
+    borderRadius: "0.5rem",
+    fontSize: "1rem",
+    textAlign: "center",
+    color: "#000000",
+    fontWeight: "500",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    textTransform: "capitalize",
+  },
+  dateInputs: {
+    display: "flex",
+    width: "100%",
+    gap: "0.5rem",
+  },
+  dateCeremonia: {
+    display: "flex",
+    width: "100%",
+    gap: "5px",
+    maxWidth: "400px",
+  },
+  dateInput: {
+    flex: "1",
+    padding: "0.5rem",
+    border: "1px solid #ced4da",
+    borderRadius: "0.5rem",
+    fontSize: "1rem",
+    textAlign: "center",
+    color: "#000000",
+    fontWeight: "500",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    textTransform: "capitalize",
+  },
+  checkboxContainer: {
+    display: "flex",
+    alignItems: "center",
+    gap: "15px",
+  },
+  formSelect: {
+    padding: "8px 12px",
+    border: "1px solid #ced4da",
+    borderRadius: "4px",
+    fontSize: "0.9rem",
+    minWidth: "150px",
+  },
+  checkboxGroup: {
+    display: "flex",
+    alignItems: "center",
+  },
+  checkbox: {
+    marginRight: "5px",
+  },
+  checkboxLabel: {
+    fontSize: "0.9rem",
+  },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "flex-end",
+    gap: "15px",
+    marginTop: "20px",
+  },
+  buttonIcon: {
+    width: "18px",
+    height: "18px",
+    fill: "black",
+  },
+  submitButton: {
+    padding: "10px 20px",
+    backgroundColor: "#4CAF50",
+    color: "white",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "1rem",
+  },
+  topSectionsContainer: {
+    display: "flex",
+    gap: "20px",
+    marginBottom: "20px",
+    width: "100%",
+  },
+  registroRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    gap: "15px",
+    marginBottom: "5px",
+  },
+  registroField: {
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  noSelectionMessage: {
+    backgroundColor: "#fff",
+    borderRadius: "0.5rem",
+    padding: "2rem",
+    boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+    textAlign: "center",
+    marginTop: "2rem",
+  },
 }
 
 export default AñadirPartidas
+

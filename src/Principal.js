@@ -1,9 +1,9 @@
 import { useAuth } from "./AuthContext"
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import logo from "./logo.png" 
+import logo from "./logo.png"
 import user from "./user.png"
-import logocentral from "./logocentral.png" 
+import logocentral from "./logocentral.png"
 import { FaFileAlt,
   FaSearch,
   FaFileMedical,
@@ -14,6 +14,7 @@ import { FaFileAlt,
   FaArrowLeft,
   FaBars,
   FaSignOutAlt, } from "react-icons/fa"
+  import Layout from './Layout';
 
 function Principal() {
   const navigate = useNavigate()
@@ -70,6 +71,9 @@ function Principal() {
   }
 
   return (
+
+    <Layout pageTitle="Principal">
+      {/* Contenido de la vista */}
     <div style={styles.container}>
       {/* Barra superior */}
       <header style={styles.header}>
@@ -132,6 +136,7 @@ function Principal() {
         </main>
       </div>
     </div>
+    </Layout>
   )
 }
 
@@ -193,7 +198,7 @@ const styles = {
     with: "100%",
     height: "100%",
     overflow: "auto",
-    boxShadow: "3px 0 8px rgba(0,0,0,0.15)",    
+    boxShadow: "3px 0 8px rgba(0,0,0,0.15)",
   },
   sidebarButton: {
     display: "flex",
@@ -213,7 +218,7 @@ const styles = {
     overflow: "hidden",
     position: "relative",
     whiteSpace: "nowrap",
-    width: "100%", 
+    width: "100%",
     minHeight: "40px",
     marginBottom: "1rem",
   },
