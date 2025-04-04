@@ -1,7 +1,14 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "./AuthContext"
 import logo from "./logo.png"
+import { FilterMatchMode, FilterOperator } from "primereact/api"
+import { DataTable } from "primereact/datatable"
+import { Column } from "primereact/column"
+import { InputText } from "primereact/inputtext"
+import { IconField } from "primereact/iconfield"
+import { InputIcon } from "primereact/inputicon"
+import { Tag } from "primereact/tag"
 import { FaFileAlt,
   FaSearch,
   FaFileMedical,
@@ -16,9 +23,20 @@ function Registros() {
 
   const navigate = useNavigate()
   const { user, logout } = useAuth()
-  const [eventoSeleccionado, setEventoSeleccionado] = useState('Todos');
+  const [ceremoniaSeleccionada, setCeremoniaSeleccionada] = useState('Todos');
   const [menuAbierto, setMenuAbierto] = useState(false)
   const [isSubmenuOpen, setIsSubmenuOpen] = useState(false)
+  const [filters, setFilters] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    primerNombre: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    segundoNombre: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    primerApellido: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    segundoApellido: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    fechaNacimiento: { value: null, matchMode: FilterMatchMode.BETWEEN },
+    lugarNacimiento: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    padre: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    ceremonia: { value: null, matchMode: FilterMatchMode.EQUALS }
+  })
   
   // Datos de ejemplo para la tabla
   const [registros] = useState([
@@ -29,7 +47,7 @@ function Registros() {
       libro: "1",
       folio: "2",
       acta: "3",
-      evento: "Bautismo",
+      ceremonia: "Bautismo",
       fechaEvento: "24/05/2024",
       sacerdote: "Juan Rodriguez",
       fechaNacimiento: "24/05/2004",
@@ -38,11 +56,10 @@ function Registros() {
       madre: "Maria Lopez",
       abueloPaterno: "Pedro Gomez",
       abueloMaterno: "Alfredo Ramirez",
-      abuelaPaterna: "Ana Gomez", 
+      abuelaPaterna: "Ana Gomez",
       abuelaMaterna: "Ana Ramirez",
       padrino: "Pedro Gomez",
       madrina: "Ana Ramirez",
-      estadoCivil: "Soltero",
     },
     {
       id: 2,
@@ -54,6 +71,7 @@ function Registros() {
       evento: "Matrimonio",
       fecha: "15/04/2015",
       sacerdote: "David Martinez",
+      ceremonia: "Bautismo",
     },
     {
       id: 3,
@@ -62,7 +80,7 @@ function Registros() {
       libro: "3",
       folio: "4",
       acta: "4",
-      evento: "Defunción",
+      ceremonia: "Confirmacion",
       fecha: "7/11/2010",
       sacerdote: "Pedro Hernandez",
     },
@@ -73,7 +91,7 @@ function Registros() {
       libro: "4",
       folio: "5",
       acta: "5",
-      evento: "Primera Comunión",
+      ceremonia: "Bautismo",
       fecha: "23/7/2007",
       sacerdote: "Juan Perez",
     },
@@ -216,7 +234,7 @@ function Registros() {
       libro: "2",
       folio: "3",
       acta: "3",
-      evento: "Matrimonio",
+      ceremonia: "Confirmacion",
       fecha: "15/04/2015",
       sacerdote: "David Martinez",    
     },
@@ -227,7 +245,7 @@ function Registros() {
       libro: "3",
       folio: "4",
       acta: "4",
-      evento: "Defunción",
+      ceremonia: "Matrimonio",
       fecha: "7/11/2010",
       sacerdote: "Pedro Hernandez",    
     },
@@ -293,15 +311,25 @@ function Registros() {
       libro: "4",
       folio: "5",
       acta: "5",
-      evento: "Primera Comunión",
+      ceremonia: "Confirmacion",
       fecha: "23/7/2007",
       sacerdote: "Juan Perez",    
-    }, 
+    },
   ])
 
-  const registrosFiltrados = eventoSeleccionado === 'Todos'
+  
+  const getEventoColor = (ceremonia) => {
+    switch(ceremonia) {
+      case 'Bautismo': return '#B3E5FC';
+      case 'Confirmacion': return '#F6DC43';
+      case 'Matrimonio': return '#F2B28C';
+      default: return null;
+    }
+  }
+
+  const registrosFiltrados = ceremoniaSeleccionada === 'Todos'
   ? registros
-  : registros.filter(registro => registro.evento === eventoSeleccionado);
+  : registros.filter(registro => registro.ceremonia === ceremoniaSeleccionada);
 
   const toggleMenu = () => {
     setMenuAbierto(!menuAbierto)
@@ -371,7 +399,7 @@ function Registros() {
             overflow: menuAbierto ? "hidden" : "auto",
             position: "fixed",
             zIndex: 1000,
-            height: "calc(100vh - 70px)", // Ajusta la altura del menú
+            height: "calc(100vh - 100px)", // Ajusta la altura del menú
           }}
         >
           {/* Botón para expandir/colapsar */}
@@ -419,84 +447,221 @@ function Registros() {
             marginLeft: menuAbierto ? "250px" : "50px",
             padding: menuAbierto ? "1.5rem" : "1.5rem",
             transition: "margin-left 0.2s ease-in-out",
-            overflow: "auto",
-            height: "calc(100vh - 70px)", // Ajusta la altura del contenido
+            overflow: "hidden",
+            height: "calc(100vh - 70px)",
           }}
         >
           {/* Selector de tipo de evento */}
           <div style={styles.filtroContainer}>
-            <label htmlFor="evento" style={styles.label}>
+            <label htmlFor="ceremonia" style={styles.label}>
               Seleccionar Tipo de Ceremonia:
             </label>
             <select
-              id="evento"
-              value={eventoSeleccionado}
-              onChange={(e) => setEventoSeleccionado(e.target.value)}
+              id="ceremonia"
+              value={ceremoniaSeleccionada}
+              onChange={(e) => setCeremoniaSeleccionada(e.target.value)}
               style={styles.select}
             >
               <option value="Todos">Todos</option>
               <option value="Bautismo">Bautizos</option>
-              <option value="Confirmación">Confirmaciones</option>
+              <option value="Confirmacion">Confirmaciones</option>
               <option value="Matrimonio">Matrimonios</option>
             </select>
           </div>
   
           {/* Tabla de registros */}
           <div style={styles.tableContainer}>
-            <table style={styles.table}>
-              <thead style={styles.tableHeader}>
-                <tr>
-                  <th style={styles.th}>Id</th>
-                  <th style={styles.th}>Primer Nombre</th>
-                  <th style={styles.th}>Segundo Nombre</th>
-                  <th style={styles.th}>Primer Apellido</th>
-                  <th style={styles.th}>Segundo Apellido</th>
-                  <th style={styles.th}>Libro</th>
-                  <th style={styles.th}>Folio</th>
-                  <th style={styles.th}>Acta</th>
-                  <th style={styles.th}>Ceremonia</th>
-                  <th style={styles.th}>Fecha Ceremonia</th>
-                  <th style={styles.th}>Sacerdote</th>
-                  <th style={styles.th}>Fecha Nacimiento</th>
-                  <th style={styles.th}>Lugar Nacimiento</th>
-                  <th style={styles.th}>Padre</th>
-                  <th style={styles.th}>Madre</th>
-                  <th style={styles.th}>Abuelo Paterno</th>
-                  <th style={styles.th}>Abuelo Materno</th>
-                  <th style={styles.th}>Abuela Paterna</th>
-                  <th style={styles.th}>Abuela Materna</th>
-                  <th style={styles.th}>Padrino</th>
-                  <th style={styles.th}>Madrina</th>
-                </tr>
-              </thead>
-              <tbody style={styles.tableBody}>
-                {registrosFiltrados.map((registro) => (
-                  <tr key={registro.id} style={styles.tr}>
-                    <td style={styles.td}>{registro.id}</td>
-                    <td style={styles.td}>{registro.primerNombre}</td>
-                    <td style={styles.td}>{registro.segundoNombre}</td>
-                    <td style={styles.td}>{registro.primerApellido}</td>
-                    <td style={styles.td}>{registro.segundoApellido}</td>
-                    <td style={styles.td}>{registro.libro}</td>
-                    <td style={styles.td}>{registro.folio}</td>
-                    <td style={styles.td}>{registro.acta}</td>
-                    <td style={styles.td}>{registro.ceremonia}</td>
-                    <td style={styles.td}>{registro.fechaCeremonia}</td>
-                    <td style={styles.td}>{registro.sacerdote}</td>
-                    <td style={styles.td}>{registro.fechaNacimiento}</td>
-                    <td style={styles.td}>{registro.lugarNacimiento}</td>
-                    <td style={styles.td}>{registro.padre}</td>
-                    <td style={styles.td}>{registro.madre}</td>
-                    <td style={styles.td}>{registro.abueloPaterno}</td>
-                    <td style={styles.td}>{registro.abueloMaterno}</td>
-                    <td style={styles.td}>{registro.abuelaPaterna}</td>
-                    <td style={styles.td}>{registro.abuelaMaterna}</td>
-                    <td style={styles.td}>{registro.padrino}</td>
-                    <td style={styles.td}>{registro.madrina}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="card" style={{ flex: 1, overflow: "hidden" }}>
+              <DataTable
+                  value={registrosFiltrados}
+                  showGridlines
+                  sortMode="multiple"
+                  scrollable
+                  scrollHeight="800px"
+                  filters={filters}
+                  onFilter={(e) => setFilters(e.filters)}
+                  tableStyle={{minWidth: "50rem", height: "100%",}}
+                  
+                >
+                  <Column
+                    field="id"
+                    header="ID"
+                    headerStyle={styles.columnaTabla}
+                    bodyStyle={styles.filaTabla}
+                    sortable
+                    style={{ width: "5%" }}
+                  ></Column>
+                  <Column
+                    field="primerNombre"
+                    header="Primer Nombre"
+                    headerStyle={styles.columnaTabla}
+                    bodyStyle={styles.filaTabla}
+                    sortable
+                    style={{ width: "20%" }}
+                  ></Column>
+                  <Column
+                    field="segundoNombre"
+                    header="Segundo Nombre"
+                    headerStyle={styles.columnaTabla}
+                    bodyStyle={styles.filaTabla}
+                    sortable
+                    style={{ width: "20%" }}
+                  ></Column>
+                  <Column
+                    field="primerApellido"
+                    header="Primer Apellido"
+                    headerStyle={styles.columnaTabla}
+                    bodyStyle={styles.filaTabla}
+                    sortable
+                    style={{ width: "20%" }}
+                  ></Column>
+                  <Column
+                    field="segundoApellido"
+                    header="Segundo Apellido"
+                    headerStyle={styles.columnaTabla}
+                    bodyStyle={styles.filaTabla}
+                    sortable
+                    style={{ width: "20%" }}
+                  ></Column>
+                  <Column
+                    field="libro"
+                    header="Libro"
+                    headerStyle={styles.columnaTabla}
+                    bodyStyle={styles.filaTabla}
+                    sortable
+                    style={{ width: "7%" }}
+                  ></Column>
+                  <Column
+                    field="folio"
+                    header="Folio"
+                    headerStyle={styles.columnaTabla}
+                    bodyStyle={styles.filaTabla}
+                    sortable
+                    style={{ width: "7%" }}
+                  ></Column>
+                  <Column
+                    field="acta"
+                    header="Acta"
+                    headerStyle={styles.columnaTabla}
+                    bodyStyle={styles.filaTabla}
+                    sortable
+                    style={{ width: "7%" }}
+                  ></Column>
+                  <Column
+                    field="ceremonia"
+                    header="Ceremonia"
+                    headerStyle={styles.columnaTabla}
+                    bodyStyle={styles.filaTabla}
+                    body={(rowData) => (
+                      <div style={{
+                        backgroundColor: getEventoColor(rowData.ceremonia),
+                        padding: '4px 8px',
+                        borderRadius: '4px'
+                      }}>
+                        {rowData.ceremonia}
+                      </div>
+                    )}
+                    sortable
+                    style={{ width: "20%" }}
+                  ></Column>
+                  <Column
+                    field="fechaCeremonia"
+                    header="Fecha Ceremonia"
+                    headerStyle={styles.columnaTabla}
+                    bodyStyle={styles.filaTabla}
+                    sortable
+                    style={{ width: "20%" }}
+                  ></Column>
+                  <Column
+                    field="sacerdote"
+                    header="Sacerdote"
+                    headerStyle={styles.columnaTabla}
+                    bodyStyle={styles.filaTabla}
+                    sortable
+                    style={{ width: "20%" }}
+                  ></Column>
+                  <Column
+                    field="fechaNacimiento"
+                    header="Fecha Nacimiento"
+                    headerStyle={styles.columnaTabla}
+                    bodyStyle={styles.filaTabla}
+                    sortable
+                    style={{ width: "20%" }}
+                  ></Column>
+                  <Column
+                    field="lugarNacimiento"
+                    header="Lugar Nacimiento"
+                    headerStyle={styles.columnaTabla}
+                    bodyStyle={styles.filaTabla}
+                    sortable
+                    style={{ width: "20%" }}
+                  ></Column>
+                  <Column
+                    field="padre"
+                    header="Padre"
+                    headerStyle={styles.columnaTabla}
+                    bodyStyle={styles.filaTabla}
+                    sortable
+                    style={{ width: "20%" }}
+                  ></Column>
+                  <Column
+                    field="madre"
+                    header="Madre"
+                    headerStyle={styles.columnaTabla}
+                    bodyStyle={styles.filaTabla}
+                    sortable
+                    style={{ width: "20%" }}
+                  ></Column>
+                  <Column
+                    field="abueloPaterno"
+                    header="Abuelo Paterno"
+                    headerStyle={styles.columnaTabla}
+                    bodyStyle={styles.filaTabla}
+                    sortable
+                    style={{ width: "20%" }}
+                  ></Column>
+                  <Column
+                    field="abueloMaterno"
+                    header="Abuelo Materno"
+                    headerStyle={styles.columnaTabla}
+                    bodyStyle={styles.filaTabla}
+                    sortable
+                    style={{ width: "20%" }}
+                  ></Column>
+                  <Column
+                    field="abueloPaterna"
+                    header="Abuela Paterna"
+                    headerStyle={styles.columnaTabla}
+                    bodyStyle={styles.filaTabla}
+                    sortable
+                    style={{ width: "20%" }}
+                  ></Column>
+                  <Column
+                    field="abueloMaterna"
+                    header="Abuelo Materna"
+                    headerStyle={styles.columnaTabla}
+                    bodyStyle={styles.filaTabla}
+                    sortable
+                    style={{ width: "20%" }}
+                  ></Column>
+                  <Column
+                    field="padrino"
+                    header="Padrino"
+                    headerStyle={styles.columnaTabla}
+                    bodyStyle={styles.filaTabla}
+                    sortable
+                    style={{ width: "20%" }}
+                  ></Column>
+                  <Column
+                    field="madrina"
+                    header="Madrina"
+                    headerStyle={styles.columnaTabla}
+                    bodyStyle={styles.filaTabla}
+                    sortable
+                    style={{ width: "20%" }}
+                  ></Column>
+                </DataTable>
+              </div>
           </div>
         </main>
       </div>
@@ -594,7 +759,7 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    height: "calc(100% - 50px)", // Restar la altura del botón de toggle
+    height: "calc(100% - 50px)",
     overflow: "hidden",
   },
   sidebarButtons: {
@@ -684,12 +849,12 @@ const styles = {
     overflow: "auto",
     marginLeft: "200px",
     backgroundColor: "#FFFFFF",
-    height: "calc(100vh - 70px)",
+    height: "calc(100vh - 100px)",
   },
   filtroContainer: {
     alignItems: "center",
-    marginBottom: "15px",	
-    marginLeft: '0.5rem',
+    marginBottom: "0.5rem",
+    marginLeft: '1rem',
     fontSize: '1rem',
     fontWeight: '600',
     display: 'flex',
@@ -711,72 +876,54 @@ const styles = {
     fontWeight: '550',
   },
   tableContainer: {
-    backgroundColor: "black",
+    backgroundColor: "white",
     borderRadius: "0.5rem",
     border: "1px solid #000000",
     boxShadow: "none",
-    overflow: "auto",
+    overflow: "hidden",
+    flexDirection: "column",
     marginBottom: "20px",
     marginLeft: '1rem',
     fontSize: '1rem',
     fontWeight: '600',
     overflowX: "auto",
-    maxHeight: "calc(100vh - 200px)",
+    maxHeight: "calc(100vh - 100px)",
+  },
+  headerCell: {
+    backgroundColor: '#FCCE74',
+    fontWeight: '600',
+    padding: '12px',
+    borderRight: '1px solid #000'
+  },
+  bodyCell: {
+    backgroundColor: '#FCCE74',
+    padding: '12px',
+    borderRight: '1px solid #000',
+    borderBottom: '1px solid #000'
   },
 
-  table: {
-    width: "100%",
-    borderCollapse: "collapse",
-    border: "1px solid #000000",
-    borderBottom: "1px solid #000000",
-    fontSize: "1rem",
-    fontWeight: "600",
-    overflowX: "auto",
+  columnaTabla: {
+    backgroundColor: '#FCCE74',
+    border: '1px solid #000000',
+    fontWeight: '600',
+    fontSize: '1rem',
+    color: 'black',
+    textAlign: 'center',
+    padding: '12px',
+    borderRight: '1px solid #000'
   },
-  tableHeader: {
-    position: "sticky",
-    top: 0,
-    backgroundColor: "#FCCE74",
-    zIndex: 1,
+
+  filaTabla: {
+    backgroundColor: '#FFFFFF',
+    border: '1px solid #000000',
+    fontWeight: '600',
+    fontSize: '1rem',
+    color: 'black',
+    textAlign: 'center',
+    padding: '12px',
+    borderRight: '1px solid #000'
   },
-  tableBody: {
-    overflowY: "auto",
-  },
-  th: {
-    backgroundColor: "#FCCE74",
-    padding: "1rem",
-    textAlign: "center",
-    border: "1px solid #000000",
-    borderBottom: "1px solid #000000",
-    fontWeight: "600",
-    fontSize: "1rem",
-    minWidth: "100px",
-    overflow: "auto",
-    whiteSpace: "nowrap",
-    textOverflow: "ellipsis",
-  },
-  tr:{
-    backgroundColor: "#FFFFFF",
-    borderBottom: "1px solid #000000",
-    border: "1px solid #000000",
-    textAlign: "center",
-    overflow: "auto",
-    whiteSpace: "nowrap",
-    textOverflow: "ellipsis",
-  },
-  td: {
-    backgroundColor: "white",
-    padding: "12px",
-    verticalAlign: "middle",
-    border: "1px solid #000000",
-    borderBottom: "1px solid #000000",
-    textAlign: "center",
-    fontSize: "1rem",
-    fontWeight: "600",
-    overflow: "auto",
-    whiteSpace: "nowrap",
-    textOverflow: "ellipsis",
-  },
+
 }
 
 export default Registros

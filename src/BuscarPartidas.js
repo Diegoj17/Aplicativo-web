@@ -2,78 +2,228 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "./AuthContext"
 import logo from "./logo.png"
-import { FaFileAlt,
+import { FilterMatchMode, FilterOperator } from "primereact/api"
+import { DataTable } from "primereact/datatable"
+import { Column } from "primereact/column"
+import { InputText } from "primereact/inputtext"
+import { IconField } from "primereact/iconfield"
+import { InputIcon } from "primereact/inputicon"
+import { Tag } from "primereact/tag"
+import {
+  FaFileAlt,
   FaSearch,
   FaFileMedical,
   FaEdit,
   FaPrint,
   FaChevronRight,
-  FaChevronDown,
   FaArrowLeft,
   FaBars,
-  FaSignOutAlt, } from "react-icons/fa"
-  import Layout from './Layout';
+  FaSignOutAlt,
+} from "react-icons/fa"
+import Layout from "./Layout"
+
+// Asegúrate de importar los estilos de PrimeReact
+import "primereact/resources/themes/lara-light-indigo/theme.css" // tema
+import "primereact/resources/primereact.min.css" // core
+import "primeicons/primeicons.css" // iconos
+import "primeflex/primeflex.css" // primeflex
 
 function BuscarPartidas() {
-
   const navigate = useNavigate()
   const { user, logout } = useAuth()
-  const [registrosFiltrados, setRegistrosFiltrados] = useState([]);
   const [menuAbierto, setMenuAbierto] = useState(false)
   const [isSubmenuOpen, setIsSubmenuOpen] = useState(false)
-  const [showResults, setShowResults] = useState(false)
-  const [searchCedula, setSearchCedula] = useState("")
-  const [selectedRow, setSelectedRow] = useState(null);
-  const [printFormat, setPrintFormat] = useState("corto");
-  
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedRow, setSelectedRow] = useState(null)
+  const [printFormat, setPrintFormat] = useState("corto")
+  const [isLoading, setIsLoading] = useState(false)
+
   // Datos de ejemplo para la tabla
   const [registros] = useState([
     {
       id: 1,
-      nombre: "Pedro Perez",
+      primerNombre: "Pedro",
+      segundoNombre: "José",
+      primerApellido: "Perez",
+      segundoApellido: "Gomez",
       cedula: "1234567890",
       libro: "1",
       folio: "2",
       acta: "3",
       evento: "Bautismo",
+      ceremonia: "Bautismo",
       fecha: "24/05/2004",
       sacerdote: "Juan Rodriguez",
-
+      padre: "Carlos Perez",
+      madre: "Maria Gomez",
+      abueloPaterno: "José Perez",
+      abueloMaterno: "Pedro Gomez",
+      abuelaPaterna: "Ana Ruiz",
+      abuelaMaterna: "Luisa Martinez",
+      padrinos: ["Juan Perez", "Ana Gomez"],
+      oficiante: "P. Juan Rodriguez",
+      párroco: "P. Miguel Hernandez",
+      diocesis: "Caracas",
+    },
+    {
+      id: 3,
+      primerNombre: "Pedro",
+      segundoNombre: "José",
+      primerApellido: "Perez",
+      segundoApellido: "Gomez",
+      cedula: "1234567890",
+      libro: "5",
+      folio: "4",
+      acta: "3",
+      evento: "Bautismo",
+      ceremonia: "Bautismo",
+      fecha: "24/05/2004",
+      sacerdote: "Juan Rodriguez",
+      padre: "Carlos Perez",
+      madre: "Maria Gomez",
+      abueloPaterno: "José Perez",
+      abueloMaterno: "Pedro Gomez",
+      abuelaPaterna: "Ana Ruiz",
+      abuelaMaterna: "Luisa Martinez",
+      padrinos: ["Juan Perez", "Ana Gomez"],
+      oficiante: "P. Juan Rodriguez",
+      párroco: "P. Miguel Hernandez",
+      diocesis: "Caracas",
     },
     {
       id: 2,
-      nombre: "Martin Sanchez",
+      primerNombre: "Martin",
+      segundoNombre: "Antonio",
+      primerApellido: "Sanchez",
+      segundoApellido: "Rodriguez",
       cedula: "0987654321",
       libro: "2",
       folio: "3",
       acta: "3",
       evento: "Matrimonio",
+      ceremonia: "Matrimonio",
       fecha: "15/04/2015",
       sacerdote: "David Martinez",
+      padre: "Luis Sanchez",
+      madre: "Carmen Rodriguez",
+      abueloPaterno: "Antonio Sanchez",
+      abueloMaterno: "Martin Rodriguez",
+      abuelaPaterna: "Rosa Perez",
+      abuelaMaterna: "Teresa Gomez",
+      padrinos: ["Pedro Sanchez", "Maria Rodriguez"],
+      oficiante: "P. David Martinez",
+      párroco: "P. Miguel Hernandez",
+      diocesis: "Caracas",
     },
     {
-      id: 3,
-      nombre: "José Contreras",
+      id: 4,
+      primerNombre: "José",
+      segundoNombre: "Luis",
+      primerApellido: "Contreras",
+      segundoApellido: "Hernandez",
       cedula: "9876543210",
       libro: "3",
       folio: "4",
       acta: "4",
       evento: "Defunción",
+      ceremonia: "Defunción",
       fecha: "7/11/2010",
       sacerdote: "Pedro Hernandez",
+      padre: "Manuel Contreras",
+      madre: "Josefina Hernandez",
+      abueloPaterno: "Luis Contreras",
+      abueloMaterno: "José Hernandez",
+      abuelaPaterna: "Marta Lopez",
+      abuelaMaterna: "Juana Diaz",
+      padrinos: ["Carlos Contreras", "Luisa Hernandez"],
+      oficiante: "P. Pedro Hernandez",
+      párroco: "P. Miguel Hernandez",
+      diocesis: "Caracas",
     },
     {
-      id: 4,
-      nombre: "Carlos Martinez",
+      id: 5,
+      primerNombre: "Carlos",
+      segundoNombre: "Alberto",
+      primerApellido: "Martinez",
+      segundoApellido: "Lopez",
       cedula: "1234567890",
       libro: "4",
       folio: "5",
       acta: "5",
       evento: "Primera Comunión",
+      ceremonia: "Primera Comunión",
       fecha: "23/7/2007",
       sacerdote: "Juan Perez",
+      padre: "Alberto Martinez",
+      madre: "Sofia Lopez",
+      abueloPaterno: "Carlos Martinez",
+      abueloMaterno: "Alberto Lopez",
+      abuelaPaterna: "Patricia Diaz",
+      abuelaMaterna: "Claudia Perez",
+      padrinos: ["Roberto Martinez", "Patricia Lopez"],
+      oficiante: "P. Juan Perez",
+      párroco: "P. Miguel Hernandez",
+      diocesis: "Caracas",
     },
   ])
+
+  // Configuración de filtros para PrimeReact DataTable
+  const [filters, setFilters] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    primerNombre: {
+      operator: FilterOperator.AND,
+      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+    },
+    segundoNombre: {
+      operator: FilterOperator.AND,
+      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+    },
+    primerApellido: {
+      operator: FilterOperator.AND,
+      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+    },
+    segundoApellido: {
+      operator: FilterOperator.AND,
+      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+    },
+  })
+
+  // Datos filtrados para la tabla
+  const [registrosFiltrados, setRegistrosFiltrados] = useState([])
+
+  // Búsqueda en tiempo real
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setRegistrosFiltrados([])
+      setIsLoading(false)
+      return
+    }
+
+    setIsLoading(true)
+
+    const timeoutId = setTimeout(() => {
+      const resultados = registros.filter((registro) => {
+        const fullName =
+          `${registro.primerNombre} ${registro.segundoNombre} ${registro.primerApellido} ${registro.segundoApellido}`.toLowerCase()
+        return fullName.includes(searchTerm.toLowerCase())
+      })
+
+      setRegistrosFiltrados(resultados)
+      setIsLoading(false)
+    }, 300)
+
+    return () => clearTimeout(timeoutId)
+  }, [searchTerm, registros])
+
+  // Eventos de PrimeReact
+  const getEventoColor = (ceremonia) => {
+    switch(ceremonia) {
+      case 'Bautismo': return '#B3E5FC';
+      case 'Confirmacion': return '#F6DC43';
+      case 'Matrimonio': return '#F2B28C';
+      default: return null;
+    }
+  }
 
   const toggleMenu = () => {
     setMenuAbierto(!menuAbierto)
@@ -86,7 +236,6 @@ function BuscarPartidas() {
     navigate("/registros")
   }
 
-
   const handleLogout = () => {
     logout()
     navigate("/")
@@ -96,23 +245,9 @@ function BuscarPartidas() {
     navigate("/Principal")
   }
 
-  const handleSearch = (e) => {
-    e.preventDefault()
-    setShowResults(true) // Mostrar resultados solo después de buscar
-    console.log("Buscando cédula:", searchCedula)
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value)
   }
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    const resultados = registros.filter(registro => 
-      registro.cedula.includes(searchCedula.trim())
-    );
-    setRegistrosFiltrados(resultados);
-  };
-
-  useEffect(() => {
-    if (!searchCedula) setRegistrosFiltrados([]);
-  }, [searchCedula]);
 
   const handleAdd = () => {
     navigate("/añadirPartidas")
@@ -122,21 +257,129 @@ function BuscarPartidas() {
     console.log("Corregir partida")
   }
 
-  const handlePrint = () => {
-    const selectedRecord = registrosFiltrados.find(r => r.id === selectedRow);
-    
-    const formatos = {
-      corto: [
-        'primerNombre', 'segundoNombre', 
-        'primerApellido', 'segundoApellido',
-        'libro', 'folio', 'acta'
-      ],
-      largo: Object.keys(selectedRecord)
-    };
+  const generarFormatoCorto = () => {
+    if (!selectedRow) return
+
+    const selectedRecord = registros.find((r) => r.id === selectedRow.id)
+    if (!selectedRecord) return
+
+    const printWindow = window.open("", "_blank")
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Certificado Bautismal - ${selectedRecord.primerNombre}</title>
+          <style>
+            @page { margin: 2cm; size: A4 portrait; }
+            body {
+              font-family: 'Arial', sans-serif;
+              line-height: 1.6;
+              color: #2c3e50;
+            }
+            .encabezado {
+              border-bottom: 3px solid #385792;
+              padding-bottom: 15px;
+              margin-bottom: 25px;
+            }
+            .titulo-principal {
+              color: #385792;
+              font-size: 24pt;
+              text-align: center;
+              margin: 20px 0;
+            }
+            .tabla-datos {
+              width: 100%;
+              border-collapse: collapse;
+              margin: 25px 0;
+            }
+            .tabla-datos td {
+              padding: 12px;
+              border: 1px solid #ddd;
+            }
+            .tabla-datos td:first-child {
+              font-weight: bold;
+              width: 30%;
+              background-color: #f8f9fa;
+            }
+            .sello-parroquia {
+              float: right;
+              width: 150px;
+              margin: 20px;
+            }
+            @media print {
+              .no-print { display: none; }
+              button { display: none; }
+            }
+          </style>
+        </head>
+        <body>
+          <img src="/sello-oficial.png" alt="Sello Parroquial" class="sello-parroquia">
+          
+          <div class="encabezado">
+            <h1 class="titulo-principal">CERTIFICADO DE BAUTISMO</h1>
+            <p style="text-align: center;">Parroquia San Luis Gonzaga</p>
+            <p style="text-align: center;">Diócesis de ${selectedRecord.diocesis || "N/A"}</p>
+          </div>
   
-    const camposImpresion = formatos[printFormat];
-    
-    const printWindow = window.open("", "_blank");
+          <table class="tabla-datos">
+            <tr>
+              <td>Nombre completo:</td>
+              <td>${selectedRecord.primerNombre} ${selectedRecord.segundoNombre} ${selectedRecord.primerApellido} ${selectedRecord.segundoApellido}</td>
+            </tr>
+            <tr>
+              <td>Fecha de bautizo:</td>
+              <td>${selectedRecord.fecha}</td>
+            </tr>
+            <tr>
+              <td>Libro/Acta/Folio:</td>
+              <td>${selectedRecord.libro} - ${selectedRecord.folio} - ${selectedRecord.acta}</td>
+            </tr>
+            <tr>
+              <td>Padrinos:</td>
+              <td>${selectedRecord.padrinos ? selectedRecord.padrinos.join(", ") : "N/A"}</td>
+            </tr>
+            <tr>
+              <td>Celebrante:</td>
+              <td>${selectedRecord.oficiante || selectedRecord.sacerdote}</td>
+            </tr>
+          </table>
+  
+          <div style="margin-top: 50px;">
+            <p>Fecha de emisión: ${new Date().toLocaleDateString()}</p>
+            <div style="text-align: center; margin-top: 40px;">
+              <p>__________________________</p>
+              <p>P. ${selectedRecord.párroco || "N/A"}</p>
+              <p>Párroco</p>
+            </div>
+          </div>
+  
+          <script>
+            window.onload = function() {
+              window.print();
+              setTimeout(() => window.close(), 1000);
+            }
+          </script>
+        </body>
+      </html>
+    `)
+    printWindow.document.close()
+    printWindow.print()
+  }
+
+  const handlePrintLargo = () => {
+    if (!selectedRow) return
+
+    const selectedRecord = registros.find((r) => r.id === selectedRow.id)
+    if (!selectedRecord) return
+
+    const formatos = {
+      largo: Object.keys(selectedRecord).filter(
+        (key) => typeof selectedRecord[key] !== "object" && key !== "id" && key !== "padrinos",
+      ),
+    }
+
+    const camposImpresion = formatos.largo
+
+    const printWindow = window.open("", "_blank")
     printWindow.document.write(`
       <html>
         <head>
@@ -151,281 +394,421 @@ function BuscarPartidas() {
             table { border-collapse: collapse; width: 100%; }
             td, th { border: 1px solid #ddd; padding: 8px; }
             th { background-color: #f2f2f2; }
-            .formato-corto td { padding: 12px; font-size: 14px; }
+            .formato-largo td { padding: 12px; font-size: 14px; }
           </style>
         </head>
         <body>
           <div class="header">
-            <h2>${printFormat === 'corto' ? 'Certificado Resumido' : 'Certificado Completo'}</h2>
+            <h2>Certificado Completo</h2>
             <p>Emitido: ${new Date().toLocaleDateString()}</p>
           </div>
   
-          <table class="${printFormat}">
+          <table class="formato-largo">
             <tbody>
-              ${camposImpresion.map(key => `
+              ${camposImpresion
+                .map(
+                  (key) => `
                 <tr>
-                  <th>${key.replace(/([A-Z])/g, ' $1').toUpperCase()}</th>
-                  <td>${selectedRecord[key] || 'N/A'}</td>
+                  <th>${
+                    key
+                      .replace(/([A-Z])/g, " $1")
+                      .charAt(0)
+                      .toUpperCase() + key.replace(/([A-Z])/g, " $1").slice(1)
+                  }</th>
+                  <td>${selectedRecord[key] || "N/A"}</td>
                 </tr>
-              `).join('')}
+              `,
+                )
+                .join("")}
+              ${
+                selectedRecord.padrinos
+                  ? `
+                <tr>
+                  <th>Padrinos</th>
+                  <td>${selectedRecord.padrinos.join(", ")}</td>
+                </tr>
+              `
+                  : ""
+              }
             </tbody>
           </table>
           
-          ${printFormat === 'corto' ? `
-            <div style="margin-top: 30px; text-align: right;">
-              <p>_________________________</p>
-              <p>Firma autorizada</p>
-            </div>
-          ` : ''}
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
-  };
-
-  const handlePrint2 = () => {
-    const selectedRecord = registrosFiltrados.find(r => r.id === selectedRow);
-    
-    const formatos = {
-      corto: [
-        'primerNombre', 'segundoNombre', 
-        'primerApellido', 'segundoApellido',
-        'libro', 'folio', 'acta'
-      ],
-      largo: Object.keys(selectedRecord)
-    };
-  
-    const camposImpresion = formatos[printFormat];
-    
-    const printWindow = window.open("", "_blank");
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Partida de ${selectedRecord.primerNombre}</title>
-          <style>
-            body { font-family: Arial, sans-serif; padding: 20px; }
-            .header { 
-              border-bottom: 2px solid #000; 
-              margin-bottom: 20px;
-              padding-bottom: 10px;
-            }
-            table { border-collapse: collapse; width: 100%; }
-            td, th { border: 1px solid #ddd; padding: 8px; }
-            th { background-color: #f2f2f2; }
-            .formato-corto td { padding: 12px; font-size: 14px; }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <h2>${printFormat === 'corto' ? 'Certificado Resumido' : 'Certificado Completo'}</h2>
-            <p>Emitido: ${new Date().toLocaleDateString()}</p>
+          <div style="margin-top: 30px; text-align: right;">
+            <p>_________________________</p>
+            <p>Firma autorizada</p>
           </div>
-  
-          <table class="${printFormat}">
-            <tbody>
-              ${camposImpresion.map(key => `
-                <tr>
-                  <th>${key.replace(/([A-Z])/g, ' $1').toUpperCase()}</th>
-                  <td>${selectedRecord[key] || 'N/A'}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-          
-          ${printFormat === 'corto' ? `
-            <div style="margin-top: 30px; text-align: right;">
-              <p>_________________________</p>
-              <p>Firma autorizada</p>
-            </div>
-          ` : ''}
         </body>
       </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
-  };
-  
+    `)
+    printWindow.document.close()
+    printWindow.print()
+  }
 
-  return (
+  // Templates para PrimeReact DataTable
+  const eventoBodyTemplate = (rowData) => {
+    return <Tag value={rowData.ceremonia} severity={getEventoColor(rowData.ceremonia)} />
+  }
 
-    <Layout pageTitle="Buscar Partidas">
-      {/* Contenido de la vista */}
-    <div style={styles.container}>
-      {/* Barra superior */}
-      <header style={styles.header}>
-        <img src={logo || "/logo.png"} alt="Logo" style={styles.headerLogo} />
-        <h1 style={styles.headerTitle}>Busqueda de Partidas</h1>
-        <button onClick={handleLogout} style={styles.logoutButton}>
-          <FaSignOutAlt style={styles.iconLogout} />
-          Salir
-        </button>
-        <div style={styles.userInfo}>
-          <img src="/user.png" alt="Usuario" style={styles.userIcon} />
-          <div style={styles.userText}>
-            <span>{user?.name || "Nombre Usuario"}</span>
-            <span style={styles.roleText}>{user?.role || "Rol"}</span>
+  const onGlobalFilterChange = (event) => {
+    const value = event.target.value
+    const _filters = { ...filters }
+    _filters["global"].value = value
+    setFilters(_filters)
+  }
+
+  const renderHeader = () => {
+    const value = filters["global"] ? filters["global"].value : ""
+    return (
+      <div className="flex justify-content-end">
+        <IconField iconPosition="left">
+          <InputIcon className="pi pi-search" />
+          <InputText
+            type="search"
+            value={value || ""}
+            onChange={(e) => onGlobalFilterChange(e)}
+            placeholder="Buscar..."
+          />
+        </IconField>
+      </div>
+    )
+  }
+
+  const header = renderHeader()
+
+  const expandedRowTemplate = (data) => {
+    return (
+      <div className="p-3">
+        <h5>
+          Detalles de {data.primerNombre} {data.primerApellido}
+        </h5>
+        <div className="grid">
+          <div className="col-12 md:col-6 lg:col-3">
+            <div className="p-2 border-1 surface-border border-round">
+              <div className="text-500 font-medium mb-2">Información Familiar</div>
+              <div className="flex align-items-center justify-content-between mb-2">
+                <span className="font-medium">Padre:</span>
+                <span>{data.padre}</span>
+              </div>
+              <div className="flex align-items-center justify-content-between mb-2">
+                <span className="font-medium">Madre:</span>
+                <span>{data.madre}</span>
+              </div>
+            </div>
+          </div>
+          <div className="col-12 md:col-6 lg:col-3">
+            <div className="p-2 border-1 surface-border border-round">
+              <div className="text-500 font-medium mb-2">Abuelos Paternos</div>
+              <div className="flex align-items-center justify-content-between mb-2">
+                <span className="font-medium">Abuelo:</span>
+                <span>{data.abueloPaterno}</span>
+              </div>
+              <div className="flex align-items-center justify-content-between mb-2">
+                <span className="font-medium">Abuela:</span>
+                <span>{data.abuelaPaterna}</span>
+              </div>
+            </div>
+          </div>
+          <div className="col-12 md:col-6 lg:col-3">
+            <div className="p-2 border-1 surface-border border-round">
+              <div className="text-500 font-medium mb-2">Abuelos Maternos</div>
+              <div className="flex align-items-center justify-content-between mb-2">
+                <span className="font-medium">Abuelo:</span>
+                <span>{data.abueloMaterno}</span>
+              </div>
+              <div className="flex align-items-center justify-content-between mb-2">
+                <span className="font-medium">Abuela:</span>
+                <span>{data.abuelaMaterna}</span>
+              </div>
+            </div>
+          </div>
+          <div className="col-12 md:col-6 lg:col-3">
+            <div className="p-2 border-1 surface-border border-round">
+              <div className="text-500 font-medium mb-2">Información Adicional</div>
+              <div className="flex align-items-center justify-content-between mb-2">
+                <span className="font-medium">Sacerdote:</span>
+                <span>{data.sacerdote}</span>
+              </div>
+              <div className="flex align-items-center justify-content-between mb-2">
+                <span className="font-medium">Padrinos:</span>
+                <span>{data.padrinos ? data.padrinos.join(", ") : "N/A"}</span>
+              </div>
+            </div>
           </div>
         </div>
-      </header>
-  
-      <div style={styles.mainContent}>
-        {/* Menú lateral estilo Gmail */}
-        <nav
-          style={{
-            ...styles.sidebar,
-            padding: menuAbierto ? "1rem" : "1.5rem 0",
-            width: menuAbierto ? "250px" : "50px",
-            transition: "all 0.2s ease-in-out",
-            gap: menuAbierto ? "0.5rem" : "0",
-            overflow: menuAbierto ? "hidden" : "auto",
-            position: "fixed",
-            zIndex: 1000,
-            height: "calc(100vh - 70px)", // Ajusta la altura del menú
-          }}
-        >
-          {/* Botón para expandir/colapsar */}
-          <button onClick={toggleMenu} style={styles.menuToggleButton}>
-            {menuAbierto ? <FaChevronRight /> : <FaBars />}
+      </div>
+    )
+  }
+
+  return (
+    <Layout pageTitle="Buscar Partidas">
+      <div style={styles.container}>
+        {/* Barra superior */}
+        <header style={styles.header}>
+          <img src={logo || "/logo.png"} alt="Logo" style={styles.headerLogo} />
+          <h1 style={styles.headerTitle}>Búsqueda de Partidas</h1>
+          <button onClick={handleLogout} style={styles.logoutButton}>
+            <FaSignOutAlt style={styles.iconLogout} />
+            Salir
           </button>
-  
-          {/* Contenedor principal de botones */}
-          <div style={styles.sidebarButtonsContainer}>
-            {/* Botones de navegación */}
-            <div style={styles.sidebarButtons}>
-              <button onClick={handleViewRegistros} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Vista de Registros">
-                <FaFileAlt style={styles.icon} />
-                {menuAbierto && <span style={styles.buttonText}>Vista de Registros</span>}
-              </button>
-  
-              <button onClick={handleSearch} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Buscar partidas">
-                <FaSearch style={styles.icon} />
-                {menuAbierto && <span style={styles.buttonText}>Buscar Partidas</span>}
-              </button>
-  
-              <button onClick={handleAdd} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Añadir partidas">
-                <FaFileMedical style={styles.icon} />
-                {menuAbierto && <span style={styles.buttonText}>Añadir Partidas</span>}
-              </button>
-  
-              <button onClick={handleCorrect} style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }} title="Corregir partidas">
-                <FaEdit style={styles.icon} />
-                {menuAbierto && <span style={styles.buttonText}>Corregir Partidas</span>}
+          <div style={styles.userInfo}>
+            <img src="/user.png" alt="Usuario" style={styles.userIcon} />
+            <div style={styles.userText}>
+              <span>{user?.name || "Nombre Usuario"}</span>
+              <span style={styles.roleText}>{user?.role || "Rol"}</span>
+            </div>
+          </div>
+        </header>
+
+        <div style={styles.mainContent}>
+          {/* Menú lateral estilo Gmail */}
+          <nav
+            style={{
+              ...styles.sidebar,
+              padding: menuAbierto ? "1rem" : "1.5rem 0",
+              width: menuAbierto ? "250px" : "50px",
+              transition: "all 0.2s ease-in-out",
+              gap: menuAbierto ? "0.5rem" : "0",
+              overflow: menuAbierto ? "hidden" : "auto",
+              position: "fixed",
+              zIndex: 1000,
+              height: "calc(100vh - 70px)", // Ajusta la altura del menú
+            }}
+          >
+            {/* Botón para expandir/colapsar */}
+            <button onClick={toggleMenu} style={styles.menuToggleButton}>
+              {menuAbierto ? <FaChevronRight /> : <FaBars />}
+            </button>
+
+            {/* Contenedor principal de botones */}
+            <div style={styles.sidebarButtonsContainer}>
+              {/* Botones de navegación */}
+              <div style={styles.sidebarButtons}>
+                <button
+                  onClick={handleViewRegistros}
+                  style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }}
+                  title="Vista de Registros"
+                >
+                  <FaFileAlt style={styles.icon} />
+                  {menuAbierto && <span style={styles.buttonText}>Vista de Registros</span>}
+                </button>
+
+                <button
+                  style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }}
+                  title="Buscar partidas"
+                >
+                  <FaSearch style={styles.icon} />
+                  {menuAbierto && <span style={styles.buttonText}>Buscar Partidas</span>}
+                </button>
+
+                <button
+                  onClick={handleAdd}
+                  style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }}
+                  title="Añadir partidas"
+                >
+                  <FaFileMedical style={styles.icon} />
+                  {menuAbierto && <span style={styles.buttonText}>Añadir Partidas</span>}
+                </button>
+
+                <button
+                  onClick={handleCorrect}
+                  style={{ ...styles.sidebarIconButton, justifyContent: menuAbierto ? "flex-start" : "center" }}
+                  title="Corregir partidas"
+                >
+                  <FaEdit style={styles.icon} />
+                  {menuAbierto && <span style={styles.buttonText}>Corregir Partidas</span>}
+                </button>
+              </div>
+
+              {/* Botón "Atrás" al final del menú */}
+              <button onClick={handleBack} style={styles.backButton} title="Atrás">
+                <FaArrowLeft style={styles.iconBack} />
+                {menuAbierto && <span style={styles.buttonText}>Atrás</span>}
               </button>
             </div>
-  
-            {/* Botón "Atrás" al final del menú */}
-            <button onClick={handleBack} style={styles.backButton} title="Atrás">
-              <FaArrowLeft style={styles.iconBack} />
-              {menuAbierto && <span style={styles.buttonText}>Atrás</span>}
-            </button>
-          </div>
-        </nav>
-  
-        {/* Contenido principal */}
-        <main
-          style={{
-            ...styles.content,
-            marginLeft: menuAbierto ? "250px" : "50px",
-            padding: menuAbierto ? "1.5rem" : "1.5rem",
-            transition: "margin-left 0.2s ease-in-out",
-            overflow: "auto",
-            height: "calc(100vh - 70px)",
-            position: "relative",
-          }}
-        >
-          {/* Selector de tipo de evento */}
-          <form onSubmit={handleSearchSubmit} style={styles.searchForm}>
+          </nav>
+
+          {/* Contenido principal */}
+          <main
+            style={{
+              ...styles.content,
+              marginLeft: menuAbierto ? "250px" : "50px",
+              padding: menuAbierto ? "1.5rem" : "1.5rem",
+              transition: "margin-left 0.2s ease-in-out",
+              overflow: "auto",
+              height: "calc(100vh - 70px)",
+              position: "relative",
+            }}
+          >
+            {/* Formulario de búsqueda */}
             <div style={styles.searchSection}>
               <div style={styles.searchLeft}>
                 <label style={styles.searchLabel}>Digite los Nombres o Apellidos:</label>
                 <div style={styles.searchInputContainer}>
                   <input
-                  type="text"
-                  value={searchCedula}
-                  onChange={(e) => setSearchCedula(e.target.value)}
-                  style={styles.searchInput}
+                    type="text"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    style={styles.searchInput}
+                    placeholder="Buscar por nombres o apellidos..."
+                    autoComplete="off"
                   />
-                  <button type="submit" style={styles.searchButton} title="Buscar">
-                    <FaSearch style={styles.searchIcon} />
+                  <button type="button" style={styles.searchButton} title="Buscar">
+                    Buscar
                   </button>
                 </div>
               </div>
               <div style={styles.printControls}>
-                <button onClick={() => handlePrint('corto')} style={styles.printButton} disabled={!selectedRow} title="Imprimir Formato Corto">
-                <FaPrint style={styles.iconPrint} />
-                {<span style={styles.buttonText}>Imprimir Formato Corto</span>}
+                <button
+                  type="button"
+                  onClick={generarFormatoCorto}
+                  style={{
+                    ...styles.printButton,
+                    opacity: selectedRow ? 1 : 0.5,
+                    cursor: selectedRow ? "pointer" : "not-allowed",
+                  }}
+                  disabled={!selectedRow}
+                  title="Imprimir Formato Corto"
+                >
+                  <FaPrint style={styles.iconPrint} />
+                  <span style={styles.buttonText}>Formato Corto</span>
                 </button>
-                <button onClick={() => handlePrint2('largo')} style={styles.printButton} disabled={!selectedRow} title="Imprimir Formato Largo">
-                <FaPrint style={styles.iconPrint} />
-                {<span style={styles.buttonText}>Imprimir Formato Largo</span>}
+                <button
+                  type="button"
+                  onClick={handlePrintLargo}
+                  style={{
+                    ...styles.printButton,
+                    opacity: selectedRow ? 1 : 0.5,
+                    cursor: selectedRow ? "pointer" : "not-allowed",
+                  }}
+                  disabled={!selectedRow}
+                  title="Imprimir Formato Largo"
+                >
+                  <FaPrint style={styles.iconPrint} />
+                  <span style={styles.buttonText}>Formato Largo</span>
                 </button>
               </div>
             </div>
-          </form>
-  
-            {/* Tabla de registros */}
-            {searchCedula && (
-              <div style={styles.tableContainer}>
-                {registrosFiltrados.length === 0 ? (
-                <div style={styles.noResultsContainer}>
-                  <span style={styles.noResultsText}>No se encontraron registros..</span>
-                </div>
-              ) : (
-                <table style={styles.table}>
-                  <thead>
-                    <tr>
-                      
-                      <th style={styles.th}>Id</th>
-                      <th style={styles.th}>Primer Nombre</th>
-                      <th style={styles.th}>Segundo Nombre</th>
-                      <th style={styles.th}>Primer Apellido</th>
-                      <th style={styles.th}>Segundo Apellido</th>
-                      <th style={styles.th}>Libro</th>
-                      <th style={styles.th}>Folio</th>
-                      <th style={styles.th}>Acta</th>
-                      <th style={styles.th}>Padre</th>
-                      <th style={styles.th}>Madre</th>
-                      <th style={styles.th}>Abuelo Paterno</th>
-                      <th style={styles.th}>Abuelo Materno</th>
-                      <th style={styles.th}>Abuela Paterna</th>
-                      <th style={styles.th}>Abuela Materna</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {registrosFiltrados.map((registro, index) => (
-                        <tr key={registro.id} style={{...(index % 2 === 0 ? styles.tr : styles.trAlternate),
-                          backgroundColor: selectedRow === registro.id ? "#e3f2fd" : "inherit",
-                          cursor: "pointer"}} onClick={() => setSelectedRow(registro.id)}>
-                        
-                        <td style={styles.td}>{registro.id}</td>
-                        <td style={styles.td}>{registro.primerNombre}</td>
-                        <td style={styles.td}>{registro.segundoNombre}</td>
-                        <td style={styles.td}>{registro.primerApellido}</td>
-                        <td style={styles.td}>{registro.segundoApellido}</td>
-                        <td style={styles.td}>{registro.libro}</td>
-                        <td style={styles.td}>{registro.folio}</td>
-                        <td style={styles.td}>{registro.acta}</td>
-                        <td style={styles.td}>{registro.padre}</td>
-                        <td style={styles.td}>{registro.madre}</td>
-                        <td style={styles.td}>{registro.abueloPaterno}</td>
-                        <td style={styles.td}>{registro.abueloMaterno}</td>
-                        <td style={styles.td}>{registro.abuelaPaterna}</td>
-                        <td style={styles.td}>{registro.abuelaMaterna}</td>
-                        
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+
+            {/* DataTable de PrimeReact */}
+            <div style={styles.tableContainer}>
+              {searchTerm.trim() !== "" && (
+                <>
+                  {isLoading ? (
+                    <div className="flex justify-content-center">
+                      <i className="pi pi-spin pi-spinner" style={{ fontSize: "2rem" }}></i>
+                      <span style={{ marginLeft: "0.5rem" }}>Buscando...</span>
+                    </div>
+                  ) : (
+                    <div className="card">
+                      <DataTable
+                        value={registrosFiltrados}
+                        showGridlines
+                        sortMode="multiple"
+                        scrollable
+                        scrollHeight="700px"
+                        filters={filters}
+                        onFilter={(e) => setFilters(e.filters)}
+                        selection={selectedRow}
+                        onSelectionChange={(e) => setSelectedRow(e.value)}
+                        selectionMode="single"
+                        dataKey="id"
+                        stateStorage="session"
+                        stateKey="dt-state-buscar-partidas"
+                        emptyMessage="No se encontraron registros que coincidan con la búsqueda."
+                        tableStyle={{ minWidth: "50rem" }}
+                        headerStyle={styles.columnaTabla}
+                        bodyStyle={styles.filaTabla}
+                        rowExpansionTemplate={expandedRowTemplate}
+                        expandedRows={selectedRow ? [selectedRow] : []}
+                        onRowToggle={(e) => setSelectedRow(e.data.length > 0 ? e.data[0] : null)}
+                      >
+                        <Column expander style={{ width: "3em" }} />
+                        <Column
+                          field="id"
+                          header="ID"
+                          headerStyle={styles.columnaTabla}
+                          bodyStyle={styles.filaTabla}
+                          sortable
+                          style={{ width: "5%" }}>
+                          </Column>
+                        <Column
+                          field="primerNombre"
+                          header="Primer Nombre"
+                          headerStyle={styles.columnaTabla}
+                          bodyStyle={styles.filaTabla}
+                          sortable
+                          style={{ width: "15%" }}>
+                          </Column>
+                        <Column
+                          field="segundoNombre"
+                          header="Segundo Nombre"
+                          headerStyle={styles.columnaTabla}
+                          bodyStyle={styles.filaTabla}
+                          sortable
+                          style={{ width: "20%" }}
+                        ></Column>
+                        <Column
+                          field="primerApellido"
+                          header="Primer Apellido"
+                          headerStyle={styles.columnaTabla}
+                          bodyStyle={styles.filaTabla}
+                          sortable
+                          style={{ width: "20%" }}
+                        ></Column>
+                        <Column
+                          field="segundoApellido"
+                          header="Segundo Apellido"
+                          headerStyle={styles.columnaTabla}
+                          bodyStyle={styles.filaTabla}
+                          sortable
+                          style={{ width: "20%" }}
+                        ></Column>
+                        <Column 
+                          field="libro"
+                          header="Libro"
+                          headerStyle={styles.columnaTabla}
+                          bodyStyle={styles.filaTabla}
+                          sortable
+                          style={{ width: "7%" }}>
+                          </Column>
+                        <Column 
+                          field="folio"
+                          header="Folio"
+                          headerStyle={styles.columnaTabla}
+                          bodyStyle={styles.filaTabla}
+                          sortable
+                          style={{ width: "7%" }}>
+                          </Column>
+                        <Column 
+                          field="acta"
+                          header="Acta"
+                          headerStyle={styles.columnaTabla}
+                          bodyStyle={styles.filaTabla}
+                          sortable
+                          style={{ width: "7%" }}>
+                          </Column>
+                        <Column
+                          field="ceremonia"
+                          header="Ceremonia"
+                          headerStyle={styles.columnaTabla}
+                          bodyStyle={styles.filaTabla}
+                          body={eventoBodyTemplate}
+                          sortable
+                          style={{ width: "20%" }}
+                        ></Column>
+                      </DataTable>
+                    </div>
+                  )}
+                </>
               )}
-              </div>
-            )}
+            </div>
           </main>
         </div>
       </div>
-      </Layout>
-  );
+    </Layout>
+  )
 }
+
 const styles = {
   container: {
     display: "flex",
@@ -521,7 +904,7 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    height: "calc(100% - 50px)", // Restar la altura del botón de toggle
+    height: "calc(100% - 50px)",
     overflow: "hidden",
   },
   sidebarButtons: {
@@ -639,6 +1022,7 @@ const styles = {
     flex: 1,
     padding: "1.5rem",
     overflow: "auto",
+    transition: 'margin-left 0.3s',
     height: "calc(100vh - 70px)",
   },
   filtroContainer: {
@@ -680,7 +1064,7 @@ const styles = {
     flexDirection: "column",
     gap: "1rem",
     width: "100%",
-    maxWidth: "700px",
+    maxWidth: "600px",
   },
   searchInputContainer: {
     display: "flex",
@@ -691,6 +1075,7 @@ const styles = {
     maxWidth: "800px",
   },
   searchInput: {
+    flex: "1",
     padding: "0.5rem 1rem",
     borderRadius: "0.5rem",
     border: "1px solid #ced4da",
@@ -752,63 +1137,26 @@ const styles = {
     maxHeight: "calc(100vh - 200px)",
   },
 
-  table: {
-    width: "100%",
-    borderCollapse: "collapse",
-    border: "1px solid #000000",
-    borderBottom: "1px solid #000000",
-    fontSize: "1rem",
-    fontWeight: "600",
-    overflowX: "auto",
+  columnaTabla: {
+    backgroundColor: '#FCCE74',
+    border: '1px solid #000000',
+    fontWeight: '600',
+    fontSize: '1rem',
+    color: 'black',
+    textAlign: 'center',
+    padding: '1rem',
   },
-  tableHeader: {
-    position: "sticky",
-    top: 0,
-    backgroundColor: "#FCCE74",
-    zIndex: 1,
+
+  filaTabla: {
+    backgroundColor: '#FFFFFF',
+    border: '1px solid #000000',
+    fontWeight: '600',
+    fontSize: '1rem',
+    color: 'black',
+    textAlign: 'center',
+    padding: '0rem',
   },
-  tableBody: {
-    overflowY: "auto",
-  },
-  th: {
-    backgroundColor: "#FCCE74",
-    padding: "1rem",
-    textAlign: "center",
-    border: "1px solid #000000",
-    borderBottom: "1px solid #000000",
-    fontWeight: "600",
-    fontSize: "1rem",
-    minWidth: "100px",
-    overflow: "auto",
-    whiteSpace: "nowrap",
-    textOverflow: "ellipsis",
-  },
-  tr:{
-    backgroundColor: "#FFFFFF",
-    borderBottom: "1px solid #000000",
-    border: "1px solid #000000",
-    textAlign: "center",
-    overflow: "auto",
-    whiteSpace: "nowrap",
-    textOverflow: "ellipsis",
-    transition: "background-color 0.2s",
-    '&:hover': {
-      backgroundColor: "#f5f5f5",
-    },
-  },
-  td: {
-    backgroundColor: "#FFFFFF",
-    padding: "1rem",
-    verticalAlign: "middle",
-    border: "1px solid #000000",
-    borderBottom: "1px solid #000000",
-    textAlign: "center",
-    fontSize: "1rem",
-    fontWeight: "600",
-    overflow: "auto",
-    whiteSpace: "nowrap",
-    textOverflow: "ellipsis",
-  },
+  
 }
 
 export default BuscarPartidas

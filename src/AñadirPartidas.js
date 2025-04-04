@@ -1,11 +1,8 @@
-"use client"
-
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "./AuthContext"
 import logo from "./logo.png"
 import ComboBox from "./ComboBox"
-
 import {
   FaFileAlt,
   FaSearch,
@@ -134,6 +131,9 @@ function AñadirPartidas() {
       nombreMadre: "",
       padrino: "",
       madrina: "",
+      monseñor: "",
+      sacerdote: "",
+      doyFe: "",
     },
 
     // Datos específicos para Matrimonio
@@ -170,6 +170,8 @@ function AñadirPartidas() {
       },
       testigo1: "",
       testigo2: "",
+      testigo3: "",
+      testigo4: "",
     },
   }
 
@@ -250,16 +252,162 @@ function AñadirPartidas() {
     console.log("Corregir partida")
   }
 
-  const handlePrint = () => {
-    console.log("Imprimir partidas")
-  }
-
   const toggleMenu = () => {
     setMenuAbierto(!menuAbierto)
     if (!menuAbierto) {
       setIsSubmenuOpen(false)
     }
   }
+
+  // Componente para la sección común de registro (libro, folio, acta)
+  const CommonRegistroSection = () => (
+    <div style={styles.formSectionRegistro}>
+      <h2 style={styles.sectionTitle}>Datos de Registro</h2>
+      <div style={styles.registroRow}>
+        <div style={styles.registroGroup}>
+          <label style={styles.formLabelRegistro}>Libro</label>
+          <input
+            type="text"
+            name="libro"
+            value={formData.libro}
+            onChange={handleChange}
+            style={styles.formRegistro}
+          />
+        </div>
+        <div style={styles.registroGroup}>
+          <label style={styles.formLabelRegistro}>Folio</label>
+          <input
+            type="text"
+            name="folio"
+            value={formData.folio}
+            onChange={handleChange}
+            style={styles.formRegistro}
+          />
+        </div>
+        <div style={styles.registroGroup}>
+          <label style={styles.formLabelRegistro}>Acta</label>
+          <input
+            type="text"
+            name="acta"
+            value={formData.acta}
+            onChange={handleChange}
+            style={styles.formRegistro}
+          />
+        </div>
+      </div>
+      <div style={styles.ceremoniaRow}>
+        <div style={styles.ceremoniaGroup}>
+          <label style={styles.formLabel}>Fecha De La Ceremonia</label>
+          <div style={styles.dateCeremonia}>
+            <div style={styles.dateGroup}>
+              <label style={styles.dateLabel}>Día</label>
+              <input
+                type="text"
+                name="fechaCeremonia.dia"
+                value={formData.fechaCeremonia.dia}
+                onChange={handleChange}
+                style={styles.dateInput}
+              />
+            </div>
+            <div style={styles.dateGroup}>
+              <label style={styles.dateLabel}>Mes</label>
+              <input
+                type="text"
+                name="fechaCeremonia.mes"
+                value={formData.fechaCeremonia.mes}
+                onChange={handleChange}
+                style={styles.dateInput}
+              />
+            </div>
+            <div style={styles.dateGroup}>
+              <label style={styles.dateLabel}>Año</label>
+              <input
+                type="text"
+                name="fechaCeremonia.año"
+                value={formData.fechaCeremonia.año}
+                onChange={handleChange}
+                style={styles.dateInput}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
+  // Componente para la sección común del oficiante
+  const CommonOficianteSection = () => (
+    <div style={{ ...styles.formSection, flex: "1" }}>
+      <h2 style={styles.sectionTitle}>Datos del Encargado de Celebrar la Ceremonia</h2>
+      <div style={styles.formRow}>
+        <div style={styles.formGroup}>
+          <ComboBox
+            label="Nombres del Sacerdote"
+            options={sacerdotes}
+            value={formData.oficiante}
+            onChange={handleChange}
+            placeholder="Seleccione o escriba el nombre"
+            name="oficiante"
+          />
+        </div>
+      </div>
+      <div style={styles.formRow}>
+        <div style={styles.formGroup}>
+          <ComboBox
+            label="Doy Fe"
+            options={testigos}
+            value={formData.doyFe}
+            onChange={handleChange}
+            placeholder="Seleccione o escriba el nombre"
+            name="doyFe"
+          />
+        </div>
+      </div>
+    </div>
+  )
+
+  // Componente para la sección de oficiante de confirmación (con monseñor)
+  const ConfirmacionOficianteSection = () => (
+    <div style={{ ...styles.formSection, flex: "1" }}>
+      <h2 style={styles.sectionTitle}>Datos del Encargado de Celebrar la Ceremonia</h2>
+      <div style={styles.formRow}>
+        <div style={styles.formGroup}>
+          <ComboBox
+            label="Monseñor que Oficia la Ceremonia"
+            options={monseñores}
+            value={formData.confirmacion.monseñor}
+            onChange={handleChange}
+            placeholder="Seleccione o escriba el nombre"
+            name="confirmacion.monseñor"
+          />
+        </div>
+      </div>
+      <div style={styles.formRow}>
+        <div style={styles.formGroup}>
+          <ComboBox
+            label="Párroco o Vicario"
+            options={sacerdotes}
+            value={formData.confirmacion.sacerdote}
+            onChange={handleChange}
+            placeholder="Seleccione o escriba el nombre"
+            name="confirmacion.sacerdote"
+          />
+        </div>
+      </div>
+      <div style={styles.formRow}>
+        <div style={styles.formGroup}>
+          <ComboBox
+            label="Doy Fe"
+            options={testigos}
+            value={formData.confirmacion.doyFe}
+            onChange={handleChange}
+            placeholder="Seleccione o escriba el nombre"
+            name="confirmacion.doyFe"
+          />
+        </div>
+      </div>
+    </div>
+  )
 
   // Renderizar el formulario específico según el tipo de ceremonia seleccionado
   const renderFormularioEspecifico = () => {
@@ -453,47 +601,6 @@ function AñadirPartidas() {
       case "Confirmación":
         return (
           <>
-          {/* Datos del oficiante */}
-          <div style={{ ...styles.formSection, flex: "1" }}>
-                  <h2 style={styles.sectionTitle}>Datos del Encargado de Celebrar la Ceremonia</h2>
-                  <div style={styles.formRow}>
-                    <div style={styles.formGroup}>
-                      <ComboBox
-                        label="Monseñor que Oficia la Ceremonia"
-                        options={monseñores}
-                        value={formData.confirmacion.oficiante}
-                        onChange={handleChange}
-                        placeholder="Seleccione o escriba el nombre"
-                        name="confirmacion.monseñor"
-                      />
-                    </div>
-                  </div>
-                  <div style={styles.formRow}>
-                    <div style={styles.formGroup}>
-                      <ComboBox
-                        label="Párroco o Vicario"
-                        options={sacerdotes}
-                        value={formData.confirmacion.oficiante}
-                        onChange={handleChange}
-                        placeholder="Seleccione o escriba el nombre"
-                        name="confirmacion.sacerdote"
-                      />
-                    </div>
-                  </div>
-                  <div style={styles.formRow}>
-                    <div style={styles.formGroup}>
-                      <ComboBox
-                        label="Doy Fe"
-                        options={testigos}
-                        value={formData.confirmacion.doyFe}
-                        onChange={handleChange}
-                        placeholder="Seleccione o escriba el nombre"
-                        name="confirmacion.doyFe"
-                      />
-                    </div>
-                  </div>
-                </div>
-          
             {/* Datos del confirmado */}
             <div style={styles.formSection}>
               <h2 style={styles.sectionTitle}>Datos del Confirmado</h2>
@@ -589,41 +696,41 @@ function AñadirPartidas() {
                 </div>
                 <div style={styles.registroRow}>
                   <label style={styles.formLabel}>Datos de Acta de Bautizo</label>
-                    <div style={styles.registroField}>
-                      <label style={styles.formLabel}>Libro</label>
-                      <input
-                        type="text"
-                        name="libro"
-                        value={formData.libro}
-                        onChange={handleChange}
-                        style={styles.formRegistro}
-                      />
-                    </div>
-                    <div style={styles.registroField}>
-                      <label style={styles.formLabel}>Folio</label>
-                      <input
-                        type="text"
-                        name="folio"
-                        value={formData.folio}
-                        onChange={handleChange}
-                        style={styles.formRegistro}
-                      />
-                    </div>
-                    <div style={styles.registroField}>
-                      <label style={styles.formLabel}>Acta</label>
-                      <input
-                        type="text"
-                        name="acta"
-                        value={formData.acta}
-                        onChange={handleChange}
-                        style={styles.formRegistro}
-                      />
-                    </div>
+                  <div style={styles.registroField}>
+                    <label style={styles.formLabel}>Libro</label>
+                    <input
+                      type="text"
+                      name="libro"
+                      value={formData.libro}
+                      onChange={handleChange}
+                      style={styles.formRegistro}
+                    />
                   </div>
+                  <div style={styles.registroField}>
+                    <label style={styles.formLabel}>Folio</label>
+                    <input
+                      type="text"
+                      name="folio"
+                      value={formData.folio}
+                      onChange={handleChange}
+                      style={styles.formRegistro}
+                    />
+                  </div>
+                  <div style={styles.registroField}>
+                    <label style={styles.formLabel}>Acta</label>
+                    <input
+                      type="text"
+                      name="acta"
+                      value={formData.acta}
+                      onChange={handleChange}
+                      style={styles.formRegistro}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Datos del bautismo previo */}
+            {/* Datos de la familia */}
             <div style={styles.formSection}>
               <h2 style={styles.sectionTitle}>Datos de la Familia</h2>
               <div style={styles.formRow}>
@@ -786,38 +893,38 @@ function AñadirPartidas() {
                 </div>
               </div>
               <div style={styles.registroRow}>
-                  <label style={styles.formLabel}>Datos de Acta de Bautizo</label>
-                    <div style={styles.registroField}>
-                      <label style={styles.formLabel}>Libro</label>
-                      <input
-                        type="text"
-                        name="libro"
-                        value={formData.libro}
-                        onChange={handleChange}
-                        style={styles.formRegistro}
-                      />
-                    </div>
-                    <div style={styles.registroField}>
-                      <label style={styles.formLabel}>Folio</label>
-                      <input
-                        type="text"
-                        name="folio"
-                        value={formData.folio}
-                        onChange={handleChange}
-                        style={styles.formRegistro}
-                      />
-                    </div>
-                    <div style={styles.registroField}>
-                      <label style={styles.formLabel}>Acta</label>
-                      <input
-                        type="text"
-                        name="acta"
-                        value={formData.acta}
-                        onChange={handleChange}
-                        style={styles.formRegistro}
-                      />
-                    </div>
-                  </div>
+                <label style={styles.formLabel}>Datos de Acta de Bautizo</label>
+                <div style={styles.registroField}>
+                  <label style={styles.formLabel}>Libro</label>
+                  <input
+                    type="text"
+                    name="libro"
+                    value={formData.libro}
+                    onChange={handleChange}
+                    style={styles.formRegistro}
+                  />
+                </div>
+                <div style={styles.registroField}>
+                  <label style={styles.formLabel}>Folio</label>
+                  <input
+                    type="text"
+                    name="folio"
+                    value={formData.folio}
+                    onChange={handleChange}
+                    style={styles.formRegistro}
+                  />
+                </div>
+                <div style={styles.registroField}>
+                  <label style={styles.formLabel}>Acta</label>
+                  <input
+                    type="text"
+                    name="acta"
+                    value={formData.acta}
+                    onChange={handleChange}
+                    style={styles.formRegistro}
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Datos de la novia */}
@@ -929,39 +1036,38 @@ function AñadirPartidas() {
                 </div>
               </div>
               <div style={styles.registroRow}>
-                  <label style={styles.formLabel}>Datos de Acta de Bautizo</label>
-                    <div style={styles.registroField}>
-                      <label style={styles.formLabel}>Libro</label>
-                      <input
-                        type="text"
-                        name="libro"
-                        value={formData.libro}
-                        onChange={handleChange}
-                        style={styles.formRegistro}
-                      />
-                    </div>
-                    <div style={styles.registroField}>
-                      <label style={styles.formLabel}>Folio</label>
-                      <input
-                        type="text"
-                        name="folio"
-                        value={formData.folio}
-                        onChange={handleChange}
-                        style={styles.formRegistro}
-                      />
-                    </div>
-                    <div style={styles.registroField}>
-                      <label style={styles.formLabel}>Acta</label>
-                      <input
-                        type="text"
-                        name="acta"
-                        value={formData.acta}
-                        onChange={handleChange}
-                        style={styles.formRegistro}
-                      />
-                    </div>
-                  </div>
-              
+                <label style={styles.formLabel}>Datos de Acta de Bautizo</label>
+                <div style={styles.registroField}>
+                  <label style={styles.formLabel}>Libro</label>
+                  <input
+                    type="text"
+                    name="libro"
+                    value={formData.libro}
+                    onChange={handleChange}
+                    style={styles.formRegistro}
+                  />
+                </div>
+                <div style={styles.registroField}>
+                  <label style={styles.formLabel}>Folio</label>
+                  <input
+                    type="text"
+                    name="folio"
+                    value={formData.folio}
+                    onChange={handleChange}
+                    style={styles.formRegistro}
+                  />
+                </div>
+                <div style={styles.registroField}>
+                  <label style={styles.formLabel}>Acta</label>
+                  <input
+                    type="text"
+                    name="acta"
+                    value={formData.acta}
+                    onChange={handleChange}
+                    style={styles.formRegistro}
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Datos de los testigos */}
@@ -992,8 +1098,8 @@ function AñadirPartidas() {
                   <label style={styles.formLabel}>Tercer Testigo</label>
                   <input
                     type="text"
-                    name="matrimonio.testigo1"
-                    value={formData.matrimonio.testigo1}
+                    name="matrimonio.testigo3"
+                    value={formData.matrimonio.testigo3}
                     onChange={handleChange}
                     style={styles.formInput}
                   />
@@ -1002,8 +1108,8 @@ function AñadirPartidas() {
                   <label style={styles.formLabel}>Cuarto Testigo</label>
                   <input
                     type="text"
-                    name="matrimonio.testigo1"
-                    value={formData.matrimonio.testigo1}
+                    name="matrimonio.testigo4"
+                    value={formData.matrimonio.testigo4}
                     onChange={handleChange}
                     style={styles.formInput}
                   />
@@ -1133,102 +1239,15 @@ function AñadirPartidas() {
             <form onSubmit={handleSubmit} style={styles.form}>
               {/* Contenedor para las dos secciones superiores */}
               <div style={styles.topSectionsContainer}>
-                {/* Datos de registro */}
-                <div style={{ ...styles.formSection, flex: "1" }}>
-                  <h2 style={styles.sectionTitle}>Datos de Registro</h2>
-                  <div style={styles.registroRow}>
-                    <div style={styles.registroField}>
-                      <label style={styles.formLabel}>Libro</label>
-                      <input
-                        type="text"
-                        name="libro"
-                        value={formData.libro}
-                        onChange={handleChange}
-                        style={styles.formRegistro}
-                      />
-                    </div>
-                    <div style={styles.registroField}>
-                      <label style={styles.formLabel}>Folio</label>
-                      <input
-                        type="text"
-                        name="folio"
-                        value={formData.folio}
-                        onChange={handleChange}
-                        style={styles.formRegistro}
-                      />
-                    </div>
-                    <div style={styles.registroField}>
-                      <label style={styles.formLabel}>Acta</label>
-                      <input
-                        type="text"
-                        name="acta"
-                        value={formData.acta}
-                        onChange={handleChange}
-                        style={styles.formRegistro}
-                      />
-                    </div>
-                  </div>
-                  <div style={{ ...styles.formRow, marginTop: "8px" }}>
-                    <div style={styles.formGroup}>
-                      <label style={styles.formLabel}>Fecha De La Ceremonia</label>
-                      <div style={styles.dateCeremonia}>
-                        <input
-                          type="text"
-                          name="fechaCeremonia.dia"
-                          placeholder="Día"
-                          value={formData.fechaCeremonia.dia}
-                          onChange={handleChange}
-                          style={styles.dateInput}
-                        />
-                        <input
-                          type="text"
-                          name="fechaCeremonia.mes"
-                          placeholder="Mes"
-                          value={formData.fechaCeremonia.mes}
-                          onChange={handleChange}
-                          style={styles.dateInput}
-                        />
-                        <input
-                          type="text"
-                          name="fechaCeremonia.año"
-                          placeholder="Año"
-                          value={formData.fechaCeremonia.año}
-                          onChange={handleChange}
-                          style={styles.dateInput}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Datos del Sacerdote */}
-                <div style={{ ...styles.formSection, flex: "1" }}>
-                  <h2 style={styles.sectionTitle}>Datos del Encargado de Celebrar la Ceremonia</h2>
-                  <div style={styles.formRow}>
-                    <div style={styles.formGroup}>
-                      <ComboBox
-                        label="Nombres del Sacerdote"
-                        options={sacerdotes}
-                        value={formData.oficiante}
-                        onChange={handleChange}
-                        placeholder="Seleccione o escriba el nombre"
-                        name="oficiante"
-                      />
-                    </div>
-                  </div>
-                  <div style={styles.formRow}>
-                    <div style={styles.formGroup}>
-                      <ComboBox
-                        label="Doy Fe"
-                        options={testigos}
-                        value={formData.doyFe}
-                        onChange={handleChange}
-                        placeholder="Seleccione o escriba el nombre"
-                        name="doyFe"
-                      />
-                    </div>
-                  </div>
-                </div>
+                {/* Sección común de registro (libro, folio, acta) */}
+                <CommonRegistroSection />
+                
+                {/* Sección de oficiante según el tipo de ceremonia */}
+                {eventoSeleccionado === "Confirmación" ? (
+                  <ConfirmacionOficianteSection />
+                ) : (
+                  <CommonOficianteSection />
+                )}
               </div>
 
               {/* Renderizar el formulario específico según el tipo de ceremonia */}
@@ -1236,7 +1255,7 @@ function AñadirPartidas() {
 
               {/* Nota Marginal (común para todos los formularios) */}
               <div style={styles.formSection}>
-              <h2 style={styles.sectionTitle}>Nota Marginal</h2>
+                <h2 style={styles.sectionTitle}>Nota Marginal</h2>
                 <div style={styles.formRow}>
                   <div style={styles.formGroup}>
                     <textarea
@@ -1276,6 +1295,8 @@ function AñadirPartidas() {
     </div>
   )
 }
+
+
 const styles = {
   container: {
     display: "flex",
@@ -1365,7 +1386,7 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    height: "calc(100% - 50px)", // Restar la altura del botón de toggle
+    height: "calc(100% - 50px)",
     overflow: "hidden",
   },
   sidebarButtons: {
@@ -1473,6 +1494,8 @@ const styles = {
     overflow: "auto",
     height: "calc(100vh - 70px)",
   },
+
+  // Estilos del filtro de selección
   filtroContainer: {
     alignItems: "center",
     marginBottom: "20px",
@@ -1498,14 +1521,33 @@ const styles = {
     fontWeight: "550",
   },
 
+  // Estilos del formulario
   form: {
     backgroundColor: "#fff",
     borderRadius: "0.5rem",
     padding: "1rem",
     boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
   },
+  topSectionsContainer: {
+    display: "flex",
+    gap: "20px",
+    flexDirection: "row",
+    marginBottom: "20px",
+    width: "100%",
+  },
+
+  // Estilos de secciones del formulario
   formSection: {
-    marginBottom: "10px",
+    marginBottom: "0.5rem",
+    padding: "0.75rem",
+    border: "1px solid #000000",
+    borderRadius: "0.5rem",
+    backgroundColor: "#f9f9f9",
+    height: "fit-content",
+  },
+  formSectionRegistro: {
+    flex: "1",
+    marginBottom: "0.5rem",
     padding: "0.75rem",
     border: "1px solid #000000",
     borderRadius: "0.5rem",
@@ -1518,24 +1560,29 @@ const styles = {
     marginBottom: "8px",
     color: "#385792",
   },
+  
+   // Estilos de filas y grupos del formulario
   formRow: {
     display: "flex",
     flexWrap: "wrap",
-    gap: "8px",
-    marginBottom: "8px",
+    gap: "0.5rem",
+    marginBottom: "0.5rem",
   },
   formGroup: {
     flex: "1 1 auto",
-    minWidth: "200px", // Increased minimum width for better layout
+    minWidth: "200px",
   },
   formGroupReg: {
     flex: "1 1 auto",
     minWidth: "70px",
     marginLeft: "0",
   },
+
+  // Estilos de etiquetas e inputs
   formLabel: {
     display: "block",
     marginBottom: "3px",
+    width: '100%',
     fontSize: "1rem",
     fontWeight: "500",
     color: "#000000",
@@ -1545,12 +1592,31 @@ const styles = {
     textTransform: "capitalize",
     textAlign: "center",
   },
+  formLabelRegistro: {
+    fontSize: "1rem",
+    marginBottom: "0rem",
+    textAlign: "center",
+    fontWeight: "500",
+    color: "#000000",
+  },
   formInput: {
     width: "100%",
     padding: "0.5rem",
     border: "1px solid #ced4da",
     borderRadius: "0.5rem",
     fontSize: "1rem",
+  },
+  formRegistro: {
+    display: "block",
+    width: "50%",
+    padding: "0.5rem",
+    margin: '0 auto',
+    border: "1px solid #ced4da",
+    borderRadius: "0.5rem",
+    fontSize: "1rem",
+    textAlign: "center",
+    color: "#000000",
+    fontWeight: "500",
   },
   formNota: {
     display: "block",
@@ -1569,46 +1635,79 @@ const styles = {
     whiteSpace: "pre-wrap",
     verticalAlign: "top",
   },
-  formRegistro: {
-    display: "block",
-    width: "100%",
-    padding: "0.5rem",
-    border: "1px solid #ced4da",
-    borderRadius: "0.5rem",
-    fontSize: "1rem",
-    textAlign: "center",
-    color: "#000000",
-    fontWeight: "500",
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    textTransform: "capitalize",
-  },
+
+   // Estilos para fechas
   dateInputs: {
     display: "flex",
     width: "100%",
     gap: "0.5rem",
   },
-  dateCeremonia: {
-    display: "flex",
-    width: "100%",
-    gap: "5px",
-    maxWidth: "400px",
-  },
   dateInput: {
-    flex: "1",
+    alignItems: "center",
+    gap: "0.5rem",
     padding: "0.5rem",
+    width: '50%',
     border: "1px solid #ced4da",
     borderRadius: "0.5rem",
     fontSize: "1rem",
     textAlign: "center",
-    color: "#000000",
-    fontWeight: "500",
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    textTransform: "capitalize",
   },
+  dateCeremonia: {
+    display: "flex",
+    justifyContent: 'center',
+    width: "50%",
+    gap: "0.5rem",
+  },
+  dateGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: "0.5rem",
+  },
+  dateLabel: {
+    fontSize: "1rem",
+    marginBottom: "0rem",
+    textAlign: "center",
+    fontWeight: "500",
+    color: "#000000",
+  },
+  
+  // Estilos para registro y ceremonia
+  registroRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    gap: "8px",
+    marginBottom: "12px",
+  },
+  registroGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: "0.5rem",
+  },
+  registroField: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: "0.5rem",
+  },
+  ceremoniaRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    gap: "0.5rem",
+    marginBottom: "0.5rem",
+    marginTop: '16px',
+  },
+  ceremoniaGroup: {
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "0.5rem",
+    marginBottom: "0.5rem",
+    textAlign: "center",
+  },
+
   checkboxContainer: {
     display: "flex",
     alignItems: "center",
@@ -1651,24 +1750,7 @@ const styles = {
     cursor: "pointer",
     fontSize: "1rem",
   },
-  topSectionsContainer: {
-    display: "flex",
-    gap: "20px",
-    marginBottom: "20px",
-    width: "100%",
-  },
-  registroRow: {
-    display: "flex",
-    justifyContent: "space-between",
-    gap: "15px",
-    marginBottom: "5px",
-  },
-  registroField: {
-    flex: "1",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
+
   noSelectionMessage: {
     backgroundColor: "#fff",
     borderRadius: "0.5rem",

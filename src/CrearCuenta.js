@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import logo from "./logo.png";
 
 function CrearCuenta() {
+  const [nombre, setNombre] = useState('');
+  const [apellido, setApellido] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -31,9 +33,31 @@ function CrearCuenta() {
         <div style={styles.card}>
           <h2 style={styles.title}>Crear Cuenta</h2>
           <p style={styles.description}>
-            Por favor, ingresa tu correo electrónico y contraseña para crear una cuenta.
+            Ingresa los datos para crear la cuenta.
           </p>
           <form onSubmit={handleSubmit} style={styles.form}>
+          <div style={styles.formGroup}>
+              <label htmlFor="email" style={styles.label}>Nombre</label>
+              <input
+                type="nombre"
+                id="nombre"
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+                style={styles.input}
+                required
+              />
+            </div>
+            <div style={styles.formGroup}>
+              <label htmlFor="email" style={styles.label}>Apellido</label>
+              <input
+                type="apellido"
+                id="apellido"
+                value={apellido}
+                onChange={(e) => setApellido(e.target.value)}
+                style={styles.input}
+                required
+              />
+            </div>
             <div style={styles.formGroup}>
               <label htmlFor="email" style={styles.label}>Correo Electrónico</label>
               <input
@@ -114,8 +138,9 @@ const styles = {
   },
   description: {
     fontSize: '1rem',
+
     marginBottom: '1.5rem',
-    color: '#666',
+    color: '#000000',
   },
   form: {
     display: 'flex',
